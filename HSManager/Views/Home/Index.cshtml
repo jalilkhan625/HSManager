@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="login-container">
+    <h2>HSManager - Sign In</h2>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Sign In</button>
+    </form>
+    <div id="loginError" style="color:red;"></div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem("userToken", data.userToken);
+                localStorage.setItem("userId", data.userID);
+                localStorage.setItem("userLanguage", data.userLanguage);
+                window.location.href = '/Home/Dashboard';
+            } else {
+                document.getElementById("loginError").innerText = "Invalid credentials.";
+            }
+        });
+    </script>
+}

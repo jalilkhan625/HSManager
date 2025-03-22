@@ -1,0 +1,263 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = null;
+
+    var user = (ClaimsPrincipal)User;
+    var token = user.FindFirst("Token")?.Value;
+    var userId = user.FindFirst("UserID")?.Value;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HSManager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .bg-sidebar {
+            background-color: #212121;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            width: 60px;
+        }
+
+        .sidebar-sticky {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-link:hover {
+            background-color: #333333;
+        }
+
+        .nav-link img {
+            display: block;
+            width: 24px;
+            height: 24px;
+        }
+
+        .logout-icon {
+            color: white;
+            display: inline-block;
+            padding: 4px;
+            border-radius: 4px;
+            transition: transform 0.2s;
+        }
+
+            .logout-icon:hover {
+                transform: scale(1.1);
+                background-color: orange;
+                cursor: pointer;
+            }
+
+        .logout-popup {
+            position: absolute;
+            bottom: 40px;
+            right: 0;
+            width: 280px;
+            background-color: #f0f0f0;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+            color: black;
+            z-index: 1000;
+        }
+
+        .cancel-btn, .logout-btn {
+            padding: 6px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .cancel-btn {
+            background-color: lightgray;
+        }
+
+        .logout-btn {
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            display: inline-block;
+        }
+
+        .logout-icon img {
+            filter: brightness(0) invert(1); /* white icon */
+        }
+
+        .config-div {
+            width: 300px;
+            padding: 20px;
+            margin-left: 10px;
+        }
+
+        .sidebar-spacer {
+            flex: 2;
+        }
+
+        /* Table Manager floating label */
+        .floating-label {
+            position: absolute;
+            top: 0;
+            left: 70px; /* Right outside sidebar */
+            background-color: orange;
+            color: black;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            z-index: 1001;
+            transition: opacity 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid" style="background-color: #1a1a1a; min-height: 100vh; padding: 0;">
+        <div class="row" style="margin: 0;">
+            <nav class="d-none d-md-block bg-sidebar sidebar">
+                <div class="sidebar-sticky pt-3 text-center" style="height: calc(100% - 40px); display: flex; flex-direction: column;">
+                    <div class="sidebar-spacer"></div>
+                    <ul class="nav flex-column" id="menuList" style="margin-bottom: 0;">
+                        <!-- Menu items will be injected here -->
+                    </ul>
+                </div>
+                <div class="bg-sidebar text-white py-2" style="width: 60px; height: 40px; position: absolute; bottom: 0; left: 0;"></div>
+            </nav>
+
+            <main role="main" class="px-4" style="margin-left: 60px; color: #ffffff; width: calc(100% - 60px); display: flex;">
+                <div id="dashboardContent" style="flex: 1;">
+                    <h1 class="mt-5 text-center">Welcome to HSManager Dashboard</h1>
+                    <p class="text-center">You're now logged in.</p>
+                </div>
+                <div id="configContainer" style="flex: 0;"></div>
+            </main>
+        </div>
+
+        <footer class="bg-sidebar text-white py-2" style="position: fixed; bottom: 0; width: 100%; left: 0;">
+            <div class="container-fluid d-flex justify-content-end align-items-center" style="padding-right: 15px; position: relative;">
+                <div class="logout-container">
+                    <a href="#" class="logout-icon" id="logoutToggle">
+                        <img src="/assets/Icons/power-off.svg" alt="Logout" width="24" height="24" />
+                    </a>
+                    <div class="logout-popup" id="logoutPopup">
+                        <p><strong>Esci dall'applicazione Hyperspace</strong></p>
+                        <p>Confermi l'uscita?</p>
+                        <button class="cancel-btn" id="cancelLogout">Annulla</button>
+                        <a href="/logout" class="logout-btn">Esci</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Floating Label Container -->
+        <div id="floatingLabel" class="floating-label" style="display: none;">Table Manager</div>
+    </div>
+
+    <script>
+        const token = "@token";
+        const userId = "@userId";
+
+        console.log("🔐 Token from claims:", token);
+        console.log("👤 UserID from claims:", userId);
+
+        async function loadMenu() {
+            if (!token || !userId) {
+                console.error("❌ Token or UserId missing");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/menu?token=${token}&userId=${userId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to load menu: ${response.statusText}`);
+                }
+
+                const menuItems = await response.json();
+                console.log("📋 Menu Items:", menuItems);
+
+                const menuList = document.getElementById("menuList");
+                menuList.innerHTML = menuItems.map(item => `
+                    <li class="nav-item mb-3">
+                        <a class="nav-link text-white d-flex align-items-center justify-content-center" href="#" data-id="${item.id}" title="${item.description}">
+                            <img src="${item.icon.base64}" alt="${item.icon.alternativeText}" width="24" height="24">
+                        </a>
+                    </li>
+                `).join("");
+
+                document.querySelectorAll(".nav-link").forEach(link => {
+                    link.addEventListener("click", (e) => {
+                        e.preventDefault();
+
+                        const id = parseInt(e.currentTarget.dataset.id);
+                        const navItem = e.currentTarget;
+                        const floatingLabel = document.getElementById("floatingLabel");
+
+                        // Show label only for user 1 and menu id 1
+                        if (id === 1 && userId === "1") {
+                            const rect = navItem.getBoundingClientRect();
+                            floatingLabel.style.top = `${rect.top}px`;
+                            floatingLabel.style.display = "block";
+                        } else {
+                            floatingLabel.style.display = "none";
+                        }
+
+                        // Optional: config panel content
+                        const configDiv = document.createElement("div");
+                        configDiv.className = "config-div";
+                        configDiv.style.backgroundColor = `hsl(0, 50%, 90%)`;
+                        configDiv.innerHTML = `<h3>${id === 1 && userId === "1" ? "🪑 Table Manager" : "Config for " + id}</h3>`;
+
+                        const configContainer = document.getElementById("configContainer");
+                        configContainer.innerHTML = "";
+                        configContainer.appendChild(configDiv);
+                    });
+                });
+            } catch (error) {
+                console.error("🚨 Error loading menu:", error);
+            }
+        }
+
+        const logoutToggle = document.getElementById("logoutToggle");
+        const logoutPopup = document.getElementById("logoutPopup");
+        const cancelBtn = document.getElementById("cancelLogout");
+
+        logoutToggle.addEventListener("click", (e) => {
+            e.preventDefault();
+            logoutPopup.style.display = logoutPopup.style.display === "block" ? "none" : "block";
+        });
+
+        cancelBtn.addEventListener("click", () => {
+            logoutPopup.style.display = "none";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!logoutPopup.contains(e.target) && !logoutToggle.contains(e.target)) {
+                logoutPopup.style.display = "none";
+            }
+        });
+
+        loadMenu();
+    </script>
+</body>
+</html>
