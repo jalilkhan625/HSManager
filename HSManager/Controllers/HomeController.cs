@@ -24,7 +24,7 @@ namespace HSManager.Controllers
             return View(); // Shows login page
         }
         [HttpGet]
-        [Authorize] // 🔒 Only authenticated users can access
+        [Authorize] // Only authenticated users can access
         public IActionResult Dashboard()
         {
             _logger.LogInformation("User {User} accessed Dashboard", User.Identity.Name);
