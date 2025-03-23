@@ -69,9 +69,9 @@
         .logout-popup {
             position: absolute;
             bottom: 40px;
-            right: 0;
+            right: 15px;
             width: 280px;
-            background-color: #f0f0f0;
+            background-color: rgba(240, 240, 240, 0.75);
             padding: 12px;
             border-radius: 6px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -101,7 +101,7 @@
         }
 
         .logout-icon img {
-            filter: brightness(0) invert(1); /* white icon */
+            filter: brightness(0) invert(1);
         }
 
         .config-div {
@@ -114,11 +114,10 @@
             flex: 2;
         }
 
-        /* Table Manager floating label */
         .floating-label {
             position: absolute;
             top: 0;
-            left: 70px; /* Right outside sidebar */
+            left: 60px;
             background-color: orange;
             color: black;
             padding: 6px 12px;
@@ -126,6 +125,15 @@
             font-weight: 500;
             z-index: 1001;
             transition: opacity 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+        /* Style for the logo at the top of the sidebar */
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            margin: 10px auto;
+            display: block;
         }
     </style>
 </head>
@@ -134,6 +142,8 @@
         <div class="row" style="margin: 0;">
             <nav class="d-none d-md-block bg-sidebar sidebar">
                 <div class="sidebar-sticky pt-3 text-center" style="height: calc(100% - 40px); display: flex; flex-direction: column;">
+                    <!-- Add the logo image at the top -->
+                    <img src="/assets/Loghi Web/favicon - Copia.png" alt="Logo" class="sidebar-logo" />
                     <div class="sidebar-spacer"></div>
                     <ul class="nav flex-column" id="menuList" style="margin-bottom: 0;">
                         <!-- Menu items will be injected here -->
@@ -205,36 +215,45 @@
                     </li>
                 `).join("");
 
+                // Move the floating label into the sidebar
+                const sidebar = document.querySelector(".sidebar");
+                const floatingLabel = document.getElementById("floatingLabel");
+                sidebar.appendChild(floatingLabel); // Attach it to the sidebar
+
                 document.querySelectorAll(".nav-link").forEach(link => {
                     link.addEventListener("click", (e) => {
                         e.preventDefault();
 
                         const id = parseInt(e.currentTarget.dataset.id);
                         const navItem = e.currentTarget;
-                        const floatingLabel = document.getElementById("floatingLabel");
+                        const sidebarRect = sidebar.getBoundingClientRect(); // Sidebar's position
+                        const itemRect = navItem.getBoundingClientRect(); // Clicked item's position
 
-                        // Show label only for user 1 and menu id 1
-                        if (id === 1 && userId === "1") {
-                            const rect = navItem.getBoundingClientRect();
-                            floatingLabel.style.top = `${rect.top}px`;
-                            floatingLabel.style.display = "block";
-                        } else {
-                            floatingLabel.style.display = "none";
+                        // Set floating label text based on menu item id
+                        let labelText;
+                        switch (id) {
+                            case 1:
+                                labelText = "Table Manager";
+                                break;
+                            case 2:
+                                labelText = "InternalUserManager";
+                                break;
+                            case 3:
+                                labelText = "ExternalUserManager";
+                                break;
+                            default:
+                                labelText = navItem.getAttribute("title") || "Menu Item"; // Fallback
                         }
 
-                        // Optional: config panel content
-                        const configDiv = document.createElement("div");
-                        configDiv.className = "config-div";
-                        configDiv.style.backgroundColor = `hsl(0, 50%, 90%)`;
-                        configDiv.innerHTML = `<h3>${id === 1 && userId === "1" ? "🪑 Table Manager" : "Config for " + id}</h3>`;
-
-                        const configContainer = document.getElementById("configContainer");
-                        configContainer.innerHTML = "";
-                        configContainer.appendChild(configDiv);
+                        // Calculate top position relative to the sidebar
+                        const relativeTop = itemRect.top - sidebarRect.top;
+                        floatingLabel.style.top = `${relativeTop}px`;
+                        floatingLabel.style.display = "block";
+                        floatingLabel.textContent = labelText;
                     });
                 });
             } catch (error) {
-                console.error("🚨 Error loading menu:", error);
+                console.error(" Error loading menu:", error);
             }
         }
 
@@ -254,6 +273,15 @@
         document.addEventListener("click", (e) => {
             if (!logoutPopup.contains(e.target) && !logoutToggle.contains(e.target)) {
                 logoutPopup.style.display = "none";
+            }
+        });
+
+        // Hide floating label when clicking outside the sidebar
+        document.addEventListener("click", (e) => {
+            const floatingLabel = document.getElementById("floatingLabel");
+            const sidebar = document.querySelector(".sidebar");
+            if (!sidebar.contains(e.target)) {
+                floatingLabel.style.display = "none";
             }
         });
 

@@ -18,12 +18,10 @@ namespace HSManager.Controllers
             _environment = environment;
         }
 
-        // Helper function to read SVG file and convert to base64
         private string ConvertSvgToBase64(string fileName)
         {
             try
             {
-                // Construct the path to the SVG file in wwwroot/assets/icons/
                 string filePath = Path.Combine(_environment.ContentRootPath, "wwwroot", "assets", "icons", fileName);
                 if (!System.IO.File.Exists(filePath))
                 {
@@ -31,10 +29,7 @@ namespace HSManager.Controllers
                     return string.Empty;
                 }
 
-                // Read the SVG file content
                 string svgContent = System.IO.File.ReadAllText(filePath);
-
-                // Convert the SVG content to base64
                 string base64String = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(svgContent));
                 return $"data:image/svg+xml;base64,{base64String}";
             }
@@ -72,8 +67,8 @@ namespace HSManager.Controllers
                 },
                 new MenuItem
                 {
-                    Id = (int)MenuType.TableManager,
-                    Name = "TableManager",
+                    Id = (int)MenuType.InternalUserManager,
+                    Name = "Internal Users",
                     Description = "Manage internal user accounts",
                     Icon = new Icon
                     {
@@ -84,8 +79,8 @@ namespace HSManager.Controllers
                 },
                 new MenuItem
                 {
-                    Id = (int)MenuType.TableManager,
-                    Name = "TableManager",
+                    Id = (int)MenuType.ExternalUserManager,
+                    Name = "External Users",
                     Description = "Manage external user accounts",
                     Icon = new Icon
                     {
@@ -93,45 +88,7 @@ namespace HSManager.Controllers
                         AlternativeText = "External Users",
                         Base64 = ConvertSvgToBase64("sharededit.svg")
                     }
-                },
-                new MenuItem
-                {
-                    Id = (int)MenuType.TableManager,
-                    Name = "TableManager",
-                    Description = "Manage macros",
-                    Icon = new Icon
-                    {
-                        Name = "macro",
-                        AlternativeText = "Macros",
-                        Base64 = ConvertSvgToBase64("macro.svg")
-                    }
-                },
-                new MenuItem
-                {
-                    Id = (int)MenuType.TableManager,
-                    Name = "TableManager",
-                    Description = "Manage integrations",
-                    Icon = new Icon
-                    {
-                        Name = "integrations",
-                        AlternativeText = "Integrations",
-                        Base64 = ConvertSvgToBase64("integrations.svg")
-                    }
-                },
-                new MenuItem
-                {
-                    Id = (int)MenuType.TableManager,
-                    Name = "TableManager",
-                    Description = "Manage groups",
-                    Icon = new Icon
-                    {
-                        Name = "groups",
-                        AlternativeText = "Groups",
-                        Base64 = ConvertSvgToBase64("groups.svg")
-                    }
-                },
-             
-
+                }
             };
 
             _logger.LogInformation("Menu fetched for UserID: {UserId}", userId);

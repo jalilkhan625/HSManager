@@ -1,16 +1,168 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
     ViewData["Title"] = "Login";
+
+    var user = (ClaimsPrincipal)User;
+    var token = user.FindFirst("Token")?.Value;
+    var userId = user.FindFirst("UserID")?.Value;
 }
 
-<div class="login-container">
-    <h2>HSManager - Sign In</h2>
-    <form id="loginForm">
-        <input type="text" id="username" placeholder="Username" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button type="submit">Sign In</button>
-    </form>
-    <div id="loginError" style="color:red;"></div>
+<div class="login-wrapper">
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="/assets/icons/logo.svg" alt="Logo" class="logo" />
+        </div>
+        <h2>HSManager - Sign In</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Username" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Password" required />
+            </div>
+            <div class="form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="rememberMe" /> Ricordami
+                </label>
+            </div>
+            <button type="submit" class="sign-in-btn">Sign In</button>
+        </form>
+        <div id="loginError" class="error-message"></div>
+    </div>
 </div>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f7fa;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .login-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .logo-container {
+        margin-bottom: 20px;
+    }
+
+    .logo {
+        max-width: 150px;
+        height: auto;
+    }
+
+    h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+
+    label {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: #f0f4f8;
+        box-sizing: border-box;
+    }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #999;
+        }
+
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        color: #666;
+    }
+
+        .checkbox-label input {
+            margin-right: 5px;
+        }
+
+    .forgot-password {
+        color: #ff6200;
+        text-decoration: none;
+    }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+    .sign-in-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #ff6200;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .sign-in-btn:hover {
+            background-color: #e55a00;
+        }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+        min-height: 20px;
+    }
+</style>
 
 @section Scripts {
     <script>
@@ -26,10 +178,7 @@
             });
 
             if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem("userToken", data.userToken);
-                localStorage.setItem("userId", data.userID);
-                localStorage.setItem("userLanguage", data.userLanguage);
+                // Redirect to Dashboard after successful login
                 window.location.href = '/Home/Dashboard';
             } else {
                 document.getElementById("loginError").innerText = "Invalid credentials.";
