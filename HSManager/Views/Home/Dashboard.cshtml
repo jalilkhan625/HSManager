@@ -185,12 +185,12 @@
         const token = "@token";
         const userId = "@userId";
 
-        console.log("🔐 Token from claims:", token);
-        console.log("👤 UserID from claims:", userId);
+        console.log("Token from claims:", token);
+        console.log("UserID from claims:", userId);
 
         async function loadMenu() {
             if (!token || !userId) {
-                console.error("❌ Token or UserId missing");
+                console.error("Token or UserId missing");
                 return;
             }
 
@@ -204,7 +204,7 @@
                 }
 
                 const menuItems = await response.json();
-                console.log("📋 Menu Items:", menuItems);
+                console.log("Menu Items:", menuItems);
 
                 const menuList = document.getElementById("menuList");
                 menuList.innerHTML = menuItems.map(item => `

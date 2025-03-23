@@ -23,7 +23,7 @@ namespace HSManager.Controllers
         {
             if (request.Username != "admin" || request.Password != "password")
             {
-                _logger.LogWarning("❌ Invalid login attempt for user: {Username}", request.Username);
+                _logger.LogWarning("Invalid login attempt for user: {Username}", request.Username);
                 return Unauthorized(new { Message = "Invalid credentials" });
             }
 
@@ -53,7 +53,7 @@ namespace HSManager.Controllers
                 UserLanguage = (int)Languages.English
             };
 
-            _logger.LogInformation("🔽 Sending login response: {Response}", JsonSerializer.Serialize(response));
+            _logger.LogInformation("Sending login response: {Response}", JsonSerializer.Serialize(response));
             return Ok(response);
         }
     }
