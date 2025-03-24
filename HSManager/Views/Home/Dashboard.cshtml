@@ -42,15 +42,24 @@
             flex-direction: column;
         }
 
-        .nav-link:hover {
-            background-color: #333333;
+        .nav-link {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
         }
 
-        .nav-link img {
-            display: block;
-            width: 24px;
-            height: 24px;
-        }
+            .nav-link:hover {
+                background-color: #333333;
+            }
+
+            .nav-link img {
+                width: 24px;
+                height: 24px;
+            }
 
         .logout-icon {
             color: white;
@@ -73,7 +82,7 @@
             width: 280px;
             background-color: rgba(240, 240, 240, 0.75);
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 0; /* Removed rounded corners */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             display: none;
             color: black;
@@ -84,9 +93,10 @@
             padding: 6px 12px;
             border: none;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 0; /* Removed rounded corners from buttons */
             margin-right: 5px;
         }
+
 
         .cancel-btn {
             background-color: lightgray;
@@ -121,39 +131,45 @@
             background-color: orange;
             color: black;
             padding: 6px 12px;
-            border-radius: 4px;
             font-weight: 500;
             z-index: 1001;
             transition: opacity 0.2s ease-in-out;
             white-space: nowrap;
+            cursor: pointer;
+            display: none;
         }
 
-        /* Style for the logo at the top of the sidebar */
         .sidebar-logo {
             width: 40px;
             height: 40px;
             margin: 10px auto;
             display: block;
         }
+
+        .content-area {
+            flex: 1;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
-    <div class="container-fluid" style="background-color: #1a1a1a; min-height: 100vh; padding: 0;">
+    <div class="container-fluid" style="background-color: #1a1a1a; min-height: calc(100vh - 30px); padding: 0;">
         <div class="row" style="margin: 0;">
             <nav class="d-none d-md-block bg-sidebar sidebar">
-                <div class="sidebar-sticky pt-3 text-center" style="height: calc(100% - 40px); display: flex; flex-direction: column;">
-                    <!-- Add the logo image at the top -->
+                <div class="sidebar-sticky pt-3 text-center" style="height: calc(100% - 30px); display: flex; flex-direction: column;">
                     <img src="/assets/Loghi Web/favicon - Copia.png" alt="Logo" class="sidebar-logo" />
                     <div class="sidebar-spacer"></div>
-                    <ul class="nav flex-column" id="menuList" style="margin-bottom: 0;">
-                        <!-- Menu items will be injected here -->
-                    </ul>
+                    <ul class="nav flex-column" id="menuList" style="margin-bottom: 0;"></ul>
                 </div>
-                <div class="bg-sidebar text-white py-2" style="width: 60px; height: 40px; position: absolute; bottom: 0; left: 0;"></div>
+                <div class="bg-sidebar text-white py-2" style="width: 60px; height: 30px; position: absolute; bottom: 0; left: 0;"></div>
             </nav>
 
-            <main role="main" class="px-4" style="margin-left: 60px; color: #ffffff; width: calc(100% - 60px); display: flex;">
-                <div id="dashboardContent" style="flex: 1;">
+            <main role="main" class="px-4" style="margin-left: 60px; color: #ffffff; width: calc(100% - 60px); display: flex; padding-bottom: 60px;">
+                <div id="dashboardContent" class="content-area">
                     <h1 class="mt-5 text-center">Welcome to HSManager Dashboard</h1>
                     <p class="text-center">You're now logged in.</p>
                 </div>
@@ -161,11 +177,11 @@
             </main>
         </div>
 
-        <footer class="bg-sidebar text-white py-2" style="position: fixed; bottom: 0; width: 100%; left: 0;">
-            <div class="container-fluid d-flex justify-content-end align-items-center" style="padding-right: 15px; position: relative;">
+        <footer class="bg-sidebar text-white py-2" style="position: fixed; bottom: 0; width: 100%; left: 0; height: 30px;">
+            <div class="container-fluid d-flex justify-content-end align-items-center" style="padding-right: 15px; position: relative; height: 100%;">
                 <div class="logout-container">
                     <a href="#" class="logout-icon" id="logoutToggle">
-                        <img src="/assets/Icons/power-off.svg" alt="Logout" width="24" height="24" />
+                        <img src="/assets/Icons/power-off.svg" alt="Logout" width="20" height="20" />
                     </a>
                     <div class="logout-popup" id="logoutPopup">
                         <p><strong>Esci dall'applicazione Hyperspace</strong></p>
@@ -177,8 +193,7 @@
             </div>
         </footer>
 
-        <!-- Floating Label Container -->
-        <div id="floatingLabel" class="floating-label" style="display: none;">Table Manager</div>
+        <div id="floatingLabel" class="floating-label">Table Manager</div>
     </div>
 
     <script>
@@ -199,9 +214,7 @@
                     headers: { "Authorization": `Bearer ${token}` }
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Failed to load menu: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Failed to load menu: ${response.statusText}`);
 
                 const menuItems = await response.json();
                 console.log("Menu Items:", menuItems);
@@ -209,51 +222,85 @@
                 const menuList = document.getElementById("menuList");
                 menuList.innerHTML = menuItems.map(item => `
                     <li class="nav-item mb-3">
-                        <a class="nav-link text-white d-flex align-items-center justify-content-center" href="#" data-id="${item.id}" title="${item.description}">
+                        <a class="nav-link text-white" href="#" data-id="${item.id}" title="${item.description}">
                             <img src="${item.icon.base64}" alt="${item.icon.alternativeText}" width="24" height="24">
                         </a>
                     </li>
                 `).join("");
 
-                // Move the floating label into the sidebar
                 const sidebar = document.querySelector(".sidebar");
                 const floatingLabel = document.getElementById("floatingLabel");
-                sidebar.appendChild(floatingLabel); // Attach it to the sidebar
+                sidebar.appendChild(floatingLabel);
+
+                let activeId = null;
+                let hideTooltipTimeout;
 
                 document.querySelectorAll(".nav-link").forEach(link => {
-                    link.addEventListener("click", (e) => {
-                        e.preventDefault();
-
+                    link.addEventListener("mouseenter", (e) => {
                         const id = parseInt(e.currentTarget.dataset.id);
-                        const navItem = e.currentTarget;
-                        const sidebarRect = sidebar.getBoundingClientRect(); // Sidebar's position
-                        const itemRect = navItem.getBoundingClientRect(); // Clicked item's position
+                        activeId = id;
 
-                        // Set floating label text based on menu item id
+                        const navItem = e.currentTarget;
+                        const sidebarRect = sidebar.getBoundingClientRect();
+                        const itemRect = navItem.getBoundingClientRect();
+
                         let labelText;
                         switch (id) {
-                            case 1:
-                                labelText = "Table Manager";
-                                break;
-                            case 2:
-                                labelText = "InternalUserManager";
-                                break;
-                            case 3:
-                                labelText = "ExternalUserManager";
-                                break;
-                            default:
-                                labelText = navItem.getAttribute("title") || "Menu Item"; // Fallback
+                            case 1: labelText = "Table Manager"; break;
+                            case 2: labelText = "InternalUserManager"; break;
+                            case 3: labelText = "ExternalUserManager"; break;
+                            default: labelText = navItem.getAttribute("title") || "Menu Item";
                         }
 
-                        // Calculate top position relative to the sidebar
                         const relativeTop = itemRect.top - sidebarRect.top;
                         floatingLabel.style.top = `${relativeTop}px`;
-                        floatingLabel.style.display = "block";
                         floatingLabel.textContent = labelText;
+                        floatingLabel.style.display = "block";
+
+                        clearTimeout(hideTooltipTimeout);
+                    });
+
+                    link.addEventListener("mouseleave", () => {
+                        hideTooltipTimeout = setTimeout(() => {
+                            floatingLabel.style.display = "none";
+                            activeId = null;
+                        }, 200);
                     });
                 });
+
+                floatingLabel.addEventListener("mouseenter", () => {
+                    clearTimeout(hideTooltipTimeout);
+                });
+
+                floatingLabel.addEventListener("mouseleave", () => {
+                    hideTooltipTimeout = setTimeout(() => {
+                        floatingLabel.style.display = "none";
+                        activeId = null;
+                    }, 200);
+                });
+
+                floatingLabel.addEventListener("click", () => {
+                    if (activeId === null) return;
+
+                    const contentArea = document.getElementById("dashboardContent");
+                    let content;
+                    switch (activeId) {
+                        case 1:
+                            content = `<h1 class="mt-5 text-center">Table Manager</h1><p class="text-center">This is the Table Manager section.</p>`;
+                            break;
+                        case 2:
+                            content = `<h1 class="mt-5 text-center">Internal User Manager</h1><p class="text-center">Manage internal users here.</p>`;
+                            break;
+                        case 3:
+                            content = `<h1 class="mt-5 text-center">External User Manager</h1><p class="text-center">Manage external users here.</p>`;
+                            break;
+                        default:
+                            content = `<h1 class="mt-5 text-center">Default Section</h1><p class="text-center">Select a menu item to view content.</p>`;
+                    }
+                    contentArea.innerHTML = content;
+                });
             } catch (error) {
-                console.error(" Error loading menu:", error);
+                console.error("Error loading menu:", error);
             }
         }
 
@@ -273,15 +320,6 @@
         document.addEventListener("click", (e) => {
             if (!logoutPopup.contains(e.target) && !logoutToggle.contains(e.target)) {
                 logoutPopup.style.display = "none";
-            }
-        });
-
-        // Hide floating label when clicking outside the sidebar
-        document.addEventListener("click", (e) => {
-            const floatingLabel = document.getElementById("floatingLabel");
-            const sidebar = document.querySelector(".sidebar");
-            if (!sidebar.contains(e.target)) {
-                floatingLabel.style.display = "none";
             }
         });
 

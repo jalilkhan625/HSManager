@@ -6,183 +6,209 @@
     var token = user.FindFirst("Token")?.Value;
     var userId = user.FindFirst("UserID")?.Value;
 }
-
-<div class="login-wrapper">
-    <div class="login-container">
-        <div class="logo-container">
-            <img src="/assets/icons/logo.svg" alt="Logo" class="logo" />
-        </div>
-        <h2>HSManager - Sign In</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Username" required />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Password" required />
-            </div>
-            <div class="form-options">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="rememberMe" /> Ricordami
-                </label>
-            </div>
-            <button type="submit" class="sign-in-btn">Sign In</button>
-        </form>
-        <div id="loginError" class="error-message"></div>
-    </div>
-</div>
-
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f5f7fa;
-    }
-
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
-
-    .login-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
-    .login-container {
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-    }
-
-    .logo-container {
-        margin-bottom: 20px;
-    }
-
-    .logo {
-        max-width: 150px;
-        height: auto;
-    }
-
-    h2 {
-        font-size: 24px;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-        text-align: left;
-    }
-
-    label {
-        display: block;
-        font-size: 14px;
-        color: #666;
-        margin-bottom: 5px;
-    }
-
-    input[type="text"],
-    input[type="password"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        background-color: #f0f4f8;
-        box-sizing: border-box;
-    }
-
-        input[type="text"]::placeholder,
-        input[type="password"]::placeholder {
-            color: #999;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HSManager</title>
+    <!-- Preload the background image -->
+    <link rel="preload" href="/assets/sfondi/shutterstock_640385122.jpg" as="image" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
         }
 
-    .form-options {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        font-size: 14px;
-    }
-
-    .checkbox-label {
-        display: flex;
-        align-items: center;
-        color: #666;
-    }
-
-        .checkbox-label input {
-            margin-right: 5px;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('/assets/sfondi/shutterstock_640385122.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
-    .forgot-password {
-        color: #ff6200;
-        text-decoration: none;
-    }
-
-        .forgot-password:hover {
-            text-decoration: underline;
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-    .sign-in-btn {
-        width: 100%;
-        padding: 12px;
-        background-color: #ff6200;
-        border: none;
-        border-radius: 5px;
-        color: #fff;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-        .sign-in-btn:hover {
-            background-color: #e55a00;
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
         }
 
-    .error-message {
-        color: red;
-        font-size: 14px;
-        margin-top: 10px;
-        min-height: 20px;
-    }
-</style>
+        .logo-container {
+            margin-bottom: 20px;
+        }
 
-@section Scripts {
-    <script>
-        document.getElementById("loginForm").addEventListener("submit", async function (e) {
-            e.preventDefault();
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+        .logo {
+            width: 100%;
+            max-width: 320px;
+            min-width: 180px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
 
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
 
-            if (response.ok) {
-                // Redirect to Dashboard after successful login
-                window.location.href = '/Home/Dashboard';
-            } else {
-                document.getElementById("loginError").innerText = "Invalid credentials.";
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #f0f4f8;
+            box-sizing: border-box;
+            line-height: 1.2;
+        }
+
+            input[type="text"]::placeholder,
+            input[type="password"]::placeholder {
+                color: #999;
             }
-        });
-    </script>
-}
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+            .checkbox-label input {
+                margin-right: 6px;
+            }
+
+        .forgot-password {
+            color: #ff6200;
+            text-decoration: none;
+        }
+
+            .forgot-password:hover {
+                text-decoration: underline;
+            }
+
+        .sign-in-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff6200;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            line-height: 1.2;
+        }
+
+            .sign-in-btn:hover {
+                background-color: #e55a00;
+            }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            min-height: 18px;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="logo-container">
+                <img src="/assets/_Loghi/DATALABOR_Hyper Application Platform_logo-negativo.png" alt="Logo" class="logo" />
+            </div>
+
+          
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Username" required />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Password" required />
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe" /> Ricordami
+                    </label>
+                </div>
+                <button type="submit" class="sign-in-btn">Sign In</button>
+            </form>
+            <div id="loginError" class="error-message"></div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            document.getElementById("loginForm").addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    // Redirect to Dashboard after successful login
+                    window.location.href = '/Home/Dashboard';
+                } else {
+                    document.getElementById("loginError").innerText = "Invalid credentials.";
+                }
+            });
+        </script>
+    }
+</body>
+</html>
