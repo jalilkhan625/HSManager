@@ -1,3 +1,3 @@
 # HSManager
-username: Admin
+username: Admin </br>
 password: password
