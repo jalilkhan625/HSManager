@@ -1,0 +1,338 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff !important;
+}
+
+/* Removed the global div rule to prevent overriding specific color settings */
+/* div { color: black !important; } */
+
+/* Ensure the content area has white text as a base */
+.content-area {
+    flex: 1;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.bg-sidebar {
+    background-color: #212121;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0;
+    width: 60px;
+}
+
+.sidebar-sticky {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-link {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+    .nav-link:hover {
+        background-color: #333333;
+    }
+
+    .nav-link img {
+        width: 24px;
+        height: 24px;
+    }
+
+.logout-icon {
+    color: white;
+    display: inline-block;
+    padding: 4px;
+    border-radius: 4px;
+    transition: transform 0.2s;
+}
+
+    .logout-icon:hover {
+        transform: scale(1.1);
+        background-color: orange;
+        cursor: pointer;
+    }
+
+.logout-popup {
+    position: absolute;
+    bottom: 40px;
+    right: 15px;
+    width: 280px;
+    background-color: rgba(240, 240, 240, 0.75);
+    padding: 12px;
+    border-radius: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+    color: black;
+    z-index: 1000;
+}
+
+.cancel-btn, .logout-btn {
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 0;
+    margin-right: 5px;
+}
+
+.cancel-btn {
+    background-color: lightgray;
+}
+
+.logout-btn {
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px;
+    display: inline-block;
+}
+
+.logout-icon img {
+    filter: brightness(0) invert(1);
+}
+
+.config-div {
+    width: 300px;
+    padding: 20px;
+    margin-left: 10px;
+}
+
+.sidebar-spacer {
+    flex: 2;
+}
+
+.floating-label {
+    position: absolute;
+    top: 0;
+    left: 60px;
+    background-color: orange;
+    color: black;
+    padding: 6px 12px;
+    font-weight: 500;
+    z-index: 1001;
+    transition: opacity 0.2s ease-in-out;
+    white-space: nowrap;
+    cursor: pointer;
+    display: none;
+}
+
+.sidebar-logo {
+    width: 40px;
+    height: 40px;
+    margin: 10px auto;
+    display: block;
+}
+
+/* Table Manager Styles (DIV B, DIV C, DIV D, DIV E, DIV F, and DIV G) */
+.table-manager-container {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap; /* Allow divs to wrap if they don't fit in one row */
+}
+
+.table-manager, .area-details, .table-details, .field-details, .field-settings, .field-settings-details {
+    background-color: #4a4848;
+    color: #ffffff; /* Ensure base text color is white */
+    padding: 10px;
+    border: 2px solid black;
+    width: 180px; /* Same width for all divs */
+    box-sizing: border-box; /* Ensure padding and border don't increase the width */
+}
+
+    /* Ensure all direct text and nested elements (except specific exclusions) are white */
+    .table-manager *,
+    .area-details *,
+    .table-details *,
+    .field-details *,
+    .field-settings *,
+    .field-settings-details * {
+        color: #ffffff;
+    }
+
+    /* Override for elements inside list boxes to have black text */
+    .table-manager .list-box-container *,
+    .area-details .list-box-container *,
+    .table-details .list-box-container *,
+    .field-details .list-box-container *,
+    .field-settings .list-box-container *,
+    .field-settings-details .list-box-container * {
+        color: black;
+    }
+
+    /* Override for text fields to have black text */
+    .table-manager input[type="text"],
+    .table-manager textarea,
+    .area-details input[type="text"],
+    .area-details textarea,
+    .table-details input[type="text"],
+    .table-details textarea,
+    .field-details input[type="text"],
+    .field-details textarea,
+    .field-settings input[type="text"],
+    .field-settings textarea,
+    .field-settings-details input[type="text"],
+    .field-settings-details textarea {
+        color: black;
+    }
+
+h2, h3, h4 {
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+h4 {
+    font-size: 14px;
+}
+
+.section-title {
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center; /* Vertically center the label and icons */
+    justify-content: space-between; /* Push the icons to the right end */
+    margin-top: 10px;
+    width: 100%; /* Ensure the section title takes the full width of the parent */
+}
+
+.icon-bar {
+    display: flex;
+    gap: 5px;
+}
+
+    .icon-bar img {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+    }
+
+.list-box-container {
+    background-color: white;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.custom-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.custom-list-item {
+    padding: 6px;
+    margin-bottom: 4px;
+    cursor: pointer;
+}
+
+    .custom-list-item.selected {
+        background-color: #ccc;
+        color: black;
+    }
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+textarea {
+    height: 60px;
+    resize: none;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.icon-preview {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px; /* Add some space between the icon and the button */
+}
+
+.icon-upload-container {
+    display: flex;
+    align-items: center; /* Vertically center the icon and button */
+    margin-bottom: 10px; /* Maintain spacing below the container */
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #ccc;
+    border: none;
+    cursor: pointer;
+    font-size: 14px; /* Ensure the button text fits well */
+}
+
+    button:hover {
+        background-color: #bbb;
+    }
+
+.field-settings-details label,
+.field-settings label {
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    display: flex; /* Make the label a flex container to align text and icon */
+    align-items: center; /* Vertically center the label text and icon */
+    justify-content: space-between; /* Push the icon to the right end */
+}
+
+.field-settings-details input[type="text"],
+.field-settings input[type="text"] {
+    width: 100%; /* Full width for the input field */
+    padding: 5px; /* Consistent padding */
+    margin-bottom: 10px; /* Space below the input field */
+    line-height: 16px; /* Match the icon height for better alignment */
+    font-size: 14px; /* Consistent font size */
+    height: 26px; /* Set a fixed height */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+.field-settings-details .settings-icon,
+.field-settings .settings-icon {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
