@@ -324,6 +324,307 @@ async function loadFieldGroupDetails(fieldGroupId) {
                 ${fieldGroup.icon && fieldGroup.icon.base64 ? `<img src="${fieldGroup.icon.base64}" alt="Field Group Icon" class="icon-preview">` : '<img src="/assets/main-icons/home.png" alt="Field Group Icon" class="icon-preview">'}
                 <button>Upload Icon</button>
             </div>
+            <h4>Field Group Properties</h4>
+            <label><input type="checkbox" ${fieldGroup.readOnly ? 'checked' : ''}> Read only</label>
+            <label><input type="checkbox" ${fieldGroup.reserved ? 'checked' : ''}> Reserved</label>
+        `;
+
+        attachFieldListListeners();
+
+        const fieldIconBar = divE.querySelector(".icon-bar");
+        if (!fieldIconBar) {
+            console.error("Field icon bar not found");
+            return;
+        }
+        console.log("Adding event listeners to field icon bar");
+        fieldIconBar.children[0].addEventListener("click", async () => {
+            console.log("Sort alphabetically clicked for Fields (up)");
+            await sortItemsAlphabetically("Field", fieldGroupId);
+        });
+        fieldIconBar.children[1].addEventListener("click", async () => {
+            console.log("Sort alphabetically clicked for Fields (down)");
+            await sortItemsAlphabetically("Field", fieldGroupId);
+        });
+        fieldIconBar.children[2].addEventListener("click", async () => {
+            console.log("Add clicked for Fields");
+            await addItem("Field", fieldGroupId);
+        });
+        fieldIconBar.children[3].addEventListener("click", async () => {
+            console.log("Delete clicked for Fields");
+            await deleteItem("Field", fieldGroupId);
+        });
+    } catch (error) {
+        console.error("Error in loadFieldGroupDetails:", error);
+        divE.innerHTML = '<h3>Failed to load Field Group details</h3>';
+    }
+}
+
+async function loadFieldDetails(fieldId) {
+    console.log(`Loading field details for ID: ${fieldId}`);
+    const divF = document.querySelector(".field-settings");
+    const divG = document.querySelector(".field-settings-details");
+
+    if (!divF || !divG) {
+        console.error("One or more detail divs not found");
+        return;
+    }
+
+    divF.style.display = "block";
+    divG.style.display = "block";
+
+    try {
+        const field = await fetchTableManagerItem("Field", fieldId);
+        console.log("Field data:", field);
+
+        divF.innerHTML = `
+            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
+            <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
+            <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="visibleCheck" style="color: #ffffff; font-size: 14px;">Visible</label>
+                </div>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
+            <input type="text" value="${field.dataType || ''}" readonly style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
+            <input type="text" value="${field.dataSubType || ''}" readonly style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
+                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px;">Read only</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="reservedCheck" style="color: #ffffff; font-size: 14px;">Reserved</label>
+                </div>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;">Compulsory</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="labelCheck" style="color: #ffffff; font-size: 14px;">Label</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
+                </div>
+            </div>
+        `;
+
+        divG.innerHTML = `
+            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Default Value</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Validation Rules</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Style</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="Default" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Data Snip</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Function</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Client Help</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+        `;
+
+        divG.querySelectorAll("img[alt='Settings']").forEach(icon => {
+            icon.addEventListener("click", () => {
+                const settingType = icon.parentElement.querySelector("span").textContent;
+                console.log(`Settings icon clicked for: ${settingType}`);
+                openSettings(settingType);
+            });
+        });
+    } catch (error) {
+        console.error("Error in loadFieldDetails:", error);
+        divF.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field details</h3>';
+        divG.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field settings</h3>';
+    }
+}
+
+async function loadTableDetails(tableId) {
+    console.log(`Loading table details for ID: ${tableId}`);
+    const divD = document.querySelector(".table-details");
+    const divE = document.querySelector(".field-details");
+    const divF = document.querySelector(".field-settings");
+    const divG = document.querySelector(".field-settings-details");
+
+    if (!divD || !divE || !divF || !divG) {
+        console.error("One or more detail divs not found");
+        return;
+    }
+
+    divD.style.display = "block";
+    divE.style.display = "none";
+    divF.style.display = "none";
+    divG.style.display = "none";
+
+    try {
+        const table = await fetchTableManagerItem("Table", tableId);
+        const fieldGroups = await fetchTableManagerListItems("FieldGroup", tableId);
+        console.log("Table data:", table);
+        console.log("Field Groups data:", fieldGroups);
+
+        divD.innerHTML = `
+            <h3>Table Name</h3>
+            <input type="text" value="${table.name}">
+            <h4>Table Description</h4>
+            <textarea>${table.description || ''}</textarea>
+            <h4>Status</h4>
+            <label><input type="checkbox" ${table.visible ? 'checked' : ''}> Visible</label>
+            <div class="section-title">
+                <span>Field Groups</span>
+                <div class="icon-bar">
+                    <img src="/assets/main-icons/move-up.png" alt="Sort Alphabetically" />
+                    <img src="/assets/main-icons/move-down.png" alt="Sort Alphabetically" />
+                    <img src="/assets/main-icons/add.png" alt="Add" />
+                    <img src="/assets/main-icons/delete.png" alt="Delete" />
+                </div>
+            </div>
+            <div class="list-box-container">
+                <ul class="custom-list" id="fieldGroupList">
+                    ${fieldGroups.map(fg => `
+                        <li class="custom-list-item" data-id="${fg.id}">${fg.name}</li>
+                    `).join('')}
+                </ul>
+            </div>
+            <h4>Table Icon</h4>
+            <div class="icon-upload-container">
+                ${table.icon && table.icon.base64 ? `<img src="${table.icon.base64}" alt="Table Icon" class="icon-preview">` : '<img src="/assets/main-icons/home.png" alt="Table Icon" class="icon-preview">'}
+                <button>Upload Icon</button>
+            </div>
+            <h4>Table Properties</h4>
+            <label><input type="checkbox" ${table.systemProperties?.readOnly ? 'checked' : ''}> Read only</label>
+            <label><input type="checkbox" ${table.systemProperties?.reserved ? 'checked' : ''}> Reserved</label>
+            <h4>Table Features</h4>
+            <label><input type="checkbox" ${table.systemProperties?.clearance ? 'checked' : ''} disabled> Clearance</label>
+            <label><input type="checkbox" ${table.systemProperties?.timeline ? 'checked' : ''} disabled> Timeline</label>
+            <label><input type="checkbox" ${table.systemProperties?.freezing ? 'checked' : ''} disabled> Freezing</label>
+            <label><input type="checkbox" ${table.systemProperties?.versioning ? 'checked' : ''} disabled> Versioning</label>
+        `;
+
+        attachFieldGroupListListeners();
+
+        const fieldGroupIconBar = divD.querySelector(".icon-bar");
+        if (!fieldGroupIconBar) {
+            console.error("Field Group icon bar not found");
+            return;
+        }
+        console.log("Adding event listeners to field group icon bar");
+        fieldGroupIconBar.children[0].addEventListener("click", async () => {
+            console.log("Sort alphabetically clicked for Field Groups (up)");
+            await sortItemsAlphabetically("FieldGroup", tableId);
+        });
+        fieldGroupIconBar.children[1].addEventListener("click", async () => {
+            console.log("Sort alphabetically clicked for Field Groups (down)");
+            await sortItemsAlphabetically("FieldGroup", tableId);
+        });
+        fieldGroupIconBar.children[2].addEventListener("click", async () => {
+            console.log("Add clicked for Field Groups");
+            await addItem("FieldGroup", tableId);
+        });
+        fieldGroupIconBar.children[3].addEventListener("click", async () => {
+            console.log("Delete clicked for Field Groups");
+            await deleteItem("FieldGroup", tableId);
+        });
+    } catch (error) {
+        console.error("Error in loadTableDetails:", error);
+        divD.innerHTML = '<h3>Failed to load Table details</h3>';
+    }
+}
+
+async function loadFieldGroupDetails(fieldGroupId) {
+    console.log(`Loading field group details for ID: ${fieldGroupId}`);
+    const divE = document.querySelector(".field-details");
+    const divF = document.querySelector(".field-settings");
+    const divG = document.querySelector(".field-settings-details");
+
+    if (!divE || !divF || !divG) {
+        console.error("One or more detail divs not found");
+        return;
+    }
+
+    divE.style.display = "block";
+    divF.style.display = "none";
+    divG.style.display = "none";
+
+    try {
+        const fieldGroup = await fetchTableManagerItem("FieldGroup", fieldGroupId);
+        const fields = await fetchTableManagerListItems("Field", fieldGroupId);
+        console.log("Field Group data:", fieldGroup);
+        console.log("Fields data:", fields);
+
+        divE.innerHTML = `
+            <h3>Field Group Name</h3>
+            <input type="text" value="${fieldGroup.name}">
+            <h4>Field Group Description</h4>
+            <textarea>${fieldGroup.description || ''}</textarea>
+            <h4>Status</h4>
+            <label><input type="checkbox" ${fieldGroup.visible ? 'checked' : ''}> Visible</label>
+            <div class="section-title">
+                <span>Fields</span>
+                <div class="icon-bar">
+                    <img src="/assets/main-icons/move-up.png" alt="Sort Alphabetically" />
+                    <img src="/assets/main-icons/move-down.png" alt="Sort Alphabetically" />
+                    <img src="/assets/main-icons/add.png" alt="Add" />
+                    <img src="/assets/main-icons/delete.png" alt="Delete" />
+                </div>
+            </div>
+            <div class="list-box-container">
+                <ul class="custom-list" id="fieldList">
+                    ${fields.map(field => `
+                        <li class="custom-list-item" data-id="${field.id}">${field.name}</li>
+                    `).join('')}
+                </ul>
+            </div>
+            <h4>Field Group Icon</h4>
+            <div class="icon-upload-container">
+                ${fieldGroup.icon && fieldGroup.icon.base64 ? `<img src="${fieldGroup.icon.base64}" alt="Field Group Icon" class="icon-preview">` : '<img src="/assets/main-icons/home.png" alt="Field Group Icon" class="icon-preview">'}
+                <button>Upload Icon</button>
+            </div>
             <h4.Field Group Properties</h4>
             <label><input type="checkbox" ${fieldGroup.readOnly ? 'checked' : ''}> Read only</label>
             <label><input type="checkbox" ${fieldGroup.reserved ? 'checked' : ''}> Reserved</label>
@@ -377,65 +678,107 @@ async function loadFieldDetails(fieldId) {
         console.log("Field data:", field);
 
         divF.innerHTML = `
-            <h3>Field Name</h3>
-            <input type="text" value="${field.name}">
-            <h4>Field Description</h4>
-            <textarea>${field.description || ''}</textarea>
-            <h4>Status</h4>
-            <label><input type="checkbox" ${field.visible ? 'checked' : ''}> Visible</label>
-            <h4>Field Data Type</h4>
-            <input type="text" value="${field.dataType}" readonly>
-            <h4>Field Data SubType</h4>
-            <input type="text" value="${field.dataSubType}" readonly>
-            <h4>Field Icon</h4>
-            <div class="icon-upload-container">
-                ${field.icon && field.icon.base64 ? `<img src="${field.icon.base64}" alt="Field Icon" class="icon-preview">` : '<img src="/assets/main-icons/home.png" alt="Field Icon" class="icon-preview">'}
-                <button>Upload Icon</button>
+            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
+            <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
+            <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; margin-left: 0; accent-color: #ccc;">
+                    <label for="visibleCheck" style="color: #ffffff; font-size: 14px; margin: 0;">Visible</label>
+                </div>
             </div>
-            <h4>Field Properties</h4>
-            <label><input type="checkbox" ${field.properties?.readOnly ? 'checked' : ''}> Read only</label>
-            <label><input type="checkbox" ${field.properties?.reserved ? 'checked' : ''}> Reserved</label>
-            <h4>Field Features</h4>
-            <label><input type="checkbox" ${field.features?.compulsory ? 'checked' : ''}> Compulsory</label>
-            <label><input type="checkbox" ${field.features?.label ? 'checked' : ''}> Label</label>
-            <label><input type="checkbox" ${field.features?.fullTextIndexed ? 'checked' : ''}> Full text indexed (if text)</label>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
+            <input type="text" value="${field.dataType || ''}" readonly style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
+            <input type="text" value="${field.dataSubType || ''}" readonly style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
+                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; margin-left: 0; accent-color: #ccc;">
+                    <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px; margin: 0;">Read only</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; margin-left: 0; accent-color: #ccc;">
+                    <label for="reservedCheck" style="color: #ffffff; font-size: 14px; margin: 0;">Reserved</label>
+                </div>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; margin-left: 0; accent-color: #ccc;">
+                    <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px; margin: 0;">Compulsory</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; margin-left: 0; accent-color: #ccc;">
+                    <label for="labelCheck" style="color: #ffffff; font-size: 14px; margin: 0;">Label</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; margin-left: 0; accent-color: #ccc;">
+                    <label for="fullTextCheck" style="color: #ffffff; font-size: 14px; margin: 0;">Full text indexed (if text)</label>
+                </div>
+            </div>
         `;
+
+        // Debug: Log the rendered HTML to verify structure
+        console.log("Rendered .field-settings HTML:", divF.innerHTML);
 
         divG.innerHTML = `
-            <h3>Field Settings</h3>
-            <label>
-                <span>Default Value</span>
-                <img src="/assets/main-icons/settings.png" alt="Settings" class="settings-icon">
-            </label>
-            <input type="text" value="None" readonly>
-            <label>
-                <span>Validation Rules</span>
-                <img src="/assets/main-icons/settings.png" alt="Settings" class="settings-icon">
-            </label>
-            <input type="text" value="None" readonly>
-            <label>
-                <span>Style</span>
-                <img src="/assets/main-icons/settings.png" alt="Settings" class="settings-icon">
-            </label>
-            <input type="text" value="Default" readonly>
-            <label>
-                <span>Data Snip</span>
-                <img src="/assets/main-icons/settings.png" alt="Settings" class="settings-icon">
-            </label>
-            <input type="text" value="None" readonly>
-            <label>
-                <span>Function</span>
-                <img src="/assets/main-icons/settings.png" alt="Settings" class="settings-icon">
-            </label>
-            <input type="text" value="None" readonly>
-            <label>
-                <span>Client Help</span>
-                <img src="/assets/main-icons/settings.png" alt="Settings" class="settings-icon">
-            </label>
-            <input type="text" value="None" readonly>
+            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Default Value</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Validation Rules</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Style</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="Default" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Data Snip</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Function</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                    <span>Client Help</span>
+                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+                </label>
+                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            </div>
         `;
 
-        divG.querySelectorAll(".settings-icon").forEach(icon => {
+        // Debug: Log the rendered HTML for .field-settings-details
+        console.log("Rendered .field-settings-details HTML:", divG.innerHTML);
+
+        divG.querySelectorAll("img[alt='Settings']").forEach(icon => {
             icon.addEventListener("click", () => {
                 const settingType = icon.parentElement.querySelector("span").textContent;
                 console.log(`Settings icon clicked for: ${settingType}`);
@@ -444,8 +787,8 @@ async function loadFieldDetails(fieldId) {
         });
     } catch (error) {
         console.error("Error in loadFieldDetails:", error);
-        divF.innerHTML = '<h3>Failed to load Field details</h3>';
-        divG.innerHTML = '<h3>Failed to load Field settings</h3>';
+        divF.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field details</h3>';
+        divG.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field settings</h3>';
     }
 }
 

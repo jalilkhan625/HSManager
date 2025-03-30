@@ -59,29 +59,16 @@
         </div>
         <hr class="sky-blue-hr" />
         <div class="d-flex justify-content-between align-items-center navbar-bottom px-3" style="height: 40px;">
-            <div id="stepsContainer" class="steps-container text-white" style="flex-grow: 1; display: none;"></div>
+            <div id="stepsContainer" class="steps-container text-white" style="flex-grow: 1; display: none; width: 80%; min-width: 600px;"></div>
             <div style="display: flex; align-items: center; margin-right: 20px; margin-left: auto;">
                 <img src="/assets/Icons/lock.svg" alt="Lock" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
                 <img src="/assets/Icons/undo.svg" alt="Refresh" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
-                <a href="#" id="logoutToggle">
+                <a href="#" id="">
                     <img src="/assets/Icons/play.svg" alt="Logout" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
                 </a>
             </div>
         </div>
     </nav>
-
-    <!-- New Simple Navbar -->
-    <nav id="simpleNavbar" class="bg-dark" style="position: fixed; top: 0; width: 100%; z-index: 1000; height: 40px; display: none;">
-        <div class="d-flex align-items-center px-3 h-100">
-            <img src="/assets/Loghi Web/hyperspace-platform.png" alt="Hyperspace Logo" style="height: 35px;" />
-        </div>
-    </nav>
-
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-bar" style="margin-top: 80px; background-color: #1a1a1a; padding: 8px 20px; color: white; font-size: 13px;">
-        Organizzazioni > Organizzazioni > Info > Codice >
-        <hr class="sky-blue-hr" />
-    </div>
 
     <!-- Main Content -->
     <div class="container-fluid" style="background-color: #1a1a1a; min-height: calc(100vh - 110px); padding: 0;">
@@ -138,7 +125,7 @@
                         <div class="area-details" style="display: none;"></div>
                         <div class="table-details" style="display: none;"></div>
                         <div class="field-details" style="display: none;"></div>
-                        <div class="field-settings" style="display: none;"></div>
+                        <div class="field-settings" style="display: none;"></div> <!-- Updated dynamically via JS -->
                         <div class="field-settings-details" style="display: none;"></div>
                     </div>
                 </div>
@@ -172,12 +159,11 @@
 
     <script src="/js/dashboard.js"></script>
     <script>
-        // Track selected items
         const selectedItems = {
-            area: null,      // { id, name }
-            table: null,     // { id, name }
-            fieldGroup: null,// { id, name }
-            field: null      // { id, name }
+            area: null,
+            table: null,
+            fieldGroup: null,
+            field: null
         };
 
         function populateSteps() {
@@ -193,7 +179,7 @@
                 stepsContainer.style.display = "none";
                 return;
             } else {
-                stepsContainer.style.display = "flex"; // Show when selection begins
+                stepsContainer.style.display = "flex";
             }
 
             const steps = [
@@ -209,8 +195,6 @@
                     <span>${step}</span>
                 </div>
             `).join("");
-
-            console.log("Steps populated successfully");
         }
 
         function attachAreaListListeners() {
@@ -277,7 +261,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             console.log("DOM content loaded, initializing steps");
-            populateSteps(); // Initial call, steps remain hidden until selection
+            populateSteps();
         });
     </script>
 </body>
