@@ -2,24 +2,45 @@
     margin: 0;
     padding: 0;
     width: 100%;
+    height: 100%;
     overflow-x: hidden;
+    overflow-y: scroll;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #666 #1a1a1a; /* Firefox */
 }
+
+    /* Chrome, Edge, Safari */
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track {
+        background: #1a1a1a;
+    }
+
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb {
+        background-color: #666;
+        border-radius: 5px;
+        border: 2px solid #1a1a1a;
+    }
+
+        html::-webkit-scrollbar-thumb:hover,
+        body::-webkit-scrollbar-thumb:hover {
+            background-color: #888;
+        }
 
 h1, h2, h3, h4, h5, h6 {
     color: #ffffff !important;
 }
 
-/* Removed the global div rule to prevent overriding specific color settings */
-/* div { color: black !important; } */
-
-/* Ensure the content area has white text as a base */
 .content-area {
     flex: 1;
     background-color: #2a2a2a;
     color: #ffffff;
     padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
 }
 
 .bg-sidebar {
@@ -28,7 +49,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar {
     position: fixed;
-    top: 0;
+    top: 56px;
     bottom: 0;
     left: 0;
     z-index: 100;
@@ -89,7 +110,8 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 1000;
 }
 
-.cancel-btn, .logout-btn {
+.cancel-btn,
+.logout-btn {
     padding: 6px 12px;
     border: none;
     cursor: pointer;
@@ -145,26 +167,54 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
 }
 
-/* Table Manager Styles (DIV B, DIV C, DIV D, DIV E, DIV F, and DIV G) */
+main[role="main"] {
+    position: fixed;
+    top: 56px;
+    bottom: 30px;
+    left: 60px;
+    right: 0;
+    padding: 0;
+    display: flex;
+}
+
+#dashboardContent {
+    flex: 1;
+    width: 100%;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+#configContainer {
+    flex: 0;
+    width: 0;
+}
+
 .table-manager-container {
     display: flex;
     width: 100%;
     gap: 10px;
     padding: 10px;
     font-family: Arial, sans-serif;
-    flex-wrap: wrap; /* Allow divs to wrap if they don't fit in one row */
+    flex-wrap: wrap;
 }
 
-.table-manager, .area-details, .table-details, .field-details, .field-settings, .field-settings-details {
+.table-manager,
+.area-details,
+.table-details,
+.field-details,
+.field-settings,
+.field-settings-details {
     background-color: #4a4848;
-    color: #ffffff; /* Ensure base text color is white */
+    color: #ffffff;
     padding: 10px;
     border: 2px solid black;
-    width: 180px; /* Same width for all divs */
-    box-sizing: border-box; /* Ensure padding and border don't increase the width */
+    width: 180px;
+    box-sizing: border-box;
 }
 
-    /* Ensure all direct text and nested elements (except specific exclusions) are white */
     .table-manager *,
     .area-details *,
     .table-details *,
@@ -174,7 +224,6 @@ h1, h2, h3, h4, h5, h6 {
         color: #ffffff;
     }
 
-    /* Override for elements inside list boxes to have black text */
     .table-manager .list-box-container *,
     .area-details .list-box-container *,
     .table-details .list-box-container *,
@@ -184,7 +233,6 @@ h1, h2, h3, h4, h5, h6 {
         color: black;
     }
 
-    /* Override for text fields to have black text */
     .table-manager input[type="text"],
     .table-manager textarea,
     .area-details input[type="text"],
@@ -221,10 +269,10 @@ h4 {
     font-weight: bold;
     font-size: 16px;
     display: flex;
-    align-items: center; /* Vertically center the label and icons */
-    justify-content: space-between; /* Push the icons to the right end */
+    align-items: center;
+    justify-content: space-between;
     margin-top: 10px;
-    width: 100%; /* Ensure the section title takes the full width of the parent */
+    width: 100%;
 }
 
 .icon-bar {
@@ -262,13 +310,14 @@ h4 {
         color: black;
     }
 
-input[type="text"], textarea {
+input[type="text"],
+textarea {
     width: 100%;
     padding: 5px;
     margin-bottom: 10px;
     background-color: white;
     border: 1px solid #ccc;
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    box-sizing: border-box;
 }
 
 textarea {
@@ -288,13 +337,13 @@ label {
 .icon-preview {
     width: 24px;
     height: 24px;
-    margin-right: 10px; /* Add some space between the icon and the button */
+    margin-right: 10px;
 }
 
 .icon-upload-container {
     display: flex;
-    align-items: center; /* Vertically center the icon and button */
-    margin-bottom: 10px; /* Maintain spacing below the container */
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 button {
@@ -302,7 +351,7 @@ button {
     background-color: #ccc;
     border: none;
     cursor: pointer;
-    font-size: 14px; /* Ensure the button text fits well */
+    font-size: 14px;
 }
 
     button:hover {
@@ -314,20 +363,20 @@ button {
     font-weight: bold;
     margin-top: 5px;
     margin-bottom: 2px;
-    display: flex; /* Make the label a flex container to align text and icon */
-    align-items: center; /* Vertically center the label text and icon */
-    justify-content: space-between; /* Push the icon to the right end */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .field-settings-details input[type="text"],
 .field-settings input[type="text"] {
-    width: 100%; /* Full width for the input field */
-    padding: 5px; /* Consistent padding */
-    margin-bottom: 10px; /* Space below the input field */
-    line-height: 16px; /* Match the icon height for better alignment */
-    font-size: 14px; /* Consistent font size */
-    height: 26px; /* Set a fixed height */
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    line-height: 16px;
+    font-size: 14px;
+    height: 26px;
+    box-sizing: border-box;
 }
 
 .field-settings-details .settings-icon,

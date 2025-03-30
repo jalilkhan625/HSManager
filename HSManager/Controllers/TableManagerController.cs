@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace HSManager.Controllers
 {
@@ -191,23 +192,118 @@ namespace HSManager.Controllers
             };
         }
 
+        // New POST endpoint for setting/updating items
+        [HttpPost("set")]
+        public IActionResult SetTableManagerItem([FromQuery] ItemTypeTable itemType, [FromQuery] int itemId, [FromBody] dynamic item)
+        {
+            try
+            {
+                switch (itemType)
+                {
+                    case ItemTypeTable.Area:
+                        var area = _areas.FirstOrDefault(a => a.Id == itemId);
+                        if (area == null)
+                        {
+                            area = JsonSerializer.Deserialize<Area>(item.ToString());
+                            _areas.Add(area);
+                        }
+                        else
+                        {
+                            area.Name = item.name;
+                            area.Description = item.description;
+                            area.Visible = item.visible;
+                            area.SortIndex = item.sortIndex;
+                            area.ParentId = item.parentId;
+                            area.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : area.Icon;
+                            //area.ReadOnly = item.readOnly;
+                            //area.Reserved = item.reserved;
+                        }
+                        return Ok(new { message = $"Area with ID {itemId} updated or added successfully" });
+
+                    case ItemTypeTable.Table:
+                        var table = _tables.FirstOrDefault(t => t.Id == itemId);
+                        if (table == null)
+                        {
+                            table = JsonSerializer.Deserialize<Table>(item.ToString());
+                            _tables.Add(table);
+                        }
+                        else
+                        {
+                            table.Name = item.name;
+                            table.Description = item.description;
+                            table.Visible = item.visible;
+                            table.SortIndex = item.sortIndex;
+                            table.ParentId = item.parentId;
+                            table.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : table.Icon;
+                            table.SystemProperties = item.systemProperties != null ? JsonSerializer.Deserialize<Table.SystemProperty>(item.systemProperties.ToString()) : table.SystemProperties;
+                        }
+                        return Ok(new { message = $"Table with ID {itemId} updated or added successfully" });
+
+                    case ItemTypeTable.FieldGroup:
+                        var fieldGroup = _fieldGroups.FirstOrDefault(fg => fg.Id == itemId);
+                        if (fieldGroup == null)
+                        {
+                            fieldGroup = JsonSerializer.Deserialize<FieldGroup>(item.ToString());
+                            _fieldGroups.Add(fieldGroup);
+                        }
+                        else
+                        {
+                            fieldGroup.Name = item.name;
+                            fieldGroup.Description = item.description;
+                            fieldGroup.Visible = item.visible;
+                            fieldGroup.SortIndex = item.sortIndex;
+                            fieldGroup.ParentId = item.parentId;
+                            fieldGroup.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : fieldGroup.Icon;
+                           // fieldGroup.ReadOnly = item.readOnly;
+                            //fieldGroup.Reserved = item.reserved;
+                        }
+                        return Ok(new { message = $"FieldGroup with ID {itemId} updated or added successfully" });
+
+                    case ItemTypeTable.Field:
+                        var field = _fields.FirstOrDefault(f => f.Id == itemId);
+                        if (field == null)
+                        {
+                            field = JsonSerializer.Deserialize<Field>(item.ToString());
+                            _fields.Add(field);
+                        }
+                        else
+                        {
+                            field.Name = item.name;
+                            field.Description = item.description;
+                            field.Visible = item.visible;
+                            field.SortIndex = item.sortIndex;
+                            field.ParentId = item.parentId;
+                            field.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : field.Icon;
+                            field.DataType = item.dataType;
+                            field.DataSubType = item.dataSubType;
+                            field.Properties = item.properties != null ? JsonSerializer.Deserialize<Field.FieldProperty>(item.properties.ToString()) : field.Properties;
+                            field.Features = item.features != null ? JsonSerializer.Deserialize<Field.FieldFeature>(item.features.ToString()) : field.Features;
+                        }
+                        return Ok(new { message = $"Field with ID {itemId} updated or added successfully" });
+
+                    default:
+                        return BadRequest("Invalid ItemTypeTable.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Error updating {itemType} with ID {itemId}: {ex.Message}" });
+            }
+        }
+
         private void InjectIcons()
         {
-            // Assign icons from assets/main-icons to Areas
             _areas[0].Icon.Base64 = ConvertImageToBase64("home.png");
             _areas[1].Icon.Base64 = ConvertImageToBase64("add.png");
             _areas[2].Icon.Base64 = ConvertImageToBase64("delete.png");
 
-            // Assign icons to tables
             _tables[0].Icon.Base64 = ConvertImageToBase64("settings.png");
             _tables[1].Icon.Base64 = ConvertImageToBase64("move-up.png");
             _tables[2].Icon.Base64 = ConvertImageToBase64("move-down.png");
 
-            // Assign icons to field groups
             _fieldGroups[0].Icon.Base64 = ConvertImageToBase64("add.png");
             _fieldGroups[1].Icon.Base64 = ConvertImageToBase64("delete.png");
 
-            // Assign icons to fields
             _fields[0].Icon.Base64 = ConvertImageToBase64("settings.png");
         }
     }
