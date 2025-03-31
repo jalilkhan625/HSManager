@@ -23,13 +23,11 @@ namespace HSManager.Controllers
             InjectIcons();
         }
 
-        // Convert PNG image from main-icons folder to base64
         private string ConvertImageToBase64(string fileName)
         {
             try
             {
                 string filePath = Path.Combine(_environment.ContentRootPath, "wwwroot", "assets", "main-icons", fileName);
-
                 if (!System.IO.File.Exists(filePath))
                     return string.Empty;
 
@@ -63,7 +61,9 @@ namespace HSManager.Controllers
                 Description = "Contains company-related data",
                 Visible = true,
                 SortIndex = 0,
-                Icon = new TableIcon { AlternativeText = "Company Icon" }
+                Icon = new TableIcon { AlternativeText = "Company Icon" },
+                ReadOnly = false,
+                Reserved = false
             },
             new Area
             {
@@ -73,7 +73,9 @@ namespace HSManager.Controllers
                 Description = "Contains organization-related data",
                 Visible = true,
                 SortIndex = 1,
-                Icon = new TableIcon { AlternativeText = "Organizations Icon" }
+                Icon = new TableIcon { AlternativeText = "Organizations Icon" },
+                ReadOnly = false,
+                Reserved = false
             },
             new Area
             {
@@ -83,12 +85,15 @@ namespace HSManager.Controllers
                 Description = "Contains Hyperspace system data",
                 Visible = true,
                 SortIndex = 2,
-                Icon = new TableIcon { AlternativeText = "Hyperspace Icon" }
+                Icon = new TableIcon { AlternativeText = "Hyperspace Icon" },
+                ReadOnly = true,
+                Reserved = true
             }
         };
 
         private readonly List<Table> _tables = new()
         {
+            // Tables for Area: Company (Id: 1)
             new Table
             {
                 Id = 101,
@@ -98,7 +103,17 @@ namespace HSManager.Controllers
                 Visible = true,
                 SortIndex = 0,
                 Icon = new TableIcon { AlternativeText = "Company Table Icon" },
-                SystemProperties = new Table.SystemProperty { Clearance = true }
+                SystemProperties = new Table.SystemProperty
+                {
+                    Clearance = true,
+                    Timeline = false,
+                    Freezing = false,
+                    Versioning = false,
+                    StaticData = false,
+                    VirtualData = false,
+                    ReadOnly = false,
+                    Reserved = false
+                }
             },
             new Table
             {
@@ -109,7 +124,17 @@ namespace HSManager.Controllers
                 Visible = true,
                 SortIndex = 1,
                 Icon = new TableIcon { AlternativeText = "Departments Table Icon" },
-                SystemProperties = new Table.SystemProperty()
+                SystemProperties = new Table.SystemProperty
+                {
+                    Clearance = false,
+                    Timeline = true,
+                    Freezing = false,
+                    Versioning = false,
+                    StaticData = false,
+                    VirtualData = false,
+                    ReadOnly = false,
+                    Reserved = false
+                }
             },
             new Table
             {
@@ -120,12 +145,109 @@ namespace HSManager.Controllers
                 Visible = true,
                 SortIndex = 2,
                 Icon = new TableIcon { AlternativeText = "Resources Table Icon" },
-                SystemProperties = new Table.SystemProperty()
+                SystemProperties = new Table.SystemProperty
+                {
+                    Clearance = false,
+                    Timeline = false,
+                    Freezing = true,
+                    Versioning = true,
+                    StaticData = false,
+                    VirtualData = false,
+                    ReadOnly = false,
+                    Reserved = false
+                }
+            },
+            // Tables for Area: Organizations (Id: 2)
+            new Table
+            {
+                Id = 201,
+                ParentId = 2,
+                Name = "Organization",
+                Description = "Organization details",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Organization Table Icon" },
+                SystemProperties = new Table.SystemProperty
+                {
+                    Clearance = false,
+                    Timeline = true,
+                    Freezing = false,
+                    Versioning = false,
+                    StaticData = false,
+                    VirtualData = false,
+                    ReadOnly = false,
+                    Reserved = false
+                }
+            },
+            new Table
+            {
+                Id = 202,
+                ParentId = 2,
+                Name = "Org Members",
+                Description = "Organization members",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Members Table Icon" },
+                SystemProperties = new Table.SystemProperty
+                {
+                    Clearance = false,
+                    Timeline = false,
+                    Freezing = true,
+                    Versioning = false,
+                    StaticData = false,
+                    VirtualData = false,
+                    ReadOnly = false,
+                    Reserved = false
+                }
+            },
+            // Tables for Area: Hyperspace (Id: 3)
+            new Table
+            {
+                Id = 301,
+                ParentId = 3,
+                Name = "System Config",
+                Description = "Hyperspace system configuration",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Config Table Icon" },
+                SystemProperties = new Table.SystemProperty
+                {
+                    Clearance = true,
+                    Timeline = false,
+                    Freezing = false,
+                    Versioning = true,
+                    StaticData = true,
+                    VirtualData = false,
+                    ReadOnly = true,
+                    Reserved = true
+                }
+            },
+            new Table
+            {
+                Id = 302,
+                ParentId = 3,
+                Name = "System Logs",
+                Description = "Hyperspace system logs",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Logs Table Icon" },
+                SystemProperties = new Table.SystemProperty
+                {
+                    Clearance = true,
+                    Timeline = true,
+                    Freezing = false,
+                    Versioning = false,
+                    StaticData = false,
+                    VirtualData = true,
+                    ReadOnly = true,
+                    Reserved = true
+                }
             }
         };
 
         private readonly List<FieldGroup> _fieldGroups = new()
         {
+            // FieldGroups for Table: Company (Id: 101)
             new FieldGroup
             {
                 Id = 1001,
@@ -134,7 +256,9 @@ namespace HSManager.Controllers
                 Description = "Basic company info",
                 Visible = true,
                 SortIndex = 0,
-                Icon = new TableIcon { AlternativeText = "Basic Info Icon" }
+                Icon = new TableIcon { AlternativeText = "Basic Info Icon" },
+                ReadOnly = false,
+                Reserved = false
             },
             new FieldGroup
             {
@@ -144,25 +268,138 @@ namespace HSManager.Controllers
                 Description = "Company contact details",
                 Visible = true,
                 SortIndex = 1,
-                Icon = new TableIcon { AlternativeText = "Contact Details Icon" }
+                Icon = new TableIcon { AlternativeText = "Contact Details Icon" },
+                ReadOnly = false,
+                Reserved = false
+            },
+            // FieldGroups for Table: Organization (Id: 201)
+            new FieldGroup
+            {
+                Id = 2001,
+                ParentId = 201,
+                Name = "Org Info",
+                Description = "Basic organization info",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Org Info Icon" },
+                ReadOnly = false,
+                Reserved = false
+            },
+            new FieldGroup
+            {
+                Id = 2002,
+                ParentId = 201,
+                Name = "Org Contacts",
+                Description = "Organization contact details",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Org Contacts Icon" },
+                ReadOnly = false,
+                Reserved = false
+            },
+            // FieldGroups for Table: System Config (Id: 301)
+            new FieldGroup
+            {
+                Id = 3001,
+                ParentId = 301,
+                Name = "Config Settings",
+                Description = "System configuration settings",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Config Settings Icon" },
+                ReadOnly = true,
+                Reserved = true
             }
         };
 
         private readonly List<Field> _fields = new()
         {
+            // Fields for FieldGroup: Basic Info (Id: 1001)
             new Field
             {
                 Id = 10001,
                 ParentId = 1001,
-                Name = "Input",
-                Description = "Text area",
+                Name = "CompanyName",
+                Description = "Company name",
                 Visible = true,
                 SortIndex = 0,
                 Icon = new TableIcon { AlternativeText = "Input Field Icon" },
-                DataType = "SELECTED INPUT",
-                DataSubType = "SELECTED INPUT",
+                DataType = "string",
+                DataSubType = "text",
                 Properties = new Field.FieldProperty { ReadOnly = false, Reserved = false },
-                Features = new Field.FieldFeature { Compulsory = false, Label = false, FullTextIndexed = false }
+                Features = new Field.FieldFeature { Compulsory = true, Label = true, FullTextIndexed = true }
+            },
+            new Field
+            {
+                Id = 10002,
+                ParentId = 1001,
+                Name = "EmployeeCount",
+                Description = "Number of employees",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Number Field Icon" },
+                DataType = "int",
+                DataSubType = "integer",
+                Properties = new Field.FieldProperty { ReadOnly = false, Reserved = false },
+                Features = new Field.FieldFeature { Compulsory = false, Label = true, FullTextIndexed = false }
+            },
+            // Fields for FieldGroup: Org Info (Id: 2001)
+            new Field
+            {
+                Id = 20001,
+                ParentId = 2001,
+                Name = "OrgName",
+                Description = "Organization name",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Input Field Icon" },
+                DataType = "string",
+                DataSubType = "text",
+                Properties = new Field.FieldProperty { ReadOnly = false, Reserved = false },
+                Features = new Field.FieldFeature { Compulsory = true, Label = true, FullTextIndexed = true }
+            },
+            new Field
+            {
+                Id = 20002,
+                ParentId = 2001,
+                Name = "MemberCount",
+                Description = "Number of members",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Number Field Icon" },
+                DataType = "int",
+                DataSubType = "integer",
+                Properties = new Field.FieldProperty { ReadOnly = false, Reserved = false },
+                Features = new Field.FieldFeature { Compulsory = false, Label = true, FullTextIndexed = false }
+            },
+            // Fields for FieldGroup: Config Settings (Id: 3001)
+            new Field
+            {
+                Id = 30001,
+                ParentId = 3001,
+                Name = "ApiKey",
+                Description = "API key for system access",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Input Field Icon" },
+                DataType = "string",
+                DataSubType = "text",
+                Properties = new Field.FieldProperty { ReadOnly = true, Reserved = true },
+                Features = new Field.FieldFeature { Compulsory = true, Label = true, FullTextIndexed = false }
+            },
+            new Field
+            {
+                Id = 30002,
+                ParentId = 3001,
+                Name = "MaxUsers",
+                Description = "Maximum allowed users",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Number Field Icon" },
+                DataType = "int",
+                DataSubType = "integer",
+                Properties = new Field.FieldProperty { ReadOnly = true, Reserved = true },
+                Features = new Field.FieldFeature { Compulsory = true, Label = true, FullTextIndexed = false }
             }
         };
 
@@ -192,9 +429,8 @@ namespace HSManager.Controllers
             };
         }
 
-        // New POST endpoint for setting/updating items
         [HttpPost("set")]
-        public IActionResult SetTableManagerItem([FromQuery] ItemTypeTable itemType, [FromQuery] int itemId, [FromBody] dynamic item)
+        public IActionResult SetTableManagerItem([FromQuery] ItemTypeTable itemType, [FromQuery] int itemId, [FromBody] JsonElement item)
         {
             try
             {
@@ -204,81 +440,40 @@ namespace HSManager.Controllers
                         var area = _areas.FirstOrDefault(a => a.Id == itemId);
                         if (area == null)
                         {
-                            area = JsonSerializer.Deserialize<Area>(item.ToString());
+                            area = new Area { Id = itemId };
                             _areas.Add(area);
                         }
-                        else
-                        {
-                            area.Name = item.name;
-                            area.Description = item.description;
-                            area.Visible = item.visible;
-                            area.SortIndex = item.sortIndex;
-                            area.ParentId = item.parentId;
-                            area.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : area.Icon;
-                            //area.ReadOnly = item.readOnly;
-                            //area.Reserved = item.reserved;
-                        }
+                        UpdateArea(area, item);
                         return Ok(new { message = $"Area with ID {itemId} updated or added successfully" });
 
                     case ItemTypeTable.Table:
                         var table = _tables.FirstOrDefault(t => t.Id == itemId);
                         if (table == null)
                         {
-                            table = JsonSerializer.Deserialize<Table>(item.ToString());
+                            table = new Table { Id = itemId };
                             _tables.Add(table);
                         }
-                        else
-                        {
-                            table.Name = item.name;
-                            table.Description = item.description;
-                            table.Visible = item.visible;
-                            table.SortIndex = item.sortIndex;
-                            table.ParentId = item.parentId;
-                            table.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : table.Icon;
-                            table.SystemProperties = item.systemProperties != null ? JsonSerializer.Deserialize<Table.SystemProperty>(item.systemProperties.ToString()) : table.SystemProperties;
-                        }
+                        UpdateTable(table, item);
                         return Ok(new { message = $"Table with ID {itemId} updated or added successfully" });
 
                     case ItemTypeTable.FieldGroup:
                         var fieldGroup = _fieldGroups.FirstOrDefault(fg => fg.Id == itemId);
                         if (fieldGroup == null)
                         {
-                            fieldGroup = JsonSerializer.Deserialize<FieldGroup>(item.ToString());
+                            fieldGroup = new FieldGroup { Id = itemId };
                             _fieldGroups.Add(fieldGroup);
                         }
-                        else
-                        {
-                            fieldGroup.Name = item.name;
-                            fieldGroup.Description = item.description;
-                            fieldGroup.Visible = item.visible;
-                            fieldGroup.SortIndex = item.sortIndex;
-                            fieldGroup.ParentId = item.parentId;
-                            fieldGroup.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : fieldGroup.Icon;
-                           // fieldGroup.ReadOnly = item.readOnly;
-                            //fieldGroup.Reserved = item.reserved;
-                        }
+                        UpdateFieldGroup(fieldGroup, item);
                         return Ok(new { message = $"FieldGroup with ID {itemId} updated or added successfully" });
 
                     case ItemTypeTable.Field:
                         var field = _fields.FirstOrDefault(f => f.Id == itemId);
                         if (field == null)
                         {
-                            field = JsonSerializer.Deserialize<Field>(item.ToString());
+                            field = new Field { Id = itemId };
                             _fields.Add(field);
                         }
-                        else
-                        {
-                            field.Name = item.name;
-                            field.Description = item.description;
-                            field.Visible = item.visible;
-                            field.SortIndex = item.sortIndex;
-                            field.ParentId = item.parentId;
-                            field.Icon = item.icon != null ? JsonSerializer.Deserialize<TableIcon>(item.icon.ToString()) : field.Icon;
-                            field.DataType = item.dataType;
-                            field.DataSubType = item.dataSubType;
-                            field.Properties = item.properties != null ? JsonSerializer.Deserialize<Field.FieldProperty>(item.properties.ToString()) : field.Properties;
-                            field.Features = item.features != null ? JsonSerializer.Deserialize<Field.FieldFeature>(item.features.ToString()) : field.Features;
-                        }
+                        UpdateField(field, item);
                         return Ok(new { message = $"Field with ID {itemId} updated or added successfully" });
 
                     default:
@@ -291,20 +486,92 @@ namespace HSManager.Controllers
             }
         }
 
+        private void UpdateArea(Area area, JsonElement item)
+        {
+            if (item.TryGetProperty("name", out var name)) area.Name = name.GetString();
+            if (item.TryGetProperty("description", out var desc)) area.Description = desc.GetString();
+            if (item.TryGetProperty("visible", out var visible)) area.Visible = visible.GetBoolean();
+            if (item.TryGetProperty("sortIndex", out var sort)) area.SortIndex = sort.GetInt32();
+            if (item.TryGetProperty("parentId", out var parentId)) area.ParentId = parentId.GetInt32();
+            if (item.TryGetProperty("icon", out var icon) && icon.ValueKind != JsonValueKind.Null)
+                area.Icon = JsonSerializer.Deserialize<TableIcon>(icon.GetRawText());
+            if (item.TryGetProperty("readOnly", out var readOnly)) area.ReadOnly = readOnly.GetBoolean();
+            if (item.TryGetProperty("reserved", out var reserved)) area.Reserved = reserved.GetBoolean();
+        }
+
+        private void UpdateTable(Table table, JsonElement item)
+        {
+            if (item.TryGetProperty("name", out var name)) table.Name = name.GetString();
+            if (item.TryGetProperty("description", out var desc)) table.Description = desc.GetString();
+            if (item.TryGetProperty("visible", out var visible)) table.Visible = visible.GetBoolean();
+            if (item.TryGetProperty("sortIndex", out var sort)) table.SortIndex = sort.GetInt32();
+            if (item.TryGetProperty("parentId", out var parentId)) table.ParentId = parentId.GetInt32();
+            if (item.TryGetProperty("icon", out var icon) && icon.ValueKind != JsonValueKind.Null)
+                table.Icon = JsonSerializer.Deserialize<TableIcon>(icon.GetRawText());
+            if (item.TryGetProperty("systemProperties", out var sysProps) && sysProps.ValueKind != JsonValueKind.Null)
+                table.SystemProperties = JsonSerializer.Deserialize<Table.SystemProperty>(sysProps.GetRawText());
+        }
+
+        private void UpdateFieldGroup(FieldGroup fieldGroup, JsonElement item)
+        {
+            if (item.TryGetProperty("name", out var name)) fieldGroup.Name = name.GetString();
+            if (item.TryGetProperty("description", out var desc)) fieldGroup.Description = desc.GetString();
+            if (item.TryGetProperty("visible", out var visible)) fieldGroup.Visible = visible.GetBoolean();
+            if (item.TryGetProperty("sortIndex", out var sort)) fieldGroup.SortIndex = sort.GetInt32();
+            if (item.TryGetProperty("parentId", out var parentId)) fieldGroup.ParentId = parentId.GetInt32();
+            if (item.TryGetProperty("icon", out var icon) && icon.ValueKind != JsonValueKind.Null)
+                fieldGroup.Icon = JsonSerializer.Deserialize<TableIcon>(icon.GetRawText());
+            if (item.TryGetProperty("readOnly", out var readOnly)) fieldGroup.ReadOnly = readOnly.GetBoolean();
+            if (item.TryGetProperty("reserved", out var reserved)) fieldGroup.Reserved = reserved.GetBoolean();
+        }
+
+        private void UpdateField(Field field, JsonElement item)
+        {
+            if (item.TryGetProperty("name", out var name)) field.Name = name.GetString();
+            if (item.TryGetProperty("description", out var desc)) field.Description = desc.GetString();
+            if (item.TryGetProperty("visible", out var visible)) field.Visible = visible.GetBoolean();
+            if (item.TryGetProperty("sortIndex", out var sort)) field.SortIndex = sort.GetInt32();
+            if (item.TryGetProperty("parentId", out var parentId)) field.ParentId = parentId.GetInt32();
+            if (item.TryGetProperty("icon", out var icon) && icon.ValueKind != JsonValueKind.Null)
+                field.Icon = JsonSerializer.Deserialize<TableIcon>(icon.GetRawText());
+            if (item.TryGetProperty("dataType", out var dataType)) field.DataType = dataType.GetString();
+            if (item.TryGetProperty("dataSubType", out var dataSubType)) field.DataSubType = dataSubType.GetString();
+            if (item.TryGetProperty("properties", out var props) && props.ValueKind != JsonValueKind.Null)
+                field.Properties = JsonSerializer.Deserialize<Field.FieldProperty>(props.GetRawText());
+            if (item.TryGetProperty("features", out var features) && features.ValueKind != JsonValueKind.Null)
+                field.Features = JsonSerializer.Deserialize<Field.FieldFeature>(features.GetRawText());
+        }
+
         private void InjectIcons()
         {
+            // Areas
             _areas[0].Icon.Base64 = ConvertImageToBase64("home.png");
             _areas[1].Icon.Base64 = ConvertImageToBase64("add.png");
             _areas[2].Icon.Base64 = ConvertImageToBase64("delete.png");
 
-            _tables[0].Icon.Base64 = ConvertImageToBase64("settings.png");
-            _tables[1].Icon.Base64 = ConvertImageToBase64("move-up.png");
-            _tables[2].Icon.Base64 = ConvertImageToBase64("move-down.png");
+            // Tables
+            _tables[0].Icon.Base64 = ConvertImageToBase64("settings.png"); // Company
+            _tables[1].Icon.Base64 = ConvertImageToBase64("move-up.png");  // Company Departments
+            _tables[2].Icon.Base64 = ConvertImageToBase64("move-down.png"); // Company Resources
+            _tables[3].Icon.Base64 = ConvertImageToBase64("home.png");     // Organization
+            _tables[4].Icon.Base64 = ConvertImageToBase64("add.png");      // Org Members
+            _tables[5].Icon.Base64 = ConvertImageToBase64("settings.png"); // System Config
+            _tables[6].Icon.Base64 = ConvertImageToBase64("delete.png");   // System Logs
 
-            _fieldGroups[0].Icon.Base64 = ConvertImageToBase64("add.png");
-            _fieldGroups[1].Icon.Base64 = ConvertImageToBase64("delete.png");
+            // FieldGroups
+            _fieldGroups[0].Icon.Base64 = ConvertImageToBase64("add.png");      // Basic Info
+            _fieldGroups[1].Icon.Base64 = ConvertImageToBase64("delete.png");   // Contact Details
+            _fieldGroups[2].Icon.Base64 = ConvertImageToBase64("home.png");     // Org Info
+            _fieldGroups[3].Icon.Base64 = ConvertImageToBase64("settings.png"); // Org Contacts
+            _fieldGroups[4].Icon.Base64 = ConvertImageToBase64("move-up.png");  // Config Settings
 
-            _fields[0].Icon.Base64 = ConvertImageToBase64("settings.png");
+            // Fields
+            _fields[0].Icon.Base64 = ConvertImageToBase64("settings.png"); // CompanyName
+            _fields[1].Icon.Base64 = ConvertImageToBase64("home.png");     // EmployeeCount
+            _fields[2].Icon.Base64 = ConvertImageToBase64("add.png");      // OrgName
+            _fields[3].Icon.Base64 = ConvertImageToBase64("move-down.png"); // MemberCount
+            _fields[4].Icon.Base64 = ConvertImageToBase64("delete.png");   // ApiKey
+            _fields[5].Icon.Base64 = ConvertImageToBase64("move-up.png");  // MaxUsers
         }
     }
 }

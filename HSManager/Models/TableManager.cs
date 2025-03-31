@@ -1,7 +1,6 @@
-﻿// Models/TableManagerModels.cs
-namespace HSManager.Models
+﻿namespace HSManager.Models
 {
-    public enum ItemTypeTable 
+    public enum ItemTypeTable
     {
         None = -1,
         Area = 1,
@@ -24,9 +23,10 @@ namespace HSManager.Models
         public string Description { get; set; }
         public bool Visible { get; set; }
         public int SortIndex { get; set; }
-        public TableIcon Icon { get; set; } // ✅ Correct type
+        public TableIcon Icon { get; set; }
+        public bool ReadOnly { get; set; } // Added
+        public bool Reserved { get; set; } // Added
     }
-
 
     public class Table
     {
@@ -47,6 +47,8 @@ namespace HSManager.Models
             public bool Versioning { get; set; }
             public bool StaticData { get; set; }
             public bool VirtualData { get; set; }
+            public bool ReadOnly { get; set; } // Added
+            public bool Reserved { get; set; } // Added
         }
     }
 
@@ -59,7 +61,10 @@ namespace HSManager.Models
         public bool Visible { get; set; }
         public int SortIndex { get; set; }
         public TableIcon Icon { get; set; }
+        public bool ReadOnly { get; set; } // Added
+        public bool Reserved { get; set; } // Added
     }
+
     public class Field
     {
         public int Id { get; set; }
