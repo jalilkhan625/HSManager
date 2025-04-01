@@ -45,6 +45,12 @@
             justify-content: center;
             margin-right: 5px;
         }
+
+        /* Style for locked state */
+        .locked-element {
+            pointer-events: none;
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body>
@@ -61,9 +67,9 @@
         <div class="d-flex justify-content-between align-items-center navbar-bottom px-3" style="height: 40px;">
             <div id="stepsContainer" class="steps-container text-white" style="flex-grow: 1; display: none; width: 80%; min-width: 600px;"></div>
             <div style="display: flex; align-items: center; margin-right: 20px; margin-left: auto;">
-                <img src="/assets/Icons/lock.svg" alt="Lock" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
-                <img src="/assets/Icons/undo.svg" alt="Refresh" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
-                <a href="#" id="">
+                <img id="lockIcon" src="/assets/Icons/lock.svg" alt="Lock" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
+                <img id="undoIcon" src="/assets/Icons/undo.svg" alt="Refresh" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
+                <a href="#" id="playIcon">
                     <img src="/assets/Icons/play.svg" alt="Logout" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
                 </a>
             </div>
@@ -110,9 +116,9 @@
                         <div class="table-manager">
                             <h2>Table Manager</h2>
                             <div class="section-title">
-                                <span>Areas</span>
+                                <span st>Areas</span>
                                 <div class="icon-bar">
-                                    <img src="/assets/main-icons/move-up.png" alt="Move Up" />
+                                    <img src="/assets/main-icons/move-up.png" id="addAreaBtn" alt="Move Up" />
                                     <img src="/assets/main-icons/move-down.png" alt="Move Down" />
                                     <img src="/assets/main-icons/add.png" alt="Add" />
                                     <img src="/assets/main-icons/delete.png" alt="Delete" />
@@ -125,7 +131,7 @@
                         <div class="area-details" style="display: none;"></div>
                         <div class="table-details" style="display: none;"></div>
                         <div class="field-details" style="display: none;"></div>
-                        <div class="field-settings" style="display: none;"></div> <!-- Updated dynamically via JS -->
+                        <div class="field-settings" style="display: none;"></div>
                         <div class="field-settings-details" style="display: none;"></div>
                     </div>
                 </div>
@@ -158,6 +164,9 @@
     <input type="hidden" id="userId" value="@userId" />
 
     <script src="/js/dashboard.js"></script>
+    <!-- Assuming areaManager.js contains the main logic -->
+    <script src="/js/areaManager.js"></script>
+
     <script>
         const selectedItems = {
             area: null,
@@ -165,6 +174,7 @@
             fieldGroup: null,
             field: null
         };
+        let isLocked = false;
 
         function populateSteps() {
             console.log("Populating steps based on selected items:", selectedItems);
@@ -197,9 +207,68 @@
             `).join("");
         }
 
+        // Function to toggle lock state
+        function toggleLock() {
+            isLocked = !isLocked;
+            const lockIcon = document.getElementById("lockIcon");
+            const editableElements = document.querySelectorAll(
+                "#tableManagerContainer input, #tableManagerContainer textarea, #tableManagerContainer select, " +
+                "#tableManagerContainer button, #tableManagerContainer .icon-bar img, #tableManagerContainer .custom-list-item"
+            );
+
+            if (isLocked) {
+                lockIcon.src = "/assets/Icons/lock.svg"; // Update to a locked icon if available
+                editableElements.forEach(el => {
+                    el.classList.add("locked-element");
+                    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") {
+                        el.disabled = true;
+                    }
+                });
+                console.log("Dashboard locked");
+            } else {
+                lockIcon.src = "/assets/Icons/lock.svg"; // Revert to original lock icon
+                editableElements.forEach(el => {
+                    el.classList.remove("locked-element");
+                    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") {
+                        el.disabled = false;
+                    }
+                });
+                console.log("Dashboard unlocked");
+            }
+        }
+
+        // Function to undo new items
+        function undoNewItems() {
+            console.log("Undoing new items");
+            const storageKeys = ["newAreas", "newTables", "newFieldGroups", "newFields"];
+            storageKeys.forEach(key => {
+                sessionStorage.removeItem(key);
+                console.log(`Cleared ${key} from sessionStorage`);
+            });
+
+            // Reload the areas list to reflect the original state
+            const tableManagerContainer = document.getElementById("tableManagerContainer");
+            if (tableManagerContainer.style.display === "flex") {
+                populateAreasList();
+                document.querySelector(".area-details").innerHTML = "";
+                document.querySelector(".table-details").innerHTML = "";
+                document.querySelector(".field-details").innerHTML = "";
+                document.querySelector(".field-settings").innerHTML = "";
+                document.querySelector(".field-settings-details").innerHTML = "";
+                selectedItems.area = null;
+                selectedItems.table = null;
+                selectedItems.fieldGroup = null;
+                selectedItems.field = null;
+                populateSteps();
+            }
+            console.log("Undo completed, UI refreshed");
+        }
+
+        // Attach listeners defined in areaManager.js
         function attachAreaListListeners() {
             document.querySelectorAll("#areaList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
+                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Area clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#areaList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -217,6 +286,7 @@
         function attachTableListListeners() {
             document.querySelectorAll("#tableList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
+                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Table clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#tableList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -233,6 +303,7 @@
         function attachFieldGroupListListeners() {
             document.querySelectorAll("#fieldGroupList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
+                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Field Group clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#fieldGroupList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -248,6 +319,7 @@
         function attachFieldListListeners() {
             document.querySelectorAll("#fieldList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
+                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Field clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#fieldList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -260,7 +332,21 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            console.log("DOM content loaded, initializing steps");
+            console.log("DOM content loaded, initializing steps and icon listeners");
+            document.getElementById("addAreaBtn")?.addEventListener("click", () => {
+                if (!isLocked) addNewArea(); // Assuming addNewArea is defined in areaManager.js
+            });
+
+            // Lock icon listener
+            document.getElementById("lockIcon").addEventListener("click", () => {
+                toggleLock();
+            });
+
+            // Undo icon listener
+            document.getElementById("undoIcon").addEventListener("click", () => {
+                if (!isLocked) undoNewItems(); // Only allow undo when not locked
+            });
+
             populateSteps();
         });
     </script>
