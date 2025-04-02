@@ -2081,14 +2081,17 @@ async function sendSessionDataToServer() {
         const newTables = JSON.parse(sessionStorage.getItem("newTables") || "{}");
         const newFieldGroups = JSON.parse(sessionStorage.getItem("newFieldGroups") || "{}");
         const newFields = JSON.parse(sessionStorage.getItem("newFields") || "{}");
-        // Retrieve token and userId from DOM elements
         const token = document.getElementById("token").value;
         const userId = document.getElementById("userId").value;
+
+        if (!token || !userId) {
+            throw new Error("Token or UserId is missing.");
+        }
 
         // Map data to match server-expected structure
         const sessionData = {
             UserId: userId,
-            Token: token,
+            token: token, // Changed from Token to token to match controller logging
             Timestamp: new Date().toISOString(),
             Areas: {},
             Tables: {},
@@ -2179,13 +2182,19 @@ async function sendSessionDataToServer() {
         const response = await fetchWithAuth('/api/tablemanager/saveSessionData', 'POST', sessionData);
         console.log("✅ Server response:", response);
 
-        alert("Session data successfully sent to the server!");
+        // Display success message with server response
+        alert(`Session data successfully sent to the server!\nServer message: ${response.message || 'Data processed'}`);
+
+        // Optionally clear sessionStorage after successful save
+        // sessionStorage.clear();
+        // console.log("🧹 SessionStorage cleared after successful save");
     } catch (error) {
         console.error("❌ Error sending session data to server:", error);
-        alert("Failed to send session data: " + error.message);
+        alert(`Failed to send session data: ${error.message}`);
     }
 }
-// Update setupLockAndPlayListeners to use the new function
+
+// Ensure the Play button triggers this function when locked
 function setupLockAndPlayListeners() {
     const lockButton = document.getElementById("lockIcon");
     const playButton = document.getElementById("playIcon");
@@ -2208,7 +2217,7 @@ function setupLockAndPlayListeners() {
         console.log("▶️ Play button clicked");
         if (isDataLocked) {
             console.log("🔒 Data is locked – sending session data to server");
-            await sendSessionDataToServer(); // Call the new function only if locked
+            await sendSessionDataToServer(); // Call the modified function
         } else {
             console.log("🔓 Data is not locked – please lock data before sending");
             alert("Please lock the data before playing.");
@@ -2218,10 +2227,12 @@ function setupLockAndPlayListeners() {
     console.log("✅ Lock and Play listeners are set up");
 }
 
-// Ensure this runs on DOM load
+// Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     setupLockAndPlayListeners();
 });
+
+
 // Function to apply styles to the dropdown
 
 function setDropdownTextColorToBlack() {
