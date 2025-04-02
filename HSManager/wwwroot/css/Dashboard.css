@@ -348,7 +348,7 @@ label {
 
 button {
     padding: 5px 10px;
-    background-color: #ccc;
+    background-color: #555;
     border: none;
     cursor: pointer;
     font-size: 14px;
@@ -429,4 +429,10 @@ label,
 .setting-data-table-label {
     color: white !important;
 }
+/* Upload icon inside .field-settings */
+.field-settings .icon-upload-container .upload-icon {
+    color: #555;
+    filter: brightness(0) invert(0.8); /* Use only if it's an image or SVG */
+}
+
 

@@ -102,6 +102,7 @@
             public Dictionary<string, Field> Fields { get; set; }
             public string UserId { get; set; }
             public string Timestamp { get; set; }
+            public string token { get; set; }
         }
     }
 }

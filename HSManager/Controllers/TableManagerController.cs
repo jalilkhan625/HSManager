@@ -235,128 +235,129 @@ namespace HSManager.Controllers
 
         // POST: /api/tablemanager/saveSessionData
         [HttpPost("saveSessionData")]
-        public IActionResult SaveSessionData([FromBody] SessionData sessionData)
+       public IActionResult SaveSessionData([FromBody] SessionData sessionData)
+{
+    try
+    {
+        if (sessionData == null)
         {
-            try
+            return BadRequest("No session data provided.");
+        }
+
+        // Log the received data (for debugging purposes)
+        Console.WriteLine("Received session data:");
+        Console.WriteLine($"UserID: {sessionData.UserId}");
+        Console.WriteLine($"Token: {sessionData.token}"); // Added token logging
+        Console.WriteLine($"Timestamp: {sessionData.Timestamp}");
+        Console.WriteLine($"Areas: {JsonSerializer.Serialize(sessionData.Areas)}");
+        Console.WriteLine($"Tables: {JsonSerializer.Serialize(sessionData.Tables)}");
+        Console.WriteLine($"FieldGroups: {JsonSerializer.Serialize(sessionData.FieldGroups)}");
+        Console.WriteLine($"Fields: {JsonSerializer.Serialize(sessionData.Fields)}");
+
+        // Process Areas
+        foreach (var areaEntry in sessionData.Areas)
+        {
+            var area = areaEntry.Value;
+            var existingArea = _areas.FirstOrDefault(a => a.Id == area.Id);
+            if (existingArea == null)
             {
-                if (sessionData == null)
-                {
-                    return BadRequest("No session data provided.");
-                }
-
-                // Log the received data (for debugging purposes)
-                Console.WriteLine("Received session data:");
-                Console.WriteLine($"UserID: {sessionData.UserId}");
-                Console.WriteLine($"Timestamp: {sessionData.Timestamp}");
-                Console.WriteLine($"Areas: {JsonSerializer.Serialize(sessionData.Areas)}");
-                Console.WriteLine($"Tables: {JsonSerializer.Serialize(sessionData.Tables)}");
-                Console.WriteLine($"FieldGroups: {JsonSerializer.Serialize(sessionData.FieldGroups)}");
-                Console.WriteLine($"Fields: {JsonSerializer.Serialize(sessionData.Fields)}");
-
-                // Process Areas
-                foreach (var areaEntry in sessionData.Areas)
-                {
-                    var area = areaEntry.Value;
-                    var existingArea = _areas.FirstOrDefault(a => a.Id == area.Id);
-                    if (existingArea == null)
-                    {
-                        _areas.Add(area);
-                        Console.WriteLine($"Added new Area with ID {area.Id}");
-                    }
-                    else
-                    {
-                        existingArea.Name = area.Name;
-                        existingArea.Description = area.Description;
-                        existingArea.Visible = area.Visible;
-                        existingArea.SortIndex = area.SortIndex;
-                        existingArea.ParentId = area.ParentId;
-                        existingArea.Icon = area.Icon;
-                        existingArea.ReadOnly = area.ReadOnly;
-                        existingArea.Reserved = area.Reserved;
-                        Console.WriteLine($"Updated existing Area with ID {area.Id}");
-                    }
-                }
-
-                // Process Tables
-                foreach (var tableEntry in sessionData.Tables)
-                {
-                    var table = tableEntry.Value;
-                    var existingTable = _tables.FirstOrDefault(t => t.Id == table.Id);
-                    if (existingTable == null)
-                    {
-                        _tables.Add(table);
-                        Console.WriteLine($"Added new Table with ID {table.Id}");
-                    }
-                    else
-                    {
-                        existingTable.Name = table.Name;
-                        existingTable.Description = table.Description;
-                        existingTable.Visible = table.Visible;
-                        existingTable.SortIndex = table.SortIndex;
-                        existingTable.ParentId = table.ParentId;
-                        existingTable.Icon = table.Icon;
-                        existingTable.SystemProperties = table.SystemProperties;
-                        Console.WriteLine($"Updated existing Table with ID {table.Id}");
-                    }
-                }
-
-                // Process FieldGroups
-                foreach (var fgEntry in sessionData.FieldGroups)
-                {
-                    var fieldGroup = fgEntry.Value;
-                    var existingFieldGroup = _fieldGroups.FirstOrDefault(fg => fg.Id == fieldGroup.Id);
-                    if (existingFieldGroup == null)
-                    {
-                        _fieldGroups.Add(fieldGroup);
-                        Console.WriteLine($"Added new FieldGroup with ID {fieldGroup.Id}");
-                    }
-                    else
-                    {
-                        existingFieldGroup.Name = fieldGroup.Name;
-                        existingFieldGroup.Description = fieldGroup.Description;
-                        existingFieldGroup.Visible = fieldGroup.Visible;
-                        existingFieldGroup.SortIndex = fieldGroup.SortIndex;
-                        existingFieldGroup.ParentId = fieldGroup.ParentId;
-                        existingFieldGroup.Icon = fieldGroup.Icon;
-                        existingFieldGroup.ReadOnly = fieldGroup.ReadOnly;
-                        existingFieldGroup.Reserved = fieldGroup.Reserved;
-                        Console.WriteLine($"Updated existing FieldGroup with ID {fieldGroup.Id}");
-                    }
-                }
-
-                // Process Fields
-                foreach (var fieldEntry in sessionData.Fields)
-                {
-                    var field = fieldEntry.Value;
-                    var existingField = _fields.FirstOrDefault(f => f.Id == field.Id);
-                    if (existingField == null)
-                    {
-                        _fields.Add(field);
-                        Console.WriteLine($"Added new Field with ID {field.Id}");
-                    }
-                    else
-                    {
-                        existingField.Name = field.Name;
-                        existingField.Description = field.Description;
-                        existingField.Visible = field.Visible;
-                        existingField.SortIndex = field.SortIndex;
-                        existingField.ParentId = field.ParentId;
-                        existingField.Icon = field.Icon;
-                        existingField.DataType = field.DataType;
-                        existingField.DataSubType = field.DataSubType;
-                        existingField.Properties = field.Properties;
-                        existingField.Features = field.Features;
-                        Console.WriteLine($"Updated existing Field with ID {field.Id}");
-                    }
-                }
-
-                return Ok(new { message = "Session data received and processed successfully" });
+                _areas.Add(area);
+                Console.WriteLine($"Added new Area with ID {area.Id}");
             }
-            catch (Exception ex)
+            else
             {
-                return StatusCode(500, new { message = $"Error processing session data: {ex.Message}" });
+                existingArea.Name = area.Name;
+                existingArea.Description = area.Description;
+                existingArea.Visible = area.Visible;
+                existingArea.SortIndex = area.SortIndex;
+                existingArea.ParentId = area.ParentId;
+                existingArea.Icon = area.Icon;
+                existingArea.ReadOnly = area.ReadOnly;
+                existingArea.Reserved = area.Reserved;
+                Console.WriteLine($"Updated existing Area with ID {area.Id}");
             }
         }
+
+        // Process Tables
+        foreach (var tableEntry in sessionData.Tables)
+        {
+            var table = tableEntry.Value;
+            var existingTable = _tables.FirstOrDefault(t => t.Id == table.Id);
+            if (existingTable == null)
+            {
+                _tables.Add(table);
+                Console.WriteLine($"Added new Table with ID {table.Id}");
+            }
+            else
+            {
+                existingTable.Name = table.Name;
+                existingTable.Description = table.Description;
+                existingTable.Visible = table.Visible;
+                existingTable.SortIndex = table.SortIndex;
+                existingTable.ParentId = table.ParentId;
+                existingTable.Icon = table.Icon;
+                existingTable.SystemProperties = table.SystemProperties;
+                Console.WriteLine($"Updated existing Table with ID {table.Id}");
+            }
+        }
+
+        // Process FieldGroups
+        foreach (var fgEntry in sessionData.FieldGroups)
+        {
+            var fieldGroup = fgEntry.Value;
+            var existingFieldGroup = _fieldGroups.FirstOrDefault(fg => fg.Id == fieldGroup.Id);
+            if (existingFieldGroup == null)
+            {
+                _fieldGroups.Add(fieldGroup);
+                Console.WriteLine($"Added new FieldGroup with ID {fieldGroup.Id}");
+            }
+            else
+            {
+                existingFieldGroup.Name = fieldGroup.Name;
+                existingFieldGroup.Description = fieldGroup.Description;
+                existingFieldGroup.Visible = fieldGroup.Visible;
+                existingFieldGroup.SortIndex = fieldGroup.SortIndex;
+                existingFieldGroup.ParentId = fieldGroup.ParentId;
+                existingFieldGroup.Icon = fieldGroup.Icon;
+                existingFieldGroup.ReadOnly = fieldGroup.ReadOnly;
+                existingFieldGroup.Reserved = fieldGroup.Reserved;
+                Console.WriteLine($"Updated existing FieldGroup with ID {fieldGroup.Id}");
+            }
+        }
+
+        // Process Fields
+        foreach (var fieldEntry in sessionData.Fields)
+        {
+            var field = fieldEntry.Value;
+            var existingField = _fields.FirstOrDefault(f => f.Id == field.Id);
+            if (existingField == null)
+            {
+                _fields.Add(field);
+                Console.WriteLine($"Added new Field with ID {field.Id}");
+            }
+            else
+            {
+                existingField.Name = field.Name;
+                existingField.Description = field.Description;
+                existingField.Visible = field.Visible;
+                existingField.SortIndex = field.SortIndex;
+                existingField.ParentId = field.ParentId;
+                existingField.Icon = field.Icon;
+                existingField.DataType = field.DataType;
+                existingField.DataSubType = field.DataSubType;
+                existingField.Properties = field.Properties;
+                existingField.Features = field.Features;
+                Console.WriteLine($"Updated existing Field with ID {field.Id}");
+            }
+        }
+
+        return Ok(new { message = "Session data received and processed successfully" });
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { message = $"Error processing session data: {ex.Message}" });
+    }
+}
 
         // Helper method to inject icons into the initial data
         private void InjectIcons()

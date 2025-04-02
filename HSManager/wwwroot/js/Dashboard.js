@@ -49,12 +49,6 @@ async function fetchTableManagerItem(itemType, itemId) {
     return await fetchWithAuth(url);
 }
 
-// Set or update an item in table manager API
-async function setTableManagerItem(itemType, itemId, item) {
-    const url = `/api/tablemanager/set?itemType=${itemType}&itemId=${itemId}`;
-    console.log(`Setting item - Type: ${itemType}, ID: ${itemId}`);
-    return await fetchWithAuth(url, 'POST', item);
-}
 
 // Populate the areas list
 async function populateAreasList() {
@@ -316,6 +310,31 @@ async function loadTableDetails(tableId, cascade = false) {
                     <label for="settingDataTableCheck" style="color: #000000; font-size: 14px;">Setting Data Table</label>
                 </div>
             </div>
+            <h4>Table Features</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="clearanceCheckTable" ${table.systemProperties?.clearance ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="clearanceCheckTable" style="color: #000000; font-size: 14px;">Clearance</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="timelineCheckTable" ${table.systemProperties?.timeline ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="timelineCheckTable" style="color: #000000; font-size: 14px;">Timeline</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="freezingCheckTable" ${table.systemProperties?.freezing ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="freezingCheckTable" style="color: #000000; font-size: 14px;">Freezing</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="versioningCheckTable" ${table.systemProperties?.versioning ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="versioningCheckTable" style="color: #000000; font-size: 14px;">Versioning</label>
+                </div>
+            </div>
+            <h4>Table Relations</h4>
+            <div class="list-box-container">
+                <ul class="custom-list" id="tableRelationsList">
+                    <li class="custom-list-item">No relations yet</li>
+                </ul>
+            </div>
         `;
         attachFieldGroupListListeners();
         addIconBarListeners(divD.querySelector(".icon-bar"), "FieldGroup", tableId);
@@ -370,6 +389,31 @@ async function loadTableDetails(tableId, cascade = false) {
                     <input type="checkbox" id="settingDataTableCheck" ${table.properties?.settingDataTable ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
                     <label for="settingDataTableCheck" style="color: #000000; font-size: 14px;">Setting Data Table</label>
                 </div>
+            </div>
+            <h4>Table Features</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="clearanceCheckTable" ${table.systemProperties?.clearance ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="clearanceCheckTable" style="color: #000000; font-size: 14px;">Clearance</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="timelineCheckTable" ${table.systemProperties?.timeline ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="timelineCheckTable" style="color: #000000; font-size: 14px;">Timeline</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="freezingCheckTable" ${table.systemProperties?.freezing ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="freezingCheckTable" style="color: #000000; font-size: 14px;">Freezing</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="versioningCheckTable" ${table.systemProperties?.versioning ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="versioningCheckTable" style="color: #000000; font-size: 14px;">Versioning</label>
+                </div>
+            </div>
+            <h4>Table Relations</h4>
+            <div class="list-box-container">
+                <ul class="custom-list" id="tableRelationsList">
+                    <li class="custom-list-item">No relations yet</li>
+                </ul>
             </div>
         `;
 
@@ -560,18 +604,21 @@ async function loadFieldDetails(fieldId) {
                 </div>
             </div>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
-            <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-                <option value="string" ${field.dataType === "string" ? "selected" : ""}>String</option>
-                <option value="number" ${field.dataType === "number" ? "selected" : ""}>Number</option>
-                <option value="boolean" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
-                <option value="date" ${field.dataType === "date" ? "selected" : ""}>Date</option>
-            </select>
+           <select class="field-data-type"
+    style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+    <option value="string" style="color: black; background-color: white;" ${field.dataType === "string" ? "selected" : ""}>String</option>
+    <option value="number" style="color: black; background-color: white;" ${field.dataType === "number" ? "selected" : ""}>Number</option>
+    <option value="boolean" style="color: black; background-color: white;" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
+    <option value="date" style="color: black; background-color: white;" ${field.dataType === "date" ? "selected" : ""}>Date</option>
+</select>
+
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
             <input type="text" class="field-data-subtype" value="${field.dataSubType || ''}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                 <img src="/assets/main-icons/home.png" alt="Field Icon" style="width: 24px; height: 24px;">
-                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+               <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+
             </div>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
@@ -599,7 +646,6 @@ async function loadFieldDetails(fieldId) {
                     <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
                 </div>
             </div>
-            <button class="save-field-btn" style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Save</button>
         `;
         divG.innerHTML = `
             <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
@@ -646,30 +692,6 @@ async function loadFieldDetails(fieldId) {
                 <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
             </div>
         `;
-        divF.querySelector(".save-field-btn").addEventListener("click", async () => {
-            const updatedField = {
-                name: divF.querySelector("input[type='text']").value,
-                description: divF.querySelector("textarea").value,
-                visible: divF.querySelector("#visibleCheck").checked,
-                dataType: divF.querySelector(".field-data-type").value,
-                dataSubType: divF.querySelector(".field-data-subtype").value,
-                parentId: field.parentId,
-                properties: {
-                    readOnly: divF.querySelector("#readOnlyCheck").checked,
-                    reserved: divF.querySelector("#reservedCheck").checked
-                },
-                features: {
-                    compulsory: divF.querySelector("#compulsoryCheck").checked,
-                    label: divF.querySelector("#labelCheck").checked,
-                    fullTextIndexed: divF.querySelector("#fullTextCheck").checked
-                },
-                icon: { alternativeText: "Field Icon" }
-            };
-            await setTableManagerItem("Field", fieldId, updatedField);
-            delete newFields[fieldId];
-            sessionStorage.setItem("newFields", JSON.stringify(newFields));
-            await loadFieldGroupDetails(field.parentId);
-        });
         return;
     }
 
@@ -729,30 +751,7 @@ async function loadFieldDetails(fieldId) {
                     <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
                 </div>
             </div>
-            <button class="save-field-btn" style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Save</button>
         `;
-
-        divF.querySelector(".save-field-btn").addEventListener("click", async () => {
-            const updatedField = {
-                ...field,
-                name: divF.querySelector("input[type='text']").value,
-                description: divF.querySelector("textarea").value,
-                visible: divF.querySelector("#visibleCheck").checked,
-                dataType: divF.querySelector(".field-data-type").value,
-                dataSubType: divF.querySelector(".field-data-subtype").value,
-                properties: {
-                    readOnly: divF.querySelector("#readOnlyCheck").checked,
-                    reserved: divF.querySelector("#reservedCheck").checked
-                },
-                features: {
-                    compulsory: divF.querySelector("#compulsoryCheck").checked,
-                    label: divF.querySelector("#labelCheck").checked,
-                    fullTextIndexed: divF.querySelector("#fullTextCheck").checked
-                }
-            };
-            await setTableManagerItem("Field", fieldId, updatedField);
-            await loadFieldGroupDetails(field.parentId);
-        });
 
         divG.innerHTML = `
             <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
@@ -813,7 +812,6 @@ async function loadFieldDetails(fieldId) {
         divG.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field settings</h3>';
     }
 }
-
 
 
 // Delete an item and its associated UI elements
@@ -930,17 +928,14 @@ async function addItem(type, parentId = null) {
     }
 
     try {
-        // Fetch existing items from server
         const items = await fetchTableManagerListItems(type, parentId);
         const newItemsKey = `new${type}s`;
         const newItems = JSON.parse(sessionStorage.getItem(newItemsKey) || "{}");
 
-        // Get all existing IDs (from server and sessionStorage)
         const serverIds = items.map(item => parseInt(item.id) || 0);
         const sessionIds = Object.keys(newItems).map(id => parseInt(id) || 0);
         const allIds = [...serverIds, ...sessionIds];
 
-        // Determine the starting ID based on type (aligned with controller)
         const defaultStartingIds = {
             "Area": 1,
             "Table": 101,
@@ -949,7 +944,6 @@ async function addItem(type, parentId = null) {
         };
         const startingId = defaultStartingIds[type];
 
-        // Calculate the next ID
         const maxId = allIds.length > 0 ? Math.max(...allIds) : startingId - 1;
         const newId = maxId + 1;
         console.log(`Generated new ID for ${type}: ${newId} (Max ID: ${maxId}, Starting ID: ${startingId})`);
@@ -958,7 +952,6 @@ async function addItem(type, parentId = null) {
             <input type="text" class="new-item-input" placeholder="Enter ${type.toLowerCase()} name" style="width: 100%; padding: 5px; border: none; background: transparent;">
         </li>`;
 
-        // Check if the list has a "No * yet" or similar placeholder and replace it
         const placeholderTexts = [
             `No ${type.toLowerCase()}s yet`,
             `No ${type.toLowerCase()}s`,
@@ -969,9 +962,9 @@ async function addItem(type, parentId = null) {
         );
 
         if (hasPlaceholder) {
-            list.innerHTML = newItemHtml; // Replace the placeholder
+            list.innerHTML = newItemHtml;
         } else {
-            list.insertAdjacentHTML('beforeend', newItemHtml); // Append if not a placeholder
+            list.insertAdjacentHTML('beforeend', newItemHtml);
         }
 
         const newInput = list.querySelector(`.new-item-input`);
@@ -989,7 +982,17 @@ async function addItem(type, parentId = null) {
                 };
 
                 if (type === "Table") {
-                    newItem.systemProperties = { clearance: false };
+                    newItem.systemProperties = {
+                        clearance: false,
+                        timeline: false,
+                        freezing: false,
+                        versioning: false
+                    };
+                    newItem.properties = {
+                        readOnly: false,
+                        reserved: false,
+                        settingDataTable: false
+                    };
                     newItem.fieldGroups = {};
                 } else if (type === "FieldGroup") {
                     newItem.fields = {};
@@ -1560,14 +1563,14 @@ function setupUniversalUndo() {
 function setupIconUploadListeners() {
     // Function to attach upload listener to a button
     function attachUploadListener(button) {
-        if (button.dataset.listenerAttached) {
+        if (button.dataset.listenerAttached === "true") {
             console.log("Listener already attached to button:", button);
             return;
         }
 
         button.addEventListener("click", (e) => {
             e.preventDefault();
-            console.log("Upload Icon button clicked");
+            console.log("Upload Icon button clicked in:", button.closest("div")?.className || "unknown container");
 
             // Create a hidden file input element
             const fileInput = document.createElement("input");
@@ -1606,36 +1609,54 @@ function setupIconUploadListeners() {
                     });
                     console.log("File converted to base64:", base64String.substring(0, 50) + "...");
 
-                    // Find the icon preview image in the same container
-                    const iconContainer = button.closest(".icon-upload-container");
+                    // Find the closest icon container (flexible lookup)
+                    let iconContainer = button.closest(".icon-upload-container");
                     if (!iconContainer) {
-                        console.error("Icon upload container not found");
-                        document.body.removeChild(fileInput);
-                        return;
+                        // Fallback for field-settings: use the parent flex div
+                        iconContainer = button.parentElement;
+                        if (iconContainer.style.display !== "flex") {
+                            console.warn("No .icon-upload-container or flex parent found, preview may fail");
+                        }
                     }
 
-                    const iconPreview = iconContainer.querySelector(".icon-preview");
+                    // Find or create the preview image
+                    let iconPreview = iconContainer.querySelector(".icon-preview");
                     if (!iconPreview) {
-                        console.error("Icon preview image not found");
-                        document.body.removeChild(fileInput);
-                        return;
+                        // Fallback: look for any <img> in the container
+                        iconPreview = iconContainer.querySelector("img");
+                        if (iconPreview) {
+                            // Add .icon-preview class for consistency
+                            iconPreview.classList.add("icon-preview");
+                            console.log("Added .icon-preview class to existing <img>");
+                        } else {
+                            console.warn("No preview image found, creating one");
+                            iconPreview = document.createElement("img");
+                            iconPreview.className = "icon-preview";
+                            iconPreview.src = "/assets/main-icons/home.png"; // Default fallback
+                            iconPreview.alt = "Default Icon";
+                            iconPreview.style.width = "24px";
+                            iconPreview.style.height = "24px";
+                            iconContainer.insertBefore(iconPreview, button);
+                        }
                     }
 
-                    // Update the icon preview with the new base64 string
+                    // Update the icon preview
                     iconPreview.src = base64String;
                     iconPreview.alt = `${file.name} Icon`;
-                    iconPreview.style.width = "24px";
-                    iconPreview.style.height = "24px";
-                    console.log("Icon preview updated with new image");
+                    console.log("Icon preview updated with new image in:", iconContainer.className || "flex container");
 
-                    // Optionally store the base64 string in sessionStorage
+                    // Store the base64 string in sessionStorage
                     const section = button.closest(".area-details, .table-details, .field-details, .field-settings");
                     if (section) {
                         const itemType = section.classList.contains("area-details") ? "Area" :
                             section.classList.contains("table-details") ? "Table" :
                                 section.classList.contains("field-details") ? "FieldGroup" :
                                     "Field";
-                        const selectedItem = document.querySelector(`#${itemType === "Area" ? "areaList" : itemType === "Table" ? "tableList" : itemType === "FieldGroup" ? "fieldGroupList" : "fieldList"} .custom-list-item.selected`);
+                        const listId = itemType === "Area" ? "areaList" :
+                            itemType === "Table" ? "tableList" :
+                                itemType === "FieldGroup" ? "fieldGroupList" :
+                                    "fieldList";
+                        const selectedItem = document.querySelector(`#${listId} .custom-list-item.selected`);
                         if (selectedItem) {
                             const itemId = selectedItem.dataset.id;
                             const storageKey = `new${itemType}s`;
@@ -1644,7 +1665,11 @@ function setupIconUploadListeners() {
                                 newItems[itemId].icon = { base64: base64String, alternativeText: `${file.name} Icon` };
                                 sessionStorage.setItem(storageKey, JSON.stringify(newItems));
                                 console.log(`Stored new icon for ${itemType} ID: ${itemId} in sessionStorage`);
+                            } else {
+                                console.warn(`No item with ID ${itemId} found in ${storageKey}`);
                             }
+                        } else {
+                            console.warn(`No selected item found in ${listId} for ${itemType}`);
                         }
                     }
 
@@ -1652,7 +1677,6 @@ function setupIconUploadListeners() {
                     console.error("Error processing uploaded file:", error);
                     alert("Failed to upload icon. Please try again.");
                 } finally {
-                    // Clean up the file input
                     document.body.removeChild(fileInput);
                 }
             });
@@ -1661,36 +1685,48 @@ function setupIconUploadListeners() {
             fileInput.click();
         });
 
-        // Mark the button as having a listener attached
         button.dataset.listenerAttached = "true";
-        // Ensure the button has the upload-icon-btn class for consistency
         if (!button.classList.contains("upload-icon-btn")) {
             button.classList.add("upload-icon-btn");
             console.log("Added upload-icon-btn class to button:", button);
         }
     }
 
-    // Function to identify upload buttons (by class or text content)
+    // Function to identify upload buttons
     function isUploadIconButton(element) {
         return element.matches("button") &&
             (element.classList.contains("upload-icon-btn") ||
                 element.textContent.trim() === "Upload Icon");
     }
 
-    // Set up MutationObserver to watch for new upload buttons
+    // Set up MutationObserver for dynamic buttons
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.addedNodes.length > 0) {
                 mutation.addedNodes.forEach((node) => {
                     if (node.nodeType === Node.ELEMENT_NODE) {
-                        // Check if the node itself is an upload button or contains one
-                        const buttons = isUploadIconButton(node)
-                            ? [node]
-                            : node.querySelectorAll("button");
+                        const buttons = isUploadIconButton(node) ? [node] : node.querySelectorAll("button");
                         buttons.forEach((button) => {
                             if (isUploadIconButton(button)) {
                                 attachUploadListener(button);
                                 console.log("Attached listener to dynamically added upload button:", button);
+
+                                // Ensure preview exists for dynamic buttons
+                                let iconContainer = button.closest(".icon-upload-container") || button.parentElement;
+                                let iconPreview = iconContainer.querySelector(".icon-preview") || iconContainer.querySelector("img");
+                                if (!iconPreview) {
+                                    console.warn("Dynamically added button missing preview, adding one");
+                                    iconPreview = document.createElement("img");
+                                    iconPreview.className = "icon-preview";
+                                    iconPreview.src = "/assets/main-icons/home.png";
+                                    iconPreview.alt = "Default Icon";
+                                    iconPreview.style.width = "24px";
+                                    iconPreview.style.height = "24px";
+                                    iconContainer.insertBefore(iconPreview, button);
+                                } else if (!iconPreview.classList.contains("icon-preview")) {
+                                    iconPreview.classList.add("icon-preview");
+                                    console.log("Added .icon-preview to existing <img> for dynamic button");
+                                }
                             }
                         });
                     }
@@ -1699,25 +1735,38 @@ function setupIconUploadListeners() {
         });
     });
 
-    // Start observing the entire document for changes
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    // Observe the entire document
+    observer.observe(document.body, { childList: true, subtree: true });
     console.log("MutationObserver set up to watch for new upload buttons");
 
-    // Attach listeners to any existing buttons on initial load
+    // Attach listeners to existing buttons and ensure preview
     const initialButtons = document.querySelectorAll("button");
     initialButtons.forEach((button) => {
         if (isUploadIconButton(button)) {
             attachUploadListener(button);
+            let iconContainer = button.closest(".icon-upload-container") || button.parentElement;
+            let iconPreview = iconContainer.querySelector(".icon-preview") || iconContainer.querySelector("img");
+            if (!iconPreview) {
+                console.warn("Existing button missing preview, adding one");
+                iconPreview = document.createElement("img");
+                iconPreview.className = "icon-preview";
+                iconPreview.src = "/assets/main-icons/home.png";
+                iconPreview.alt = "Default Icon";
+                iconPreview.style.width = "24px";
+                iconPreview.style.height = "24px";
+                iconContainer.insertBefore(iconPreview, button);
+            } else if (!iconPreview.classList.contains("icon-preview")) {
+                iconPreview.classList.add("icon-preview");
+                console.log("Added .icon-preview to existing <img> for initial button");
+            }
         }
     });
     console.log("Initial upload listeners set up for", initialButtons.length, "buttons");
 }
 
-// Initialize the function on script load
+// Initialize the function
 setupIconUploadListeners();
+
 
 // State to track if data is locked
 let isDataLocked = false;
@@ -1837,38 +1886,6 @@ function previewSessionData() {
     }
 }
 
-function setupLockAndPlayListeners() {
-    const lockButton = document.getElementById("lockIcon");
-    const playButton = document.getElementById("playIcon");
-
-    if (!lockButton || !playButton) {
-        console.error("Lock or Play button not found in the DOM");
-        return;
-    }
-
-    // Lock button listener
-    lockButton.addEventListener("click", () => {
-        isDataLocked = !isDataLocked;
-        console.log(`🔒 Data lock toggled: ${isDataLocked}`);
-        alert(`Data is now ${isDataLocked ? "locked" : "unlocked"}.`);
-    });
-
-    // Play button listener
-    playButton.addEventListener("click", (e) => {
-        e.preventDefault(); // Prevent navigation from <a href="#">
-        console.log("▶️ Play button clicked – generating structured session data");
-        previewSessionData(); // Call the structured logger
-    });
-
-    console.log("✅ Lock and Play listeners are set up");
-}
-
-
-
-// Initialize the listeners on DOM load
-document.addEventListener("DOMContentLoaded", () => {
-    setupLockAndPlayListeners();
-});
 
 function setupFinalDivSettingsIconAlert() {
     document.addEventListener("click", function (e) {
@@ -2064,10 +2081,14 @@ async function sendSessionDataToServer() {
         const newTables = JSON.parse(sessionStorage.getItem("newTables") || "{}");
         const newFieldGroups = JSON.parse(sessionStorage.getItem("newFieldGroups") || "{}");
         const newFields = JSON.parse(sessionStorage.getItem("newFields") || "{}");
+        // Retrieve token and userId from DOM elements
+        const token = document.getElementById("token").value;
+        const userId = document.getElementById("userId").value;
 
         // Map data to match server-expected structure
         const sessionData = {
-            UserId: document.getElementById("userId").value,
+            UserId: userId,
+            Token: token,
             Timestamp: new Date().toISOString(),
             Areas: {},
             Tables: {},
@@ -2164,7 +2185,6 @@ async function sendSessionDataToServer() {
         alert("Failed to send session data: " + error.message);
     }
 }
-
 // Update setupLockAndPlayListeners to use the new function
 function setupLockAndPlayListeners() {
     const lockButton = document.getElementById("lockIcon");
@@ -2185,8 +2205,14 @@ function setupLockAndPlayListeners() {
     // Play button listener
     playButton.addEventListener("click", async (e) => {
         e.preventDefault(); // Prevent navigation from <a href="#">
-        console.log("▶️ Play button clicked – sending session data to server");
-        await sendSessionDataToServer(); // Call the new function
+        console.log("▶️ Play button clicked");
+        if (isDataLocked) {
+            console.log("🔒 Data is locked – sending session data to server");
+            await sendSessionDataToServer(); // Call the new function only if locked
+        } else {
+            console.log("🔓 Data is not locked – please lock data before sending");
+            alert("Please lock the data before playing.");
+        }
     });
 
     console.log("✅ Lock and Play listeners are set up");
@@ -2196,6 +2222,48 @@ function setupLockAndPlayListeners() {
 document.addEventListener("DOMContentLoaded", () => {
     setupLockAndPlayListeners();
 });
+// Function to apply styles to the dropdown
+
+function setDropdownTextColorToBlack() {
+    // Function to apply black text color to dropdown elements
+    const applyBlackTextColor = (element) => {
+        if (element.matches('select, option, optgroup')) {
+            element.style.color = 'black';
+            element.style.backgroundColor = 'white'; // Ensure background contrasts with black text
+        }
+    };
+
+    // Process existing dropdown elements
+    document.querySelectorAll('select, option, optgroup').forEach(applyBlackTextColor);
+
+    // Set up MutationObserver to handle dynamically added dropdowns
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Check if the added node is a dropdown
+                    if (node.matches('select, option, optgroup')) {
+                        applyBlackTextColor(node);
+                    }
+
+                    // Check for dropdowns within the added node
+                    node.querySelectorAll('select, option, optgroup').forEach(applyBlackTextColor);
+                }
+            });
+        });
+    });
+
+    // Start observing the entire document for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    console.log('Dropdown text color set to black for all existing and future dropdowns');
+}
+
+// Call the function to activate it
+setDropdownTextColorToBlack();
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
