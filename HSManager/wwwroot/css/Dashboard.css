@@ -386,6 +386,7 @@ button {
     cursor: pointer;
 }
 
+/* ✅ Updated: Checkbox label text color is now white */
 .checkbox-group {
     display: flex;
     flex-direction: column;
@@ -399,8 +400,8 @@ button {
         gap: 6px;
         font-size: 14px;
         font-weight: normal;
-        color: white;
-        margin-bottom: 0; /* Override default label margin */
+        color: #ffffff;
+        margin-bottom: 0;
     }
 
     .checkbox-group input[type="checkbox"] {
@@ -409,3 +410,23 @@ button {
         margin: 0;
         accent-color: #ccc;
     }
+select {
+    color: white;
+    background-color: #4a4848;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 14px;
+}
+
+    select option {
+        color: black;
+        background-color: white;
+    }
+
+label,
+.readonly-label,
+.reserved-label,
+.setting-data-table-label {
+    color: white !important;
+}
+

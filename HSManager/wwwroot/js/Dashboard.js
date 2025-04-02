@@ -6,6 +6,7 @@ console.log("Initializing - UserID:", userId);
 
 // Generic fetch function with authentication
 async function fetchWithAuth(url, method = 'GET', body = null) {
+
     console.log(`Fetching URL: ${url} with method: ${method}`);
     const options = {
         method: method,
@@ -88,11 +89,11 @@ async function populateAreasList() {
             console.log("Adding event listeners to area icon bar");
             areaIconBar.children[0].addEventListener("click", async () => {
                 console.log("Sort alphabetically clicked for Areas (up)");
-                await sortItemsAlphabetically("Area");
+                
             });
             areaIconBar.children[1].addEventListener("click", async () => {
                 console.log("Sort alphabetically clicked for Areas (down)");
-                await sortItemsAlphabetically("Area");
+                
             });
             areaIconBar.children[2].addEventListener("click", async () => {
                 console.log("Add clicked for Areas");
@@ -135,29 +136,44 @@ async function loadAreaDetails(areaId) {
         const area = newAreas[areaId];
         console.log("Loading area from sessionStorage:", area);
         const tables = Object.entries(area.tables || {}).map(([id, table]) => `
-        <li class="custom-list-item" data-id="${id}">${table.name}</li>
-    `).join('') || '<li class="custom-list-item">No tables yet</li>';
+            <li class="custom-list-item" data-id="${id}">${table.name}</li>
+        `).join('') || '<li class="custom-list-item">No tables yet</li>';
         divC.innerHTML = `
-        <h3>Area Name</h3>
-        <input type="text" value="${area.name}">
-        <h4>Area Description</h4>
-        <textarea>${area.description || ''}</textarea>
-        <h4>Status</h4>
-        <label><input type="checkbox" ${area.visible ? 'checked' : ''}> Visible</label>
-        <div class="section-title">
-            <span>Tables</span>
-            <div class="icon-bar" style="display: flex; gap: 10px; width: 120px;">
-                <img src="/assets/main-icons/move-up.png" alt="Sort Alphabetically" />
-                <img src="/assets/main-icons/move-down.png" alt="Sort Alphabetically" />
-                <img src="/assets/main-icons/add.png" alt="Add" />
-                <img src="/assets/main-icons/delete.png" alt="Delete" />
+            <h3>Area Name</h3>
+            <input type="text" value="${area.name}">
+            <h4>Area Description</h4>
+            <textarea>${area.description || ''}</textarea>
+            <h4>Status</h4>
+            <label><input type="checkbox" ${area.visible ? 'checked' : ''}> Visible</label>
+            <div class="section-title">
+                <span>Tables</span>
+                <div class="icon-bar" style="display: flex; gap: 10px; width: 120px;">
+                    <img src="/assets/main-icons/move-up.png" alt="Sort Alphabetically" />
+                    <img src="/assets/main-icons/move-down.png" alt="Sort Alphabetically" />
+                    <img src="/assets/main-icons/add.png" alt="Add" />
+                    <img src="/assets/main-icons/delete.png" alt="Delete" />
+                </div>
             </div>
-        </div>
-        <div class="list-box-container">
-            <ul class="custom-list" id="tableList">${tables}</ul>
-        </div>
-        // ... (rest of the HTML)
-    `;
+            <div class="list-box-container">
+                <ul class="custom-list" id="tableList">${tables}</ul>
+            </div>
+            <h4>Area Icon</h4>
+            <div class="icon-upload-container">
+                ${area.icon && area.icon.base64 ? `<img src="${area.icon.base64}" alt="Area Icon" class="icon-preview">` : '<img src="/assets/main-icons/home.png" alt="Area Icon" class="icon-preview">'}
+                <button>Upload Icon</button>
+            </div>
+            <h4>Area Properties</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="readOnlyCheckArea" ${area.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="readOnlyCheckArea" style="color: #000000; font-size: 14px;">Read only</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="reservedCheckArea" ${area.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="reservedCheckArea" style="color: #000000; font-size: 14px;">Reserved</label>
+                </div>
+            </div>
+        `;
         attachTableListListeners();
         addIconBarListeners(divC.querySelector(".icon-bar"), "Table", areaId);
         return;
@@ -260,7 +276,7 @@ async function loadTableDetails(tableId, cascade = false) {
         console.log("Loading table from sessionStorage:", table);
         const fieldGroups = Object.entries(table.fieldGroups || {}).map(([id, fg]) => `
             <li class="custom-list-item" data-id="${id}">${fg.name}</li>
-        `).join('') || '<li class="custom-list-item">No field groups yet</li>';
+        `).join('');
         divD.innerHTML = `
             <h3>Table Name</h3>
             <input type="text" value="${table.name}">
@@ -798,40 +814,7 @@ async function loadFieldDetails(fieldId) {
     }
 }
 
-// Sort items alphabetically in the UI
-async function sortItemsAlphabetically(type, parentId = null) {
-    console.log(`Sorting items alphabetically - Type: ${type}, ParentID: ${parentId}`);
-    const listId = type === "Area" ? "areaList" :
-        type === "Table" ? "tableList" :
-            type === "FieldGroup" ? "fieldGroupList" :
-                "fieldList";
-    const list = document.getElementById(listId);
-    if (!list) {
-        console.error(`List not found: ${listId}`);
-        return;
-    }
 
-    const items = Array.from(list.querySelectorAll(".custom-list-item"));
-    if (items.length === 0 || (items.length === 1 && items[0].textContent === `No ${type.toLowerCase()}s yet`)) {
-        console.log("No items to sort");
-        return;
-    }
-
-    items.sort((a, b) => a.textContent.localeCompare(b.textContent));
-    list.innerHTML = items.map(item => item.outerHTML).join("");
-
-    if (type === "Area") {
-        attachAreaListListeners();
-    } else if (type === "Table") {
-        attachTableListListeners();
-    } else if (type === "FieldGroup") {
-        attachFieldGroupListListeners();
-    } else if (type === "Field") {
-        attachFieldListListeners();
-    }
-
-    console.log(`Successfully sorted ${type} items alphabetically`);
-}
 
 // Delete an item and its associated UI elements
 async function deleteItem(type, parentId = null) {
@@ -947,10 +930,31 @@ async function addItem(type, parentId = null) {
     }
 
     try {
+        // Fetch existing items from server
         const items = await fetchTableManagerListItems(type, parentId);
-        const tempId = Math.max(...items.map(i => parseInt(i.id)), 0) + 1; // Temporary ID
+        const newItemsKey = `new${type}s`;
+        const newItems = JSON.parse(sessionStorage.getItem(newItemsKey) || "{}");
 
-        const newItemHtml = `<li class="custom-list-item" data-id="${tempId}">
+        // Get all existing IDs (from server and sessionStorage)
+        const serverIds = items.map(item => parseInt(item.id) || 0);
+        const sessionIds = Object.keys(newItems).map(id => parseInt(id) || 0);
+        const allIds = [...serverIds, ...sessionIds];
+
+        // Determine the starting ID based on type (aligned with controller)
+        const defaultStartingIds = {
+            "Area": 1,
+            "Table": 101,
+            "FieldGroup": 1001,
+            "Field": 10001
+        };
+        const startingId = defaultStartingIds[type];
+
+        // Calculate the next ID
+        const maxId = allIds.length > 0 ? Math.max(...allIds) : startingId - 1;
+        const newId = maxId + 1;
+        console.log(`Generated new ID for ${type}: ${newId} (Max ID: ${maxId}, Starting ID: ${startingId})`);
+
+        const newItemHtml = `<li class="custom-list-item" data-id="${newId}">
             <input type="text" class="new-item-input" placeholder="Enter ${type.toLowerCase()} name" style="width: 100%; padding: 5px; border: none; background: transparent;">
         </li>`;
 
@@ -1000,16 +1004,16 @@ async function addItem(type, parentId = null) {
 
                 const newLi = document.createElement("li");
                 newLi.className = "custom-list-item";
-                newLi.dataset.id = tempId;
+                newLi.dataset.id = newId;
                 newLi.textContent = newItem.name;
                 newInput.parentElement.replaceWith(newLi);
 
                 newLi.classList.add("selected");
 
                 const storageKey = `new${type}s`;
-                const newItems = JSON.parse(sessionStorage.getItem(storageKey) || "{}");
-                newItems[tempId] = newItem;
-                sessionStorage.setItem(storageKey, JSON.stringify(newItems));
+                const updatedNewItems = JSON.parse(sessionStorage.getItem(storageKey) || "{}");
+                updatedNewItems[newId] = newItem;
+                sessionStorage.setItem(storageKey, JSON.stringify(updatedNewItems));
 
                 if (parentId) {
                     const parentStorageKey = type === "Table" ? "newAreas" :
@@ -1021,7 +1025,7 @@ async function addItem(type, parentId = null) {
                             const childKey = type === "Table" ? "tables" :
                                 type === "FieldGroup" ? "fieldGroups" :
                                     "fields";
-                            parentItems[parentId][childKey][tempId] = newItem;
+                            parentItems[parentId][childKey][newId] = newItem;
                             sessionStorage.setItem(parentStorageKey, JSON.stringify(parentItems));
                         }
                     }
@@ -1029,19 +1033,19 @@ async function addItem(type, parentId = null) {
 
                 if (type === "Area") {
                     attachAreaListListeners();
-                    await loadAreaDetails(tempId);
+                    await loadAreaDetails(newId);
                 } else if (type === "Table") {
                     attachTableListListeners();
-                    await loadTableDetails(tempId);
+                    await loadTableDetails(newId);
                 } else if (type === "FieldGroup") {
                     attachFieldGroupListListeners();
-                    await loadFieldGroupDetails(tempId);
+                    await loadFieldGroupDetails(newId);
                 } else if (type === "Field") {
                     attachFieldListListeners();
-                    await loadFieldDetails(tempId);
+                    await loadFieldDetails(newId);
                 }
 
-                console.log(`Successfully added new ${type} item with ID: ${tempId} and stored in sessionStorage`);
+                console.log(`Successfully added new ${type} item with ID: ${newId} and stored in sessionStorage`);
             }
         });
 
@@ -1055,7 +1059,7 @@ async function addItem(type, parentId = null) {
         });
     } catch (error) {
         console.error(`Error in addItem (${type}):`, error);
-        list.innerHTML = `<li class="custom-list-item error">Failed to add ${type}</li>`;
+        list.innerHTML = `<li class="custom-list-item error">Failed to add ${type}: ${error.message}</li>`;
     }
 }
 
@@ -1064,11 +1068,11 @@ function addIconBarListeners(iconBar, type, parentId) {
     console.log(`Adding event listeners to ${type} icon bar`);
     iconBar.children[0].addEventListener("click", async () => {
         console.log(`Sort alphabetically clicked for ${type} (up)`);
-        await sortItemsAlphabetically(type, parentId);
+       
     });
     iconBar.children[1].addEventListener("click", async () => {
         console.log(`Sort alphabetically clicked for ${type} (down)`);
-        await sortItemsAlphabetically(type, parentId);
+        
     });
     iconBar.children[2].addEventListener("click", async () => {
         console.log(`Add clicked for ${type}`);
@@ -1553,7 +1557,645 @@ function setupUniversalUndo() {
 
 
 
+function setupIconUploadListeners() {
+    // Function to attach upload listener to a button
+    function attachUploadListener(button) {
+        if (button.dataset.listenerAttached) {
+            console.log("Listener already attached to button:", button);
+            return;
+        }
 
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            console.log("Upload Icon button clicked");
+
+            // Create a hidden file input element
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.accept = "image/*"; // Accepts SVG, JPG, PNG, etc.
+            fileInput.style.display = "none";
+
+            // Append it to the DOM temporarily
+            document.body.appendChild(fileInput);
+
+            // Handle file selection
+            fileInput.addEventListener("change", async () => {
+                const file = fileInput.files[0];
+                if (!file) {
+                    console.log("No file selected");
+                    document.body.removeChild(fileInput);
+                    return;
+                }
+
+                // Validate file type
+                const validTypes = ["image/svg+xml", "image/jpeg", "image/png", "image/gif"];
+                if (!validTypes.includes(file.type)) {
+                    console.error("Invalid file type. Please upload an SVG, JPG, PNG, or GIF.");
+                    alert("Please upload a valid image file (SVG, JPG, PNG, GIF).");
+                    document.body.removeChild(fileInput);
+                    return;
+                }
+
+                try {
+                    // Convert file to base64
+                    const base64String = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = () => reject(new Error("Failed to read file"));
+                        reader.readAsDataURL(file);
+                    });
+                    console.log("File converted to base64:", base64String.substring(0, 50) + "...");
+
+                    // Find the icon preview image in the same container
+                    const iconContainer = button.closest(".icon-upload-container");
+                    if (!iconContainer) {
+                        console.error("Icon upload container not found");
+                        document.body.removeChild(fileInput);
+                        return;
+                    }
+
+                    const iconPreview = iconContainer.querySelector(".icon-preview");
+                    if (!iconPreview) {
+                        console.error("Icon preview image not found");
+                        document.body.removeChild(fileInput);
+                        return;
+                    }
+
+                    // Update the icon preview with the new base64 string
+                    iconPreview.src = base64String;
+                    iconPreview.alt = `${file.name} Icon`;
+                    iconPreview.style.width = "24px";
+                    iconPreview.style.height = "24px";
+                    console.log("Icon preview updated with new image");
+
+                    // Optionally store the base64 string in sessionStorage
+                    const section = button.closest(".area-details, .table-details, .field-details, .field-settings");
+                    if (section) {
+                        const itemType = section.classList.contains("area-details") ? "Area" :
+                            section.classList.contains("table-details") ? "Table" :
+                                section.classList.contains("field-details") ? "FieldGroup" :
+                                    "Field";
+                        const selectedItem = document.querySelector(`#${itemType === "Area" ? "areaList" : itemType === "Table" ? "tableList" : itemType === "FieldGroup" ? "fieldGroupList" : "fieldList"} .custom-list-item.selected`);
+                        if (selectedItem) {
+                            const itemId = selectedItem.dataset.id;
+                            const storageKey = `new${itemType}s`;
+                            const newItems = JSON.parse(sessionStorage.getItem(storageKey) || "{}");
+                            if (newItems[itemId]) {
+                                newItems[itemId].icon = { base64: base64String, alternativeText: `${file.name} Icon` };
+                                sessionStorage.setItem(storageKey, JSON.stringify(newItems));
+                                console.log(`Stored new icon for ${itemType} ID: ${itemId} in sessionStorage`);
+                            }
+                        }
+                    }
+
+                } catch (error) {
+                    console.error("Error processing uploaded file:", error);
+                    alert("Failed to upload icon. Please try again.");
+                } finally {
+                    // Clean up the file input
+                    document.body.removeChild(fileInput);
+                }
+            });
+
+            // Trigger the file input click
+            fileInput.click();
+        });
+
+        // Mark the button as having a listener attached
+        button.dataset.listenerAttached = "true";
+        // Ensure the button has the upload-icon-btn class for consistency
+        if (!button.classList.contains("upload-icon-btn")) {
+            button.classList.add("upload-icon-btn");
+            console.log("Added upload-icon-btn class to button:", button);
+        }
+    }
+
+    // Function to identify upload buttons (by class or text content)
+    function isUploadIconButton(element) {
+        return element.matches("button") &&
+            (element.classList.contains("upload-icon-btn") ||
+                element.textContent.trim() === "Upload Icon");
+    }
+
+    // Set up MutationObserver to watch for new upload buttons
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Check if the node itself is an upload button or contains one
+                        const buttons = isUploadIconButton(node)
+                            ? [node]
+                            : node.querySelectorAll("button");
+                        buttons.forEach((button) => {
+                            if (isUploadIconButton(button)) {
+                                attachUploadListener(button);
+                                console.log("Attached listener to dynamically added upload button:", button);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    // Start observing the entire document for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    console.log("MutationObserver set up to watch for new upload buttons");
+
+    // Attach listeners to any existing buttons on initial load
+    const initialButtons = document.querySelectorAll("button");
+    initialButtons.forEach((button) => {
+        if (isUploadIconButton(button)) {
+            attachUploadListener(button);
+        }
+    });
+    console.log("Initial upload listeners set up for", initialButtons.length, "buttons");
+}
+
+// Initialize the function on script load
+setupIconUploadListeners();
+
+// State to track if data is locked
+let isDataLocked = false;
+
+// Function to collect and send sessionStorage data to the server
+function previewSessionData() {
+    try {
+        const newAreas = JSON.parse(sessionStorage.getItem("newAreas") || "{}");
+        const newTables = JSON.parse(sessionStorage.getItem("newTables") || "{}");
+        const newFieldGroups = JSON.parse(sessionStorage.getItem("newFieldGroups") || "{}");
+        const newFields = JSON.parse(sessionStorage.getItem("newFields") || "{}");
+
+        const mappedAreas = {};
+
+        for (const [areaId, area] of Object.entries(newAreas)) {
+            mappedAreas[areaId] = {
+                Id: parseInt(areaId),
+                ParentId: 0,
+                Name: area.name,
+                Description: area.description || '',
+                Visible: !!area.visible,
+                SortIndex: area.sortIndex || 0,
+                Icon: {
+                    Base64: area.icon?.base64 || null,
+                    AlternativeText: area.icon?.alternativeText || "Area Icon"
+                },
+                ReadOnly: !!area.properties?.readOnly,
+                Reserved: !!area.properties?.reserved
+            };
+        }
+
+        const mappedTables = {};
+        for (const [tableId, table] of Object.entries(newTables)) {
+            mappedTables[tableId] = {
+                Id: parseInt(tableId),
+                ParentId: parseInt(table.parentId),
+                Name: table.name,
+                Description: table.description || '',
+                Visible: !!table.visible,
+                SortIndex: table.sortIndex || 0,
+                Icon: {
+                    Base64: table.icon?.base64 || null,
+                    AlternativeText: table.icon?.alternativeText || "Table Icon"
+                },
+                SystemProperties: {
+                    Clearance: !!table.systemProperties?.clearance,
+                    Timeline: !!table.systemProperties?.timeline,
+                    Freezing: !!table.systemProperties?.freezing,
+                    Versioning: !!table.systemProperties?.versioning,
+                    StaticData: !!table.systemProperties?.staticData,
+                    VirtualData: !!table.systemProperties?.virtualData,
+                    ReadOnly: !!table.properties?.readOnly,
+                    Reserved: !!table.properties?.reserved
+                }
+            };
+        }
+
+        const mappedFieldGroups = {};
+        for (const [fgId, fg] of Object.entries(newFieldGroups)) {
+            mappedFieldGroups[fgId] = {
+                Id: parseInt(fgId),
+                ParentId: parseInt(fg.parentId),
+                Name: fg.name,
+                Description: fg.description || '',
+                Visible: !!fg.visible,
+                SortIndex: fg.sortIndex || 0,
+                Icon: {
+                    Base64: fg.icon?.base64 || null,
+                    AlternativeText: fg.icon?.alternativeText || "Field Group Icon"
+                },
+                ReadOnly: !!fg.properties?.readOnly,
+                Reserved: !!fg.properties?.reserved
+            };
+        }
+
+        const mappedFields = {};
+        for (const [fieldId, field] of Object.entries(newFields)) {
+            mappedFields[fieldId] = {
+                Id: parseInt(fieldId),
+                ParentId: parseInt(field.parentId),
+                Name: field.name,
+                Description: field.description || '',
+                Visible: !!field.visible,
+                SortIndex: field.sortIndex || 0,
+                Icon: {
+                    Base64: field.icon?.base64 || null,
+                    AlternativeText: field.icon?.alternativeText || "Field Icon"
+                },
+                DataType: field.dataType || 'string',
+                DataSubType: field.dataSubType || '',
+                Properties: {
+                    ReadOnly: !!field.properties?.readOnly,
+                    Reserved: !!field.properties?.reserved
+                },
+                Features: {
+                    Compulsory: !!field.features?.compulsory,
+                    Label: !!field.features?.label,
+                    FullTextIndexed: !!field.features?.fullTextIndexed
+                }
+            };
+        }
+
+        const sessionData = {
+            UserId: document.getElementById("userId").value,
+            Timestamp: new Date().toISOString(),
+            Areas: mappedAreas,
+            Tables: mappedTables,
+            FieldGroups: mappedFieldGroups,
+            Fields: mappedFields
+        };
+
+        console.log("📦 Structured preview (SessionData model):");
+        console.log(JSON.stringify(sessionData, null, 2));
+    } catch (error) {
+        console.error("❌ Error generating structured preview:", error);
+        alert("Failed to generate preview: " + error.message);
+    }
+}
+
+function setupLockAndPlayListeners() {
+    const lockButton = document.getElementById("lockIcon");
+    const playButton = document.getElementById("playIcon");
+
+    if (!lockButton || !playButton) {
+        console.error("Lock or Play button not found in the DOM");
+        return;
+    }
+
+    // Lock button listener
+    lockButton.addEventListener("click", () => {
+        isDataLocked = !isDataLocked;
+        console.log(`🔒 Data lock toggled: ${isDataLocked}`);
+        alert(`Data is now ${isDataLocked ? "locked" : "unlocked"}.`);
+    });
+
+    // Play button listener
+    playButton.addEventListener("click", (e) => {
+        e.preventDefault(); // Prevent navigation from <a href="#">
+        console.log("▶️ Play button clicked – generating structured session data");
+        previewSessionData(); // Call the structured logger
+    });
+
+    console.log("✅ Lock and Play listeners are set up");
+}
+
+
+
+// Initialize the listeners on DOM load
+document.addEventListener("DOMContentLoaded", () => {
+    setupLockAndPlayListeners();
+});
+
+function setupFinalDivSettingsIconAlert() {
+    document.addEventListener("click", function (e) {
+        const icon = e.target;
+        const isSettingsIcon = icon.matches(".field-settings-details img[alt='Settings']");
+        if (!isSettingsIcon) return;
+
+        // Remove any existing overlay
+        const existingOverlay = document.querySelector(".settings-overlay");
+        if (existingOverlay) existingOverlay.remove();
+
+        // Create the overlay
+        const overlay = document.createElement("div");
+        overlay.className = "settings-overlay";
+        overlay.textContent = "⚙️ Settings Panel";
+
+        // Style the overlay with larger dimensions
+        Object.assign(overlay.style, {
+            position: "absolute",
+            top: `${icon.getBoundingClientRect().bottom + window.scrollY + 5}px`,
+            left: `${icon.getBoundingClientRect().left + window.scrollX}px`,
+            width: "250px",
+            height: "150px",
+            backgroundColor: "#222",
+            color: "#fff",
+            padding: "16px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+            zIndex: 1000,
+            cursor: "default",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center"
+        });
+
+        document.body.appendChild(overlay);
+
+        // Remove overlay when clicking outside
+        const closeOnClickOutside = (ev) => {
+            if (!overlay.contains(ev.target) && ev.target !== icon) {
+                overlay.remove();
+                document.removeEventListener("click", closeOnClickOutside);
+            }
+        };
+
+        setTimeout(() => document.addEventListener("click", closeOnClickOutside), 0);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupFinalDivSettingsIconAlert();
+});
+// Universal function to sort list items in any list box
+function sortListItems(listId, direction = 'asc') {
+    console.log(`Sorting list items in ${listId} - Direction: ${direction}`);
+
+    // Get the list element
+    const list = document.getElementById(listId);
+    if (!list) {
+        console.error(`List with ID ${listId} not found`);
+        return;
+    }
+
+    // Get all list items (excluding placeholders like "No items yet")
+    const items = Array.from(list.querySelectorAll('.custom-list-item'))
+        .filter(item => !item.textContent.match(/No.*yet|Loading...|Failed to load/i));
+
+    if (items.length <= 1) {
+        console.log(`Not enough items to sort in ${listId} (${items.length} items)`);
+        return;
+    }
+
+    // Extract text content for sorting (handle inputs for new items)
+    const itemData = items.map(item => {
+        const input = item.querySelector('input.new-item-input');
+        return {
+            element: item,
+            text: input ? input.value.trim() : item.textContent.trim()
+        };
+    });
+
+    // Sort items based on direction
+    itemData.sort((a, b) => {
+        const comparison = a.text.localeCompare(b.text, undefined, { sensitivity: 'base' });
+        return direction === 'asc' ? comparison : -comparison;
+    });
+
+    // Clear the list and re-append sorted items
+    list.innerHTML = ''; // Temporarily clear the list
+    itemData.forEach(data => list.appendChild(data.element));
+
+    // If the list was empty before sorting, ensure it doesn't show "No items"
+    if (items.length > 0 && list.children.length === 0) {
+        console.warn(`List ${listId} was emptied during sorting, restoring items`);
+        itemData.forEach(data => list.appendChild(data.element));
+    } else if (list.children.length === 0) {
+        list.innerHTML = `<li class="custom-list-item">No items yet</li>`;
+    }
+
+    // Re-attach listeners based on list type
+    const listTypeMap = {
+        'areaList': attachAreaListListeners,
+        'tableList': attachTableListListeners,
+        'fieldGroupList': attachFieldGroupListListeners,
+        'fieldList': attachFieldListListeners
+    };
+    const reattachListeners = listTypeMap[listId];
+    if (reattachListeners) {
+        reattachListeners();
+        console.log(`Re-attached listeners for ${listId}`);
+    } else {
+        console.warn(`No listener re-attachment function found for ${listId}`);
+    }
+
+    console.log(`Successfully sorted ${listId} in ${direction} order`);
+}
+
+// Update the addIconBarListeners function to use the universal sorting
+function addIconBarListeners(iconBar, type, parentId) {
+    console.log(`Adding event listeners to ${type} icon bar`);
+    const listId = type === "Area" ? "areaList" :
+        type === "Table" ? "tableList" :
+            type === "FieldGroup" ? "fieldGroupList" :
+                "fieldList";
+
+    iconBar.children[0].addEventListener("click", async () => {
+        console.log(`Sort alphabetically clicked for ${type} (up)`);
+        sortListItems(listId, 'asc');
+    });
+
+    iconBar.children[1].addEventListener("click", async () => {
+        console.log(`Sort alphabetically clicked for ${type} (down)`);
+        sortListItems(listId, 'desc');
+    });
+
+    iconBar.children[2].addEventListener("click", async () => {
+        console.log(`Add clicked for ${type}`);
+        await addItem(type, parentId);
+    });
+
+    iconBar.children[3].addEventListener("click", async () => {
+        console.log(`Delete clicked for ${type}`);
+        await deleteItem(type, parentId);
+    });
+}
+
+// Update populateAreasList to use the updated addIconBarListeners
+async function populateAreasList() {
+    console.log("Populating areas list");
+    const listBox = document.querySelector("#areaList");
+    if (!listBox) {
+        console.error("Area list element not found");
+        return;
+    }
+    listBox.innerHTML = '<li class="custom-list-item">Loading...</li>';
+
+    try {
+        const areas = await fetchTableManagerListItems("Area", null);
+        console.log("Areas received:", areas);
+        const newAreas = JSON.parse(sessionStorage.getItem("newAreas") || "{}");
+        listBox.innerHTML = areas.map(area => `
+            <li class="custom-list-item" data-id="${area.id}">${area.name || 'Unnamed'}</li>
+        `).concat(Object.entries(newAreas).map(([id, area]) => `
+            <li class="custom-list-item" data-id="${id}">${area.name}</li>
+        `)).join("");
+
+        if (listBox.querySelectorAll(".custom-list-item").length === 0) {
+            listBox.innerHTML = '<li class="custom-list-item">No areas yet</li>';
+        } else {
+            attachAreaListListeners();
+
+            const areaIconBar = document.querySelector(".table-manager .icon-bar");
+            if (!areaIconBar) {
+                console.error("Area icon bar not found");
+                return;
+            }
+            console.log("Adding event listeners to area icon bar");
+            addIconBarListeners(areaIconBar, "Area", null); // Updated to use the universal function
+        }
+    } catch (error) {
+        console.error("Error in populateAreasList:", error.message);
+        listBox.innerHTML = `<li class="custom-list-item error">Failed to load Areas: ${error.message}</li>`;
+    }
+}
+
+// Function to collect sessionStorage data and send it to the server
+async function sendSessionDataToServer() {
+    try {
+        // Retrieve data from sessionStorage
+        const newAreas = JSON.parse(sessionStorage.getItem("newAreas") || "{}");
+        const newTables = JSON.parse(sessionStorage.getItem("newTables") || "{}");
+        const newFieldGroups = JSON.parse(sessionStorage.getItem("newFieldGroups") || "{}");
+        const newFields = JSON.parse(sessionStorage.getItem("newFields") || "{}");
+
+        // Map data to match server-expected structure
+        const sessionData = {
+            UserId: document.getElementById("userId").value,
+            Timestamp: new Date().toISOString(),
+            Areas: {},
+            Tables: {},
+            FieldGroups: {},
+            Fields: {}
+        };
+
+        // Map Areas
+        for (const [areaId, area] of Object.entries(newAreas)) {
+            sessionData.Areas[areaId] = {
+                Id: parseInt(areaId),
+                ParentId: area.parentId || 0,
+                Name: area.name || "Unnamed",
+                Description: area.description || "",
+                Visible: !!area.visible,
+                SortIndex: area.sortIndex || 0,
+                Icon: area.icon || { Base64: null, AlternativeText: "Area Icon" },
+                ReadOnly: !!area.properties?.readOnly,
+                Reserved: !!area.properties?.reserved
+            };
+        }
+
+        // Map Tables
+        for (const [tableId, table] of Object.entries(newTables)) {
+            sessionData.Tables[tableId] = {
+                Id: parseInt(tableId),
+                ParentId: parseInt(table.parentId) || 0,
+                Name: table.name || "Unnamed",
+                Description: table.description || "",
+                Visible: !!table.visible,
+                SortIndex: table.sortIndex || 0,
+                Icon: table.icon || { Base64: null, AlternativeText: "Table Icon" },
+                SystemProperties: {
+                    Clearance: !!table.systemProperties?.clearance,
+                    Timeline: !!table.systemProperties?.timeline,
+                    Freezing: !!table.systemProperties?.freezing,
+                    Versioning: !!table.systemProperties?.versioning,
+                    StaticData: !!table.systemProperties?.staticData,
+                    VirtualData: !!table.systemProperties?.virtualData,
+                    ReadOnly: !!table.properties?.readOnly,
+                    Reserved: !!table.properties?.reserved
+                }
+            };
+        }
+
+        // Map FieldGroups
+        for (const [fgId, fg] of Object.entries(newFieldGroups)) {
+            sessionData.FieldGroups[fgId] = {
+                Id: parseInt(fgId),
+                ParentId: parseInt(fg.parentId) || 0,
+                Name: fg.name || "Unnamed",
+                Description: fg.description || "",
+                Visible: !!fg.visible,
+                SortIndex: fg.sortIndex || 0,
+                Icon: fg.icon || { Base64: null, AlternativeText: "Field Group Icon" },
+                ReadOnly: !!fg.properties?.readOnly,
+                Reserved: !!fg.properties?.reserved
+            };
+        }
+
+        // Map Fields
+        for (const [fieldId, field] of Object.entries(newFields)) {
+            sessionData.Fields[fieldId] = {
+                Id: parseInt(fieldId),
+                ParentId: parseInt(field.parentId) || 0,
+                Name: field.name || "Unnamed",
+                Description: field.description || "",
+                Visible: !!field.visible,
+                SortIndex: field.sortIndex || 0,
+                Icon: field.icon || { Base64: null, AlternativeText: "Field Icon" },
+                DataType: field.dataType || "string",
+                DataSubType: field.dataSubType || "",
+                Properties: {
+                    ReadOnly: !!field.properties?.readOnly,
+                    Reserved: !!field.properties?.reserved
+                },
+                Features: {
+                    Compulsory: !!field.features?.compulsory,
+                    Label: !!field.features?.label,
+                    FullTextIndexed: !!field.features?.fullTextIndexed
+                }
+            };
+        }
+
+        console.log("📦 Sending session data to server:", JSON.stringify(sessionData, null, 2));
+
+        // Send data to the server using fetchWithAuth
+        const response = await fetchWithAuth('/api/tablemanager/saveSessionData', 'POST', sessionData);
+        console.log("✅ Server response:", response);
+
+        alert("Session data successfully sent to the server!");
+    } catch (error) {
+        console.error("❌ Error sending session data to server:", error);
+        alert("Failed to send session data: " + error.message);
+    }
+}
+
+// Update setupLockAndPlayListeners to use the new function
+function setupLockAndPlayListeners() {
+    const lockButton = document.getElementById("lockIcon");
+    const playButton = document.getElementById("playIcon");
+
+    if (!lockButton || !playButton) {
+        console.error("Lock or Play button not found in the DOM");
+        return;
+    }
+
+    // Lock button listener
+    lockButton.addEventListener("click", () => {
+        isDataLocked = !isDataLocked;
+        console.log(`🔒 Data lock toggled: ${isDataLocked}`);
+        alert(`Data is now ${isDataLocked ? "locked" : "unlocked"}.`);
+    });
+
+    // Play button listener
+    playButton.addEventListener("click", async (e) => {
+        e.preventDefault(); // Prevent navigation from <a href="#">
+        console.log("▶️ Play button clicked – sending session data to server");
+        await sendSessionDataToServer(); // Call the new function
+    });
+
+    console.log("✅ Lock and Play listeners are set up");
+}
+
+// Ensure this runs on DOM load
+document.addEventListener("DOMContentLoaded", () => {
+    setupLockAndPlayListeners();
+});
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {

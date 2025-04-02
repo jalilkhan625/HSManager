@@ -92,4 +92,16 @@
             public bool FullTextIndexed { get; set; }
         }
     }
+    namespace HSManager.Models
+    {
+        public class SessionData
+        {
+            public Dictionary<string, Area> Areas { get; set; }
+            public Dictionary<string, Table> Tables { get; set; }
+            public Dictionary<string, FieldGroup> FieldGroups { get; set; }
+            public Dictionary<string, Field> Fields { get; set; }
+            public string UserId { get; set; }
+            public string Timestamp { get; set; }
+        }
+    }
 }
