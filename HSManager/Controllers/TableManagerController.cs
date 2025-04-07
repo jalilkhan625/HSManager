@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using HSManager.Models.HSManager.Models;
+using HSManager.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
-using HSManager.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using HSManager.Models.HSManager.Models;
 
 namespace HSManager.Controllers
 {
@@ -54,22 +54,138 @@ namespace HSManager.Controllers
         // In-memory data stores (replace with a database in production)
         private readonly List<Area> _areas = new()
         {
-            new Area { Id = 1, ParentId = 0, Name = "Company", Description = "Contains company-related data", Visible = true, SortIndex = 0, Icon = new TableIcon { AlternativeText = "Company Icon" } },
-            new Area { Id = 2, ParentId = 0, Name = "Organizations", Description = "Contains organization-related data", Visible = true, SortIndex = 1, Icon = new TableIcon { AlternativeText = "Organizations Icon" } },
-            new Area { Id = 3, ParentId = 0, Name = "Hyperspace", Description = "Contains Hyperspace system data", Visible = true, SortIndex = 2, Icon = new TableIcon { AlternativeText = "Hyperspace Icon" } }
+            new Area
+            {
+                Id = 1,
+                ParentId = 0,
+                Name = "Company",
+                Description = "Core company information and structure",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Company Icon" },
+                ReadOnly = false,
+                Reserved = true
+            },
+            new Area
+            {
+                Id = 2,
+                ParentId = 0,
+                Name = "Organizations",
+                Description = "External partner organizations and vendors",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Organizations Icon" },
+                ReadOnly = false,
+                Reserved = false
+            },
+            new Area
+            {
+                Id = 3,
+                ParentId = 0,
+                Name = "Hyperspace",
+                Description = "Hyperspace system configuration and metrics",
+                Visible = true,
+                SortIndex = 2,
+                Icon = new TableIcon { AlternativeText = "Hyperspace Icon" },
+                ReadOnly = true,
+                Reserved = true
+            }
         };
 
         private readonly List<Table> _tables = new()
         {
-            new Table { Id = 101, ParentId = 1, Name = "Company", Description = "Company details", Visible = true, SortIndex = 0, Icon = new TableIcon { AlternativeText = "Company Table Icon" }, SystemProperties = new Table.SystemProperty { Clearance = true } },
-            new Table { Id = 102, ParentId = 1, Name = "Company Departments", Description = "Company departments", Visible = true, SortIndex = 1, Icon = new TableIcon { AlternativeText = "Departments Table Icon" }, SystemProperties = new Table.SystemProperty() },
-            new Table { Id = 103, ParentId = 1, Name = "Company Resources", Description = "Internal users", Visible = true, SortIndex = 2, Icon = new TableIcon { AlternativeText = "Resources Table Icon" }, SystemProperties = new Table.SystemProperty() }
+            new Table
+            {
+                Id = 101,
+                ParentId = 1,
+                Name = "Company Profile",
+                Description = "Core company details and legal information",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Company Profile Icon" },
+                //SystemProperties = new Table.SystemProperty { Clearance = true, AuditTrail = true }
+            },
+            new Table
+            {
+                Id = 102,
+                ParentId = 1,
+                Name = "Departments",
+                Description = "Organizational department structure",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Departments Icon" },
+                //SystemProperties = new Table.SystemProperty { Clearance = false, VersionControl = true }
+            },
+            new Table
+            {
+                Id = 103,
+                ParentId = 1,
+                Name = "Employees",
+                Description = "Employee records and HR data",
+                Visible = true,
+                SortIndex = 2,
+                Icon = new TableIcon { AlternativeText = "Employees Icon" },
+                SystemProperties = new Table.SystemProperty { Clearance = true }
+            },
+            new Table
+            {
+                Id = 201,
+                ParentId = 2,
+                Name = "Vendors",
+                Description = "Vendor company information",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Vendors Icon" },
+                SystemProperties = new Table.SystemProperty { Clearance = false }
+            },
+            new Table
+            {
+                Id = 202,
+                ParentId = 2,
+                Name = "Partners",
+                Description = "Business partner details",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Partners Icon" },
+                SystemProperties = new Table.SystemProperty { Clearance = false }
+            }
         };
 
         private readonly List<FieldGroup> _fieldGroups = new()
         {
-            new FieldGroup { Id = 1001, ParentId = 101, Name = "Basic Info", Description = "Basic company info", Visible = true, SortIndex = 0, Icon = new TableIcon { AlternativeText = "Basic Info Icon" } },
-            new FieldGroup { Id = 1002, ParentId = 101, Name = "Contact Details", Description = "Company contact details", Visible = true, SortIndex = 1, Icon = new TableIcon { AlternativeText = "Contact Details Icon" } }
+            new FieldGroup
+            {
+                Id = 1001,
+                ParentId = 101,
+                Name = "Basic Information",
+                Description = "Essential company details",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Basic Info Icon" },
+                ReadOnly = false
+            },
+            new FieldGroup
+            {
+                Id = 1002,
+                ParentId = 101,
+                Name = "Contact Details",
+                Description = "Company contact information",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Contact Details Icon" },
+                ReadOnly = false
+            },
+            new FieldGroup
+            {
+                Id = 1003,
+                ParentId = 102,
+                Name = "Department Info",
+                Description = "Department-specific details",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Department Info Icon" },
+                ReadOnly = false
+            }
         };
 
         private readonly List<Field> _fields = new()
@@ -78,15 +194,85 @@ namespace HSManager.Controllers
             {
                 Id = 10001,
                 ParentId = 1001,
-                Name = "Input",
-                Description = "Text area",
+                Name = "CompanyName",
+                Description = "Legal company name",
                 Visible = true,
                 SortIndex = 0,
-                Icon = new TableIcon { AlternativeText = "Input Field Icon" },
-                DataType = "SELECTED INPUT",
-                DataSubType = "SELECTED INPUT",
+                Icon = new TableIcon { AlternativeText = "Company Name Icon" },
+                DataType = "String",
+                DataSubType = "Text",
+                Properties = new Field.FieldProperty { ReadOnly = false, Reserved = true },
+                Features = new Field.FieldFeature { Compulsory = true, Label = true, FullTextIndexed = true }
+            },
+            new Field
+            {
+                Id = 10002,
+                ParentId = 1001,
+                Name = "RegistrationNumber",
+                Description = "Company registration number",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Reg Number Icon" },
+                DataType = "String",
+                DataSubType = "Alphanumeric",
+                Properties = new Field.FieldProperty { ReadOnly = true, Reserved = true },
+                Features = new Field.FieldFeature { Compulsory = true, Label = true }
+            },
+            new Field
+            {
+                Id = 10003,
+                ParentId = 1002,
+                Name = "Email",
+                Description = "Primary contact email",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Email Icon" },
+                DataType = "String",
+                DataSubType = "Email",
                 Properties = new Field.FieldProperty { ReadOnly = false, Reserved = false },
-                Features = new Field.FieldFeature { Compulsory = false, Label = false, FullTextIndexed = false }
+                Features = new Field.FieldFeature { Compulsory = true, Label = true, FullTextIndexed = true }
+            },
+            new Field
+            {
+                Id = 10004,
+                ParentId = 1002,
+                Name = "Phone",
+                Description = "Primary contact phone",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Phone Icon" },
+                DataType = "String",
+                DataSubType = "Phone",
+                Properties = new Field.FieldProperty { ReadOnly = false, Reserved = false },
+                Features = new Field.FieldFeature { Compulsory = false, Label = true }
+            },
+            new Field
+            {
+                Id = 10005,
+                ParentId = 1003,
+                Name = "DepartmentCode",
+                Description = "Unique department identifier",
+                Visible = true,
+                SortIndex = 0,
+                Icon = new TableIcon { AlternativeText = "Dept Code Icon" },
+                DataType = "String",
+                DataSubType = "Code",
+                Properties = new Field.FieldProperty { ReadOnly = true, Reserved = true },
+                Features = new Field.FieldFeature { Compulsory = true, Label = true }
+            },
+            new Field
+            {
+                Id = 10006,
+                ParentId = 1003,
+                Name = "Budget",
+                Description = "Annual department budget",
+                Visible = true,
+                SortIndex = 1,
+                Icon = new TableIcon { AlternativeText = "Budget Icon" },
+                DataType = "Number",
+                DataSubType = "Decimal",
+                Properties = new Field.FieldProperty { ReadOnly = false, Reserved = false },
+                Features = new Field.FieldFeature { Compulsory = false, Label = true }
             }
         };
 
@@ -235,129 +421,124 @@ namespace HSManager.Controllers
 
         // POST: /api/tablemanager/saveSessionData
         [HttpPost("saveSessionData")]
-       public IActionResult SaveSessionData([FromBody] SessionData sessionData)
-{
-    try
-    {
-        if (sessionData == null)
+        public IActionResult SaveSessionData([FromBody] SessionData sessionData)
         {
-            return BadRequest("No session data provided.");
+            try
+            {
+                if (sessionData == null)
+                {
+                    return BadRequest("No session data provided.");
+                }
+
+                Console.WriteLine("Received session data:");
+                Console.WriteLine($"UserID: {sessionData.UserId}");
+                Console.WriteLine($"Token: {sessionData.token}");
+                Console.WriteLine($"Timestamp: {sessionData.Timestamp}");
+                Console.WriteLine($"Areas: {JsonSerializer.Serialize(sessionData.Areas)}");
+                Console.WriteLine($"Tables: {JsonSerializer.Serialize(sessionData.Tables)}");
+                Console.WriteLine($"FieldGroups: {JsonSerializer.Serialize(sessionData.FieldGroups)}");
+                Console.WriteLine($"Fields: {JsonSerializer.Serialize(sessionData.Fields)}");
+
+                foreach (var areaEntry in sessionData.Areas)
+                {
+                    var area = areaEntry.Value;
+                    var existingArea = _areas.FirstOrDefault(a => a.Id == area.Id);
+                    if (existingArea == null)
+                    {
+                        _areas.Add(area);
+                        Console.WriteLine($"Added new Area with ID {area.Id}");
+                    }
+                    else
+                    {
+                        existingArea.Name = area.Name;
+                        existingArea.Description = area.Description;
+                        existingArea.Visible = area.Visible;
+                        existingArea.SortIndex = area.SortIndex;
+                        existingArea.ParentId = area.ParentId;
+                        existingArea.Icon = area.Icon;
+                        existingArea.ReadOnly = area.ReadOnly;
+                        existingArea.Reserved = area.Reserved;
+                        Console.WriteLine($"Updated existing Area with ID {area.Id}");
+                    }
+                }
+
+                foreach (var tableEntry in sessionData.Tables)
+                {
+                    var table = tableEntry.Value;
+                    var existingTable = _tables.FirstOrDefault(t => t.Id == table.Id);
+                    if (existingTable == null)
+                    {
+                        _tables.Add(table);
+                        Console.WriteLine($"Added new Table with ID {table.Id}");
+                    }
+                    else
+                    {
+                        existingTable.Name = table.Name;
+                        existingTable.Description = table.Description;
+                        existingTable.Visible = table.Visible;
+                        existingTable.SortIndex = table.SortIndex;
+                        existingTable.ParentId = table.ParentId;
+                        existingTable.Icon = table.Icon;
+                        existingTable.SystemProperties = table.SystemProperties;
+                        Console.WriteLine($"Updated existing Table with ID {table.Id}");
+                    }
+                }
+
+                foreach (var fgEntry in sessionData.FieldGroups)
+                {
+                    var fieldGroup = fgEntry.Value;
+                    var existingFieldGroup = _fieldGroups.FirstOrDefault(fg => fg.Id == fieldGroup.Id);
+                    if (existingFieldGroup == null)
+                    {
+                        _fieldGroups.Add(fieldGroup);
+                        Console.WriteLine($"Added new FieldGroup with ID {fieldGroup.Id}");
+                    }
+                    else
+                    {
+                        existingFieldGroup.Name = fieldGroup.Name;
+                        existingFieldGroup.Description = fieldGroup.Description;
+                        existingFieldGroup.Visible = fieldGroup.Visible;
+                        existingFieldGroup.SortIndex = fieldGroup.SortIndex;
+                        existingFieldGroup.ParentId = fieldGroup.ParentId;
+                        existingFieldGroup.Icon = fieldGroup.Icon;
+                        existingFieldGroup.ReadOnly = fieldGroup.ReadOnly;
+                        existingFieldGroup.Reserved = fieldGroup.Reserved;
+                        Console.WriteLine($"Updated existing FieldGroup with ID {fieldGroup.Id}");
+                    }
+                }
+
+                foreach (var fieldEntry in sessionData.Fields)
+                {
+                    var field = fieldEntry.Value;
+                    var existingField = _fields.FirstOrDefault(f => f.Id == field.Id);
+                    if (existingField == null)
+                    {
+                        _fields.Add(field);
+                        Console.WriteLine($"Added new Field with ID {field.Id}");
+                    }
+                    else
+                    {
+                        existingField.Name = field.Name;
+                        existingField.Description = field.Description;
+                        existingField.Visible = field.Visible;
+                        existingField.SortIndex = field.SortIndex;
+                        existingField.ParentId = field.ParentId;
+                        existingField.Icon = field.Icon;
+                        existingField.DataType = field.DataType;
+                        existingField.DataSubType = field.DataSubType;
+                        existingField.Properties = field.Properties;
+                        existingField.Features = field.Features;
+                        Console.WriteLine($"Updated existing Field with ID {field.Id}");
+                    }
+                }
+
+                return Ok(new { message = "Session data received and processed successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Error processing session data: {ex.Message}" });
+            }
         }
-
-        // Log the received data (for debugging purposes)
-        Console.WriteLine("Received session data:");
-        Console.WriteLine($"UserID: {sessionData.UserId}");
-        Console.WriteLine($"Token: {sessionData.token}"); // Added token logging
-        Console.WriteLine($"Timestamp: {sessionData.Timestamp}");
-        Console.WriteLine($"Areas: {JsonSerializer.Serialize(sessionData.Areas)}");
-        Console.WriteLine($"Tables: {JsonSerializer.Serialize(sessionData.Tables)}");
-        Console.WriteLine($"FieldGroups: {JsonSerializer.Serialize(sessionData.FieldGroups)}");
-        Console.WriteLine($"Fields: {JsonSerializer.Serialize(sessionData.Fields)}");
-
-        // Process Areas
-        foreach (var areaEntry in sessionData.Areas)
-        {
-            var area = areaEntry.Value;
-            var existingArea = _areas.FirstOrDefault(a => a.Id == area.Id);
-            if (existingArea == null)
-            {
-                _areas.Add(area);
-                Console.WriteLine($"Added new Area with ID {area.Id}");
-            }
-            else
-            {
-                existingArea.Name = area.Name;
-                existingArea.Description = area.Description;
-                existingArea.Visible = area.Visible;
-                existingArea.SortIndex = area.SortIndex;
-                existingArea.ParentId = area.ParentId;
-                existingArea.Icon = area.Icon;
-                existingArea.ReadOnly = area.ReadOnly;
-                existingArea.Reserved = area.Reserved;
-                Console.WriteLine($"Updated existing Area with ID {area.Id}");
-            }
-        }
-
-        // Process Tables
-        foreach (var tableEntry in sessionData.Tables)
-        {
-            var table = tableEntry.Value;
-            var existingTable = _tables.FirstOrDefault(t => t.Id == table.Id);
-            if (existingTable == null)
-            {
-                _tables.Add(table);
-                Console.WriteLine($"Added new Table with ID {table.Id}");
-            }
-            else
-            {
-                existingTable.Name = table.Name;
-                existingTable.Description = table.Description;
-                existingTable.Visible = table.Visible;
-                existingTable.SortIndex = table.SortIndex;
-                existingTable.ParentId = table.ParentId;
-                existingTable.Icon = table.Icon;
-                existingTable.SystemProperties = table.SystemProperties;
-                Console.WriteLine($"Updated existing Table with ID {table.Id}");
-            }
-        }
-
-        // Process FieldGroups
-        foreach (var fgEntry in sessionData.FieldGroups)
-        {
-            var fieldGroup = fgEntry.Value;
-            var existingFieldGroup = _fieldGroups.FirstOrDefault(fg => fg.Id == fieldGroup.Id);
-            if (existingFieldGroup == null)
-            {
-                _fieldGroups.Add(fieldGroup);
-                Console.WriteLine($"Added new FieldGroup with ID {fieldGroup.Id}");
-            }
-            else
-            {
-                existingFieldGroup.Name = fieldGroup.Name;
-                existingFieldGroup.Description = fieldGroup.Description;
-                existingFieldGroup.Visible = fieldGroup.Visible;
-                existingFieldGroup.SortIndex = fieldGroup.SortIndex;
-                existingFieldGroup.ParentId = fieldGroup.ParentId;
-                existingFieldGroup.Icon = fieldGroup.Icon;
-                existingFieldGroup.ReadOnly = fieldGroup.ReadOnly;
-                existingFieldGroup.Reserved = fieldGroup.Reserved;
-                Console.WriteLine($"Updated existing FieldGroup with ID {fieldGroup.Id}");
-            }
-        }
-
-        // Process Fields
-        foreach (var fieldEntry in sessionData.Fields)
-        {
-            var field = fieldEntry.Value;
-            var existingField = _fields.FirstOrDefault(f => f.Id == field.Id);
-            if (existingField == null)
-            {
-                _fields.Add(field);
-                Console.WriteLine($"Added new Field with ID {field.Id}");
-            }
-            else
-            {
-                existingField.Name = field.Name;
-                existingField.Description = field.Description;
-                existingField.Visible = field.Visible;
-                existingField.SortIndex = field.SortIndex;
-                existingField.ParentId = field.ParentId;
-                existingField.Icon = field.Icon;
-                existingField.DataType = field.DataType;
-                existingField.DataSubType = field.DataSubType;
-                existingField.Properties = field.Properties;
-                existingField.Features = field.Features;
-                Console.WriteLine($"Updated existing Field with ID {field.Id}");
-            }
-        }
-
-        return Ok(new { message = "Session data received and processed successfully" });
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, new { message = $"Error processing session data: {ex.Message}" });
-    }
-}
 
         // Helper method to inject icons into the initial data
         private void InjectIcons()
@@ -369,11 +550,19 @@ namespace HSManager.Controllers
             _tables[0].Icon.Base64 = ConvertImageToBase64("settings.png");
             _tables[1].Icon.Base64 = ConvertImageToBase64("move-up.png");
             _tables[2].Icon.Base64 = ConvertImageToBase64("move-down.png");
+            _tables[3].Icon.Base64 = ConvertImageToBase64("vendor.png");
+            _tables[4].Icon.Base64 = ConvertImageToBase64("partner.png");
 
             _fieldGroups[0].Icon.Base64 = ConvertImageToBase64("add.png");
             _fieldGroups[1].Icon.Base64 = ConvertImageToBase64("delete.png");
+            _fieldGroups[2].Icon.Base64 = ConvertImageToBase64("info.png");
 
             _fields[0].Icon.Base64 = ConvertImageToBase64("settings.png");
+            _fields[1].Icon.Base64 = ConvertImageToBase64("reg.png");
+            _fields[2].Icon.Base64 = ConvertImageToBase64("email.png");
+            _fields[3].Icon.Base64 = ConvertImageToBase64("phone.png");
+            _fields[4].Icon.Base64 = ConvertImageToBase64("code.png");
+            _fields[5].Icon.Base64 = ConvertImageToBase64("budget.png");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿html, body {
+﻿/* Reset and base styles */
+html, body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -8,8 +9,24 @@
     scrollbar-width: thin;
     scrollbar-color: #666 #1a1a1a;
     background-color: #1a1a1a;
+    font-family: Arial, sans-serif;
+}
+/* Style checkboxes with label "Visible" to have grey fill */
+input[type="checkbox"] + label:where(:contains("Visible")) {
+    accent-color: grey;
+}
+.area-details h4,
+.table-details h4,
+.field-details h4 {
+    margin-top: 15px;
 }
 
+/* Ensure the checkbox itself has grey fill */
+.checkbox-group input[type="checkbox"] + label:where(:contains("Visible")) {
+    accent-color: grey;
+}
+
+    /* Scrollbar styling */
     html::-webkit-scrollbar,
     body::-webkit-scrollbar {
         width: 20px;
@@ -32,10 +49,12 @@
             background-color: #888;
         }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
     color: #ffffff !important;
 }
 
+/* Content area */
 .content-area {
     flex: 1;
     background-color: #2a2a2a;
@@ -43,10 +62,12 @@ h1, h2, h3, h4, h5, h6 {
     padding: 20px;
 }
 
+/* Sidebar background */
 .bg-sidebar {
     background-color: #212121;
 }
 
+/* Sidebar */
 .sidebar {
     position: fixed;
     top: 56px;
@@ -63,6 +84,7 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
 }
 
+/* Navigation links in sidebar */
 .nav-link {
     width: 40px;
     height: 40px;
@@ -82,6 +104,7 @@ h1, h2, h3, h4, h5, h6 {
         height: 24px;
     }
 
+/* Logout icon */
 .logout-icon {
     color: white;
     display: inline-block;
@@ -96,6 +119,11 @@ h1, h2, h3, h4, h5, h6 {
         cursor: pointer;
     }
 
+    .logout-icon img {
+        filter: brightness(0) invert(1);
+    }
+
+/* Logout popup */
 .logout-popup {
     position: absolute;
     bottom: 40px;
@@ -131,20 +159,19 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
 }
 
-.logout-icon img {
-    filter: brightness(0) invert(1);
-}
-
+/* Config div */
 .config-div {
     width: 300px;
     padding: 20px;
     margin-left: 10px;
 }
 
+/* Sidebar spacer */
 .sidebar-spacer {
     flex: 2;
 }
 
+/* Floating label */
 .floating-label {
     position: absolute;
     top: 0;
@@ -160,6 +187,7 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
 }
 
+/* Sidebar logo */
 .sidebar-logo {
     width: 40px;
     height: 40px;
@@ -167,41 +195,68 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
 }
 
+/* Main content */
 main[role="main"] {
     position: relative;
     top: 56px;
-    bottom: 10px;
     left: 60px;
-    right: 0;
+    width: calc(100% - 60px);
+    height: calc(100vh - 56px);
     padding: 0;
     display: flex;
+    overflow: hidden;
 }
 
+/* Dashboard content */
 #dashboardContent {
     flex: 1;
-    width: 100%;
+    width: calc(100% - 60px);
+    height: calc(100vh - 56px);
     background-color: #2a2a2a;
     color: #ffffff;
     padding: 20px;
     border-radius: 0;
     margin-bottom: 0;
+    position: relative;
+    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
+/* Config container */
 #configContainer {
     flex: 0;
     width: 0;
 }
 
+/* Table manager container */
 .table-manager-container {
     display: flex;
     width: 100%;
+    min-height: 100%; /* Allow it to grow beyond viewport if needed */
     gap: 10px;
     padding: 10px;
     font-family: Arial, sans-serif;
     flex-wrap: wrap;
+    box-sizing: border-box;
+    position: relative;
 }
 
-.table-manager,
+/* Table manager panel */
+.table-manager {
+    background-color: rgba(211, 211, 211, 0.5);
+    color: #ffffff;
+    padding: 10px;
+    border: 2px solid black;
+    width: 220px;
+    min-width: 220px;
+    flex: 1 1 auto;
+    max-width: calc(25% - 20px);
+    box-sizing: border-box;
+    height: auto; /* Allow height to adjust to content */
+    min-height: 0; /* Prevent shrinking below content */
+}
+
+/* Area, table, field, and settings panels */
 .area-details,
 .table-details,
 .field-details,
@@ -211,10 +266,16 @@ main[role="main"] {
     color: #ffffff;
     padding: 10px;
     border: 2px solid black;
-    width: 180px;
+    width: 220px;
+    min-width: 220px;
+    flex: 1 1 auto;
+    max-width: calc(25% - 20px);
     box-sizing: border-box;
+    height: auto; /* Allow height to adjust to content */
+    min-height: 0; /* Prevent shrinking below content */
 }
 
+    /* Ensure text inside panels is white */
     .table-manager *,
     .area-details *,
     .table-details *,
@@ -224,6 +285,7 @@ main[role="main"] {
         color: #ffffff;
     }
 
+    /* List box container (e.g., for "AREAS" and "TABLES") */
     .table-manager .list-box-container *,
     .area-details .list-box-container *,
     .table-details .list-box-container *,
@@ -233,6 +295,7 @@ main[role="main"] {
         color: black;
     }
 
+    /* Input fields inside panels */
     .table-manager input[type="text"],
     .table-manager textarea,
     .area-details input[type="text"],
@@ -248,6 +311,7 @@ main[role="main"] {
         color: black;
     }
 
+/* Headings inside panels */
 h2, h3, h4 {
     font-weight: bold;
     margin: 0 0 10px 0;
@@ -265,6 +329,7 @@ h4 {
     font-size: 14px;
 }
 
+/* Section titles (e.g., "FIELD GROUPS", "FIELDS") */
 .section-title {
     font-weight: bold;
     font-size: 16px;
@@ -273,32 +338,69 @@ h4 {
     justify-content: space-between;
     margin-top: 10px;
     width: 100%;
+    gap: 10px;
 }
 
+/* Icon bar for buttons (e.g., up/down/add/delete) */
 .icon-bar {
     display: flex;
-    gap: 5px;
+    gap: 0px;
+    align-items: center;
 }
 
-    .icon-bar img {
-        width: 24px;
-        height: 24px;
+    /* Buttons inside icon bar */
+    .icon-bar button {
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        background-color: #555;
+        border: none;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
     }
 
+        .icon-bar button:hover {
+            background-color: #bbb;
+        }
+
+        /* Icons inside buttons */
+        .icon-bar button img {
+            width: 10px;
+            height: 10px;
+            filter: brightness(0) invert(1);
+            object-fit: contain;
+        }
+
+        /* Fallback for font-based icons or SVGs in icon-bar */
+        .icon-bar button i,
+        .icon-bar button svg {
+            width: 10px;
+            height: 10px;
+            font-size: 10px;
+            transform: scale(0.625);
+        }
+
+/* List box container (e.g., for "AREAS" and "TABLES") */
 .list-box-container {
     background-color: white;
     padding: 10px;
     margin-top: 5px;
     font-size: 14px;
+    height: auto; /* Allow it to grow with content */
 }
 
+/* Custom list */
 .custom-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    height: auto; /* Ensure list grows with items */
 }
 
+/* Custom list items */
 .custom-list-item {
     padding: 6px;
     margin-bottom: 4px;
@@ -310,6 +412,7 @@ h4 {
         color: black;
     }
 
+/* Input fields */
 input[type="text"],
 textarea {
     width: 100%;
@@ -325,27 +428,45 @@ textarea {
     resize: none;
 }
 
+/* Checkboxes */
 input[type="checkbox"] {
     margin-right: 5px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
 }
 
+/* Labels */
 label {
     display: block;
     margin-bottom: 5px;
 }
 
+/* Icon preview */
 .icon-preview {
     width: 24px;
     height: 24px;
     margin-right: 10px;
+    object-fit: contain;
 }
 
+    /* Fallback for font-based icons or SVGs in icon-preview */
+    .icon-preview i,
+    .icon-preview svg {
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+        transform: scale(0.667);
+    }
+
+/* Icon upload container */
 .icon-upload-container {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
 
+/* General button styling */
 button {
     padding: 5px 10px;
     background-color: #555;
@@ -358,6 +479,7 @@ button {
         background-color: #bbb;
     }
 
+/* Field settings labels */
 .field-settings-details label,
 .field-settings label {
     font-weight: bold;
@@ -368,6 +490,7 @@ button {
     justify-content: space-between;
 }
 
+/* Field settings input fields */
 .field-settings-details input[type="text"],
 .field-settings input[type="text"] {
     width: 100%;
@@ -379,14 +502,27 @@ button {
     box-sizing: border-box;
 }
 
+/* Settings icon */
 .field-settings-details .settings-icon,
 .field-settings .settings-icon {
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
     cursor: pointer;
+    object-fit: contain;
 }
 
-/* ✅ Updated: Checkbox label text color is now white */
+    /* Fallback for font-based icons or SVGs in settings-icon */
+    .field-settings-details .settings-icon i,
+    .field-settings-details .settings-icon svg,
+    .field-settings .settings-icon i,
+    .field-settings .settings-icon svg {
+        width: 10px;
+        height: 10px;
+        font-size: 10px;
+        transform: scale(0.625);
+    }
+
+/* Checkbox group */
 .checkbox-group {
     display: flex;
     flex-direction: column;
@@ -402,6 +538,7 @@ button {
         font-weight: normal;
         color: #ffffff;
         margin-bottom: 0;
+        line-height: 1;
     }
 
     .checkbox-group input[type="checkbox"] {
@@ -409,7 +546,12 @@ button {
         height: 16px;
         margin: 0;
         accent-color: #ccc;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
     }
+
+/* Select dropdowns */
 select {
     color: white;
     background-color: #4a4848;
@@ -423,16 +565,16 @@ select {
         background-color: white;
     }
 
+/* Label colors */
 label,
 .readonly-label,
 .reserved-label,
 .setting-data-table-label {
     color: white !important;
 }
-/* Upload icon inside .field-settings */
+
+/* Upload icon inside field settings */
 .field-settings .icon-upload-container .upload-icon {
     color: #555;
-    filter: brightness(0) invert(0.8); /* Use only if it's an image or SVG */
+    filter: brightness(0) invert(0.8);
 }
-
-

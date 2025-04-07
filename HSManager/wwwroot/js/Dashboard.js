@@ -139,19 +139,19 @@ async function loadAreaDetails(areaId) {
             <textarea>${area.description || ''}</textarea>
             <h4>Status</h4>
             <label><input type="checkbox" ${area.visible ? 'checked' : ''}> Visible</label>
-            <div class="section-title">
-                <span>Tables</span>
-                <div class="icon-bar" style="display: flex; gap: 10px; width: 120px;">
-                    <img src="/assets/main-icons/move-up.png" alt="Sort Alphabetically" />
-                    <img src="/assets/main-icons/move-down.png" alt="Sort Alphabetically" />
-                    <img src="/assets/main-icons/add.png" alt="Add" />
-                    <img src="/assets/main-icons/delete.png" alt="Delete" />
-                </div>
-            </div>
+      <div class="section-title">
+        <span>Tables</span>
+        <div class="icon-bar" style="display: flex; gap: 10px;">
+            <img src="/assets/main-icons/move-up.png" alt="Sort Alphabetically" style="width: 24px; height: 24px;" />
+            <img src="/assets/main-icons/move-down.png" alt="Sort Alphabetically" style="width: 24px; height: 24px;" />
+            <img src="/assets/main-icons/add.png" alt="Add" style="width: 24px; height: 24px;" />
+            <img src="/assets/main-icons/delete.png" alt="Delete" style="width: 24px; height: 24px;" />
+        </div>
+    </div>
             <div class="list-box-container">
                 <ul class="custom-list" id="tableList">${tables}</ul>
             </div>
-            <h4>Area Icon</h4>
+            <h4 class="area-icon-head">Area Icon</h4>
             <div class="icon-upload-container">
                 ${area.icon && area.icon.base64 ? `<img src="${area.icon.base64}" alt="Area Icon" class="icon-preview">` : '<img src="/assets/main-icons/home.png" alt="Area Icon" class="icon-preview">'}
                 <button>Upload Icon</button>
@@ -598,10 +598,13 @@ async function loadFieldDetails(fieldId) {
             <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="visibleCheck" style="color: #ffffff; font-size: 14px;">Visible</label>
-                </div>
+<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="display: none;">
+    <label for="visibleCheck" style="display: flex; align-items: center; cursor: pointer; color: #ffffff; font-size: 14px;">
+        <span id="checkboxSquare" style="width: 16px; height: 16px; margin-right: 4px; background-color: ${field.visible ? 'grey' : '#fff'}; border: 1px solid grey; position: relative; display: inline-block; ${field.visible ? 'background-image: linear-gradient(45deg, transparent 40%, white 40%, white 60%, transparent 60%), linear-gradient(135deg, transparent 20%, white 20%, white 40%, transparent 40%); background-size: 8px 8px, 8px 8px; background-position: 4px 6px, 6px 4px; background-repeat: no-repeat;' : ''}"></span>
+        Visible
+    </label>
+</div>
             </div>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
            <select class="field-data-type"
@@ -615,34 +618,33 @@ async function loadFieldDetails(fieldId) {
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
             <input type="text" class="field-data-subtype" value="${field.dataSubType || ''}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <img src="/assets/main-icons/home.png" alt="Field Icon" style="width: 24px; height: 24px;">
-               <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
-
-            </div>
+       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+    <img src="/assets/main-icons/home.png" alt="Field Icon" style="width: 12px; height: 12px;">
+    <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+</div>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
                 <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
                     <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px;">Read only</label>
                 </div>
                 <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
                     <label for="reservedCheck" style="color: #ffffff; font-size: 14px;">Reserved</label>
                 </div>
             </div>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
                 <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
                     <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;">Compulsory</label>
                 </div>
                 <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
                     <label for="labelCheck" style="color: #ffffff; font-size: 14px;">Label</label>
                 </div>
                 <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
                     <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
                 </div>
             </div>
@@ -700,58 +702,58 @@ async function loadFieldDetails(fieldId) {
         console.log("Field data:", field);
 
         divF.innerHTML = `
-            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
-            <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
-            <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="visibleCheck" style="color: #ffffff; font-size: 14px;">Visible</label>
-                </div>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
-            <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-                <option value="string" ${field.dataType === "string" ? "selected" : ""}>String</option>
-                <option value="number" ${field.dataType === "number" ? "selected" : ""}>Number</option>
-                <option value="boolean" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
-                <option value="date" ${field.dataType === "date" ? "selected" : ""}>Date</option>
-            </select>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
-            <input type="text" class="field-data-subtype" value="${field.dataSubType || ''}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
-                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px;">Read only</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="reservedCheck" style="color: #ffffff; font-size: 14px;">Reserved</label>
-                </div>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;">Compulsory</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="labelCheck" style="color: #ffffff; font-size: 14px;">Label</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
-                </div>
-            </div>
-        `;
+     <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
+     <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
+     <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
+     <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
+     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+             <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 12px; height: 12px; margin-right: 8px; accent-color: #ccc;">
+             <label for="visibleCheck" style="color: #ffffff; font-size: 16px; font-weight: normal;">Visible</label>
+         </div>
+     </div>
+     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
+     <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+         <option value="string" ${field.dataType === "string" ? "selected" : ""}>String</option>
+         <option value="number" ${field.dataType === "number" ? "selected" : ""}>Number</option>
+         <option value="boolean" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
+         <option value="date" ${field.dataType === "date" ? "selected" : ""}>Date</option>
+     </select>
+     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
+     <input type="text" class="field-data-subtype" value="${field.dataSubType || ''}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
+     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+         <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
+         <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+     </div>
+     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
+     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+             <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+             <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Read only</label>
+         </div>
+         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+             <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+             <label for="reservedCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Reserved</label>
+         </div>
+     </div>
+     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
+     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+             <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+             <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Compulsory</label>
+         </div>
+         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+             <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+             <label for="labelCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Label</label>
+         </div>
+         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+             <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+             <label for="fullTextCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Full text indexed (if text)</label>
+         </div>
+     </div>
+`;
 
         divG.innerHTML = `
             <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
@@ -1087,6 +1089,7 @@ function addIconBarListeners(iconBar, type, parentId) {
     });
 }
 
+
 // Attach click listeners to area list items
 function attachAreaListListeners() {
     const items = document.querySelectorAll("#areaList .custom-list-item");
@@ -1099,8 +1102,67 @@ function attachAreaListListeners() {
             e.preventDefault();
             await new Promise(resolve => setTimeout(resolve, 100)); // Debounce
             console.log(`Area clicked: ${item.dataset.id}`);
+
+            // Remove 'selected' class from all items and add it to the clicked item
             items.forEach(i => i.classList.remove("selected"));
             item.classList.add("selected");
+
+            // Show an alert when an area is clicked
+            const areaName = item.textContent.trim() || "Unnamed Area";
+            alert(`Area selected: ${areaName} (ID: ${item.dataset.id})`);
+
+            // Hide all relevant divs first
+            const divsToHide = [
+                ".area-details",
+                ".table-details",
+                ".field-details",
+                ".field-settings",
+                ".field-settings-details"
+            ];
+            divsToHide.forEach(selector => {
+                const div = document.querySelector(selector);
+                if (div) {
+                    div.style.display = "none";
+                    console.log(`Hid div: ${selector}`);
+                } else {
+                    console.warn(`Div not found: ${selector}`);
+                }
+            });
+
+            // Specifically target and hide the "Name" and "Settings" h3 sections and their content
+            const sectionsToHide = [
+                { parent: ".table-details", headingText: "Table Name" },
+                { parent: ".field-details", headingText: "Field Group Name" },
+                { parent: ".field-settings", headingText: "Field Name" },
+                { parent: ".field-settings-details", headingText: "Field Settings" }
+            ];
+
+            sectionsToHide.forEach(({ parent, headingText }) => {
+                const parentDiv = document.querySelector(parent);
+                if (!parentDiv) {
+                    console.warn(`Parent div ${parent} not found`);
+                    return;
+                }
+
+                // Find the h3 with the exact text
+                const headings = parentDiv.querySelectorAll("h3");
+                headings.forEach(heading => {
+                    if (heading.textContent.trim() === headingText) {
+                        heading.style.display = "none";
+                        console.log(`Hid ${headingText} heading in ${parent}`);
+
+                        // Hide the next sibling (input or textarea)
+                        let nextSibling = heading.nextElementSibling;
+                        while (nextSibling && (nextSibling.tagName === "INPUT" || nextSibling.tagName === "TEXTAREA")) {
+                            nextSibling.style.display = "none";
+                            console.log(`Hid ${headingText} sibling (${nextSibling.tagName}) in ${parent}`);
+                            nextSibling = nextSibling.nextElementSibling;
+                        }
+                    }
+                });
+            });
+
+            // Load details for the newly selected area
             const areaId = item.dataset.id;
             if (!areaId) {
                 console.error("No areaId found for clicked item:", item);
@@ -1110,8 +1172,6 @@ function attachAreaListListeners() {
         });
     });
 }
-
-// Attach click listeners to table list items
 function attachTableListListeners() {
     const items = document.querySelectorAll("#tableList .custom-list-item");
     if (!items.length) {
@@ -1177,6 +1237,7 @@ function openSettings(settingType) {
     // Implement settings logic here if needed
 }
 
+// Load the sidebar menu
 // Load the sidebar menu
 async function loadMenu() {
     console.log("Loading menu");
@@ -1253,6 +1314,29 @@ async function loadMenu() {
                     activeId = null;
                 }, 200);
             });
+
+            // Add click event to load Table Manager divs when ID 1 is clicked
+            link.addEventListener("click", async (e) => {
+                e.preventDefault(); // Prevent default anchor behavior
+                const id = parseInt(e.currentTarget.dataset.id);
+                console.log(`Menu item clicked: ${id}`);
+
+                const contentArea = document.getElementById("dashboardContent");
+                const tableManagerContainer = document.getElementById("tableManagerContainer");
+
+                if (!contentArea || !tableManagerContainer) {
+                    console.error("Content area or table manager container not found");
+                    return;
+                }
+
+                if (id === 1) { // Table Manager icon clicked
+                    console.log("Table Manager icon clicked, loading divs");
+                    contentArea.querySelector("h1").style.display = "none";
+                    contentArea.querySelector("p").style.display = "none";
+                    tableManagerContainer.style.display = "flex";
+                    await populateAreasList();
+                }
+            });
         });
 
         floatingLabel.addEventListener("mouseenter", () => {
@@ -1268,25 +1352,9 @@ async function loadMenu() {
             }, 200);
         });
 
-        floatingLabel.addEventListener("click", async () => {
-            console.log(`Floating label clicked, activeId: ${activeId}`);
-            if (activeId === null) return;
+        // Remove the floatingLabel click event since it's no longer needed for loading divs
+        // floatingLabel.addEventListener("click", async () => { ... }); // This is now handled by nav-link click
 
-            const contentArea = document.getElementById("dashboardContent");
-            const tableManagerContainer = document.getElementById("tableManagerContainer");
-
-            if (!contentArea || !tableManagerContainer) {
-                console.error("Content area or table manager container not found");
-                return;
-            }
-
-            if (activeId === 1) {
-                contentArea.querySelector("h1").style.display = "none";
-                contentArea.querySelector("p").style.display = "none";
-                tableManagerContainer.style.display = "flex";
-                await populateAreasList();
-            }
-        });
     } catch (error) {
         console.error("Error in loadMenu:", error);
     }
@@ -1368,13 +1436,13 @@ document.addEventListener("change", function (event) {
     // Check if the changed element is a checkbox with id="visibleCheck"
     if (event.target.matches('input[type="checkbox"]#visibleCheck')) {
         const isChecked = event.target.checked;
-        //alert(`Visibility toggled to: ${isChecked ? "Visible" : "Hidden"}`);
-        console.log(`Visibility checkbox changed to: ${isChecked}`);
+        alert(`Visibility toggled to: ${isChecked ? "Visible" : "Hidden"}`);
+        //console.log(`Visibility checkbox changed to: ${isChecked}`);
 
         // Find the closest field-settings container
         const fieldSettings = event.target.closest('.field-settings');
         if (!fieldSettings) {
-            console.error("Field settings container not found");
+            //console.error("Field settings container not found");
             return;
         }
 
@@ -1406,8 +1474,8 @@ console.log("Universal visibility checkbox listener initialized");
 document.addEventListener("change", function (event) {
     if (event.target.matches('input[type="checkbox"]#visibleCheck')) {
         const isChecked = event.target.checked;
-        alert(`Visibility toggled to: ${isChecked ? "Visible" : "Hidden"}`);
-        console.log(`Visibility checkbox changed to: ${isChecked}`);
+        //alert(`Visibility toggled to: ${isChecked ? "Visible" : "Hidden"}`);
+        //console.log(`Visibility checkbox changed to: ${isChecked}`);
 
         const fieldSettings = event.target.closest('.field-settings');
         if (!fieldSettings) return;
@@ -1893,20 +1961,29 @@ function setupFinalDivSettingsIconAlert() {
         const isSettingsIcon = icon.matches(".field-settings-details img[alt='Settings']");
         if (!isSettingsIcon) return;
 
+        // Prevent default behavior
+        e.preventDefault();
+
         // Remove any existing overlay
         const existingOverlay = document.querySelector(".settings-overlay");
         if (existingOverlay) existingOverlay.remove();
 
-        // Create the overlay
+        // Create the overlay div
         const overlay = document.createElement("div");
         overlay.className = "settings-overlay";
-        overlay.textContent = "⚙️ Settings Panel";
+        overlay.innerHTML = `
+            <div style="position: relative; width: 100%; height: 100%;">
+                <button class="close-btn" style="position: absolute; top: 5px; right: 5px; background: none; border: none; color: #fff; font-size: 18px; cursor: pointer;">×</button>
+                <h4 style="margin: 0 0 10px 0">⚙️ Field Settings</h4>
+                <p style="margin: 0">Configure advanced field properties here.</p>
+            </div>
+        `;
 
-        // Style the overlay with larger dimensions
+        // Style the overlay
         Object.assign(overlay.style, {
             position: "absolute",
             top: `${icon.getBoundingClientRect().bottom + window.scrollY + 5}px`,
-            left: `${icon.getBoundingClientRect().left + window.scrollX}px`,
+            left: `${icon.getBoundingClientRect().left + window.scrollX - 300}px`, // Moved 50px to the left
             width: "250px",
             height: "150px",
             backgroundColor: "#222",
@@ -1915,17 +1992,34 @@ function setupFinalDivSettingsIconAlert() {
             borderRadius: "8px",
             fontSize: "14px",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-            zIndex: 1000,
-            cursor: "default",
+            zIndex: "1000",
             display: "flex",
-            alignItems: "center",
+            flexDirection: "column",
             justifyContent: "center",
+            alignItems: "center",
             textAlign: "center"
         });
 
-        document.body.appendChild(overlay);
+        // Append overlay to the field-settings-details container
+        const fieldSettingsDetails = icon.closest(".field-settings-details");
+        if (fieldSettingsDetails) {
+            fieldSettingsDetails.appendChild(overlay);
+        } else {
+            console.warn("Field settings details container not found, appending to body");
+            document.body.appendChild(overlay);
+        }
 
-        // Remove overlay when clicking outside
+        // Add close functionality to the "X" button
+        const closeButton = overlay.querySelector(".close-btn");
+        if (closeButton) {
+            closeButton.addEventListener("click", (e) => {
+                e.stopPropagation(); // Prevent the click from bubbling up
+                overlay.remove();
+                console.log("Overlay closed via X button");
+            });
+        }
+
+        // Close overlay when clicking outside
         const closeOnClickOutside = (ev) => {
             if (!overlay.contains(ev.target) && ev.target !== icon) {
                 overlay.remove();
@@ -1933,7 +2027,9 @@ function setupFinalDivSettingsIconAlert() {
             }
         };
 
-        setTimeout(() => document.addEventListener("click", closeOnClickOutside), 0);
+        setTimeout(() => document.addEventListener("click", closeOnClickOutside), 100);
+
+        console.log("Settings overlay displayed with close button for field-settings-details");
     });
 }
 
@@ -2276,8 +2372,182 @@ function setDropdownTextColorToBlack() {
 // Call the function to activate it
 setDropdownTextColorToBlack();
 
+// Universal function to show an alert with the selected area's name
+function handleListItemClicks() {
+    document.addEventListener("click", (e) => {
+        const item = e.target.closest(".custom-list-item");
+        if (item) {
+            const itemId = item.dataset.id || "Unknown ID";
+            const itemName = item.textContent.trim() || "Unnamed Item";
+            //alert(`Item clicked: ${itemName} (ID: ${itemId})`);
+
+            // Determine which parent container the item is in and set divs to hide accordingly
+            let divsToHide = [];
+
+            if (item.closest(".table-manager .list-box-container")) {
+                divsToHide = [
+                    ".table-details",
+                    ".field-details",
+                    ".field-settings",
+                    ".field-settings-details"
+                ];
+            } else if (item.closest(".area-details")) {
+                divsToHide = [
+                    ".field-details",
+                    ".field-settings",
+                    ".field-settings-details"
+                ];
+            } else if (item.closest(".table-details")) {
+                divsToHide = [
+                    ".field-settings",
+                    ".field-settings-details"
+                ];
+            }
+
+            // Hide all specified divs
+            divsToHide.forEach(selector => {
+                const div = document.querySelector(selector);
+                if (div) {
+                    div.style.display = "none";
+                    console.log(`Hid div: ${selector}`);
+                } else {
+                    console.warn(`Div not found: ${selector}`);
+                }
+            });
+        }
+    });
+}
+
+// Initialize on DOM load
+document.addEventListener("DOMContentLoaded", handleListItemClicks);
+function handleDynamicListItemClicks() {
+    // Define container rules (used by both click and observer)
+    const containerRules = {
+        ".table-manager .list-box-container": [
+            ".table-details",
+            ".field-details",
+            ".field-settings",
+            ".field-settings-details"
+        ],
+        ".area-details": [
+            ".field-details",
+            ".field-settings",
+            ".field-settings-details"
+        ],
+        ".table-details": [
+            ".field-settings",
+            ".field-settings-details"
+        ]
+    };
+
+    // Function to hide divs based on item location
+    const hideDivsForItem = (item) => {
+        let divsToHide = [];
+        for (const [containerSelector, divs] of Object.entries(containerRules)) {
+            if (item.closest(containerSelector)) {
+                divsToHide = divs;
+                break;
+            }
+        }
+        divsToHide.forEach(selector => {
+            const div = document.querySelector(selector);
+            if (div) {
+                div.style.display = "none";
+                console.log(`Hid div: ${selector}`);
+            } else {
+                console.warn(`Div not found: ${selector}`);
+            }
+        });
+    };
+
+    // Click event delegation
+    document.body.addEventListener("click", (e) => {
+        const item = e.target.closest(".custom-list-item");
+        if (item) {
+            const itemId = item.dataset.id || "Unknown ID";
+            const itemName = item.textContent.trim() || "Unnamed Item";
+            //alert(`Item clicked: ${itemName} (ID: ${itemId})`);
+            hideDivsForItem(item);
+        }
+    });
+
+    // MutationObserver for new item additions
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach((node) => {
+                    const item = node.classList?.contains("custom-list-item")
+                        ? node
+                        : node.querySelector?.(".custom-list-item");
+
+                    if (item) {
+                        hideDivsForItem(item);
+                    }
+                });
+            }
+        });
+    });
+
+    // Observe relevant containers
+    const containers = document.querySelectorAll(
+        ".table-manager .list-box-container, .area-details, .table-details"
+    );
+    containers.forEach(container => {
+        observer.observe(container, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
+// Initialize on DOM load
+document.addEventListener("DOMContentLoaded", handleDynamicListItemClicks);
+function enforceVisibleCheckboxColor() {
+    // Function to apply grey color to checkboxes with "Visible" label
+    const applyGreyColor = (checkbox) => {
+        const label = checkbox.nextElementSibling;
+        if (label && label.tagName === "LABEL" && label.textContent.trim().toLowerCase().includes("visible")) {
+            checkbox.style.accentColor = "grey";
+            console.log(`Set accent-color to grey for checkbox with label: "${label.textContent.trim()}"`);
+        }
+    };
+
+    // Apply to all existing checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(applyGreyColor);
+
+    // Set up MutationObserver for dynamically added checkboxes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (node.matches('input[type="checkbox"]')) {
+                            applyGreyColor(node);
+                        }
+                        node.querySelectorAll('input[type="checkbox"]').forEach(applyGreyColor);
+                    }
+                });
+            }
+        });
+    });
+
+    // Observe the entire document for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    console.log("Enforced grey accent-color for 'Visible' checkboxes, including Chrome");
+}
+
+// Initialize on DOM load
+document.addEventListener("DOMContentLoaded", () => {
+    enforceVisibleCheckboxColor();
+});
+
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM content loaded, initializing menu");
     loadMenu();
+
 });
