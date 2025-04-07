@@ -11,10 +11,12 @@ html, body {
     background-color: #1a1a1a;
     font-family: Arial, sans-serif;
 }
+
 /* Style checkboxes with label "Visible" to have grey fill */
 input[type="checkbox"] + label:where(:contains("Visible")) {
     accent-color: grey;
 }
+
 .area-details h4,
 .table-details h4,
 .field-details h4 {
@@ -26,28 +28,28 @@ input[type="checkbox"] + label:where(:contains("Visible")) {
     accent-color: grey;
 }
 
-    /* Scrollbar styling */
-    html::-webkit-scrollbar,
-    body::-webkit-scrollbar {
-        width: 20px;
-    }
+/* Scrollbar styling */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 20px;
+}
 
-    html::-webkit-scrollbar-track,
-    body::-webkit-scrollbar-track {
-        background: #1a1a1a;
-    }
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
 
-    html::-webkit-scrollbar-thumb,
-    body::-webkit-scrollbar-thumb {
-        background-color: #666;
-        border-radius: 5px;
-        border: 2px solid #1a1a1a;
-    }
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+    background-color: #666;
+    border-radius: 5px;
+    border: 2px solid #1a1a1a;
+}
 
-        html::-webkit-scrollbar-thumb:hover,
-        body::-webkit-scrollbar-thumb:hover {
-            background-color: #888;
-        }
+    html::-webkit-scrollbar-thumb:hover,
+    body::-webkit-scrollbar-thumb:hover {
+        background-color: #888;
+    }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -218,8 +220,8 @@ main[role="main"] {
     border-radius: 0;
     margin-bottom: 0;
     position: relative;
-    overflow-y: auto; /* Allow vertical scrolling */
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Config container */
@@ -231,29 +233,30 @@ main[role="main"] {
 /* Table manager container */
 .table-manager-container {
     display: flex;
-    width: 100%;
-    min-height: 100%; /* Allow it to grow beyond viewport if needed */
-    gap: 10px;
-    padding: 10px;
+    width: calc(100% - 80px); /* 100% minus sidebar (60px) and scrollbar (20px) */
+    min-height: 100%;
+    padding: 0;
     font-family: Arial, sans-serif;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     box-sizing: border-box;
     position: relative;
+    margin: 0;
 }
 
 /* Table manager panel */
 .table-manager {
-    background-color: rgba(211, 211, 211, 0.5);
+    background-color: transparent;
     color: #ffffff;
     padding: 10px;
-    border: 2px solid black;
-    width: 220px;
-    min-width: 220px;
+    border: none;
+    width: calc((100% - 80px) / 6); /* Equal width for 6 panels */
+    min-width: 210px;
     flex: 1 1 auto;
-    max-width: calc(25% - 20px);
+    max-width: 20%;
     box-sizing: border-box;
-    height: auto; /* Allow height to adjust to content */
-    min-height: 0; /* Prevent shrinking below content */
+    height: auto;
+    min-height: 0;
+    margin: 0;
 }
 
 /* Area, table, field, and settings panels */
@@ -265,14 +268,15 @@ main[role="main"] {
     background-color: #4a4848;
     color: #ffffff;
     padding: 10px;
-    border: 2px solid black;
-    width: 220px;
-    min-width: 220px;
+    border: none;
+    width: calc((100% - 80px) / 6); /* Equal width for 6 panels */
+    min-width: 210px;
     flex: 1 1 auto;
-    max-width: calc(25% - 20px);
+    max-width: 20%;
     box-sizing: border-box;
-    height: auto; /* Allow height to adjust to content */
-    min-height: 0; /* Prevent shrinking below content */
+    height: auto;
+    min-height: 0;
+    margin: 0;
 }
 
     /* Ensure text inside panels is white */
@@ -338,19 +342,16 @@ h4 {
     justify-content: space-between;
     margin-top: 10px;
     width: 100%;
-    gap: 10px;
 }
 
 /* Icon bar for buttons (e.g., up/down/add/delete) */
 .icon-bar {
     display: flex;
-    gap: 0px;
     align-items: center;
 }
 
-    /* Buttons inside icon bar */
     .icon-bar button {
-        width: 16px;
+        width: 10px;
         height: 16px;
         padding: 0;
         background-color: #555;
@@ -366,7 +367,6 @@ h4 {
             background-color: #bbb;
         }
 
-        /* Icons inside buttons */
         .icon-bar button img {
             width: 10px;
             height: 10px;
@@ -374,7 +374,6 @@ h4 {
             object-fit: contain;
         }
 
-        /* Fallback for font-based icons or SVGs in icon-bar */
         .icon-bar button i,
         .icon-bar button svg {
             width: 10px;
@@ -389,7 +388,7 @@ h4 {
     padding: 10px;
     margin-top: 5px;
     font-size: 14px;
-    height: auto; /* Allow it to grow with content */
+    height: auto;
 }
 
 /* Custom list */
@@ -397,7 +396,7 @@ h4 {
     list-style: none;
     margin: 0;
     padding: 0;
-    height: auto; /* Ensure list grows with items */
+    height: auto;
 }
 
 /* Custom list items */
@@ -450,7 +449,6 @@ label {
     object-fit: contain;
 }
 
-    /* Fallback for font-based icons or SVGs in icon-preview */
     .icon-preview i,
     .icon-preview svg {
         width: 16px;
@@ -511,7 +509,6 @@ button {
     object-fit: contain;
 }
 
-    /* Fallback for font-based icons or SVGs in settings-icon */
     .field-settings-details .settings-icon i,
     .field-settings-details .settings-icon svg,
     .field-settings .settings-icon i,
@@ -526,14 +523,12 @@ button {
 .checkbox-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
     margin-bottom: 10px;
 }
 
     .checkbox-group label {
         display: flex;
         align-items: center;
-        gap: 6px;
         font-size: 14px;
         font-weight: normal;
         color: #ffffff;

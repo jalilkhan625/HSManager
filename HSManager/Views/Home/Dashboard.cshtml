@@ -116,23 +116,71 @@
                         <div class="table-manager">
                             <h2>Table Manager</h2>
                             <div class="section-title">
-                                <span st>Areas</span>
+                                <span>Areas</span>
                                 <div class="icon-bar">
-                                    <img src="/assets/main-icons/move-up.png" id="addAreaBtn" alt="Move Up" />
-                                    <img src="/assets/main-icons/move-down.png" alt="Move Down" />
-                                    <img src="/assets/main-icons/add.png" alt="Add" />
-                                    <img src="/assets/main-icons/delete.png" alt="Delete" />
+                                    <img src="/assets/main-icons/move-up.png" id="moveUpAreaBtn" alt="Move Up" />
+                                    <img src="/assets/main-icons/move-down.png" id="moveDownAreaBtn" alt="Move Down" />
+                                    <img src="/assets/main-icons/add.png" id="addAreaBtn" alt="Add" />
+                                    <img src="/assets/main-icons/delete.png" id="deleteAreaBtn" alt="Delete" />
                                 </div>
                             </div>
                             <div class="list-box-container">
                                 <ul class="custom-list" id="areaList"></ul>
                             </div>
                         </div>
-                        <div class="area-details" style="display: none;"></div>
-                        <div class="table-details" style="display: none;"></div>
-                        <div class="field-details" style="display: none;"></div>
-                        <div class="field-settings" style="display: none;"></div>
-                        <div class="field-settings-details" style="display: none;"></div>
+                        <div class="area-details" style="display: none;">
+                            <h3>Area Details</h3>
+                            <div class="section-title">
+                                <span>Tables</span>
+                                <div class="icon-bar">
+                                    <img src="/assets/main-icons/move-up.png" id="moveUpTableBtn" alt="Move Up" />
+                                    <img src="/assets/main-icons/move-down.png" id="moveDownTableBtn" alt="Move Down" />
+                                    <img src="/assets/main-icons/add.png" id="addTableBtn" alt="Add" />
+                                    <img src="/assets/main-icons/delete.png" id="deleteTableBtn" alt="Delete" />
+                                </div>
+                            </div>
+                            <div class="list-box-container">
+                                <ul class="custom-list" id="tableList"></ul>
+                            </div>
+                        </div>
+                        <div class="table-details" style="display: none;">
+                            <h3>Table Details</h3>
+                            <div class="section-title">
+                                <span>Field Groups</span>
+                                <div class="icon-bar">
+                                    <img src="/assets/main-icons/move-up.png" id="moveUpFieldGroupBtn" alt="Move Up" />
+                                    <img src="/assets/main-icons/move-down.png" id="moveDownFieldGroupBtn" alt="Move Down" />
+                                    <img src="/assets/main-icons/add.png" id="addFieldGroupBtn" alt="Add" />
+                                    <img src="/assets/main-icons/delete.png" id="deleteFieldGroupBtn" alt="Delete" />
+                                </div>
+                            </div>
+                            <div class="list-box-container">
+                                <ul class="custom-list" id="fieldGroupList"></ul>
+                            </div>
+                        </div>
+                        <div class="field-details" style="display: none;">
+                            <h3>Field Details</h3>
+                            <div class="section-title">
+                                <span>Fields</span>
+                                <div class="icon-bar">
+                                    <img src="/assets/main-icons/move-up.png" id="moveUpFieldBtn" alt="Move Up" />
+                                    <img src="/assets/main-icons/move-down.png" id="moveDownFieldBtn" alt="Move Down" />
+                                    <img src="/assets/main-icons/add.png" id="addFieldBtn" alt="Add" />
+                                    <img src="/assets/main-icons/delete.png" id="deleteFieldBtn" alt="Delete" />
+                                </div>
+                            </div>
+                            <div class="list-box-container">
+                                <ul class="custom-list" id="fieldList"></ul>
+                            </div>
+                        </div>
+                        <div class="field-settings" style="display: none;">
+                            <h3>Field Settings</h3>
+                            <!-- Placeholder for settings -->
+                        </div>
+                        <div class="field-settings-details" style="display: none;">
+                            <h3>Field Settings Details</h3>
+                            <!-- Placeholder for settings details -->
+                        </div>
                     </div>
                 </div>
                 <div id="configContainer" style="flex: 0;"></div>
@@ -207,13 +255,30 @@
             `).join("");
         }
 
+        // Function to apply lock state to all interactive elements except list items
+        function applyLockState() {
+            const editableElements = document.querySelectorAll(
+                "#tableManagerContainer input, #tableManagerContainer textarea, #tableManagerContainer select, " +
+                "#tableManagerContainer button, #tableManagerContainer .icon-bar img"
+            );
+            if (isLocked) {
+                editableElements.forEach(el => {
+                    el.classList.add("locked-element");
+                    if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") {
+                        el.disabled = true;
+                    }
+                });
+                console.log("Lock state reapplied to all editable elements");
+            }
+        }
+
         // Function to toggle lock state
         function toggleLock() {
             isLocked = !isLocked;
             const lockIcon = document.getElementById("lockIcon");
             const editableElements = document.querySelectorAll(
                 "#tableManagerContainer input, #tableManagerContainer textarea, #tableManagerContainer select, " +
-                "#tableManagerContainer button, #tableManagerContainer .icon-bar img, #tableManagerContainer .custom-list-item"
+                "#tableManagerContainer button, #tableManagerContainer .icon-bar img"
             );
 
             if (isLocked) {
@@ -224,7 +289,7 @@
                         el.disabled = true;
                     }
                 });
-                console.log("Dashboard locked");
+                console.log("Dashboard locked (list items remain clickable, add/delete/move disabled)");
             } else {
                 lockIcon.src = "/assets/Icons/lock.svg"; // Revert to original lock icon
                 editableElements.forEach(el => {
@@ -246,7 +311,6 @@
                 console.log(`Cleared ${key} from sessionStorage`);
             });
 
-            // Reload the areas list to reflect the original state
             const tableManagerContainer = document.getElementById("tableManagerContainer");
             if (tableManagerContainer.style.display === "flex") {
                 populateAreasList();
@@ -264,11 +328,31 @@
             console.log("Undo completed, UI refreshed");
         }
 
+        // Placeholder functions for actions (to be implemented in areaManager.js)
+        function moveUpArea() { console.log("Move up area clicked"); }
+        function moveDownArea() { console.log("Move down area clicked"); }
+        function addNewArea() { console.log("Add area clicked"); }
+        function deleteArea() { console.log("Delete area clicked"); }
+
+        function moveUpTable() { console.log("Move up table clicked"); }
+        function moveDownTable() { console.log("Move down table clicked"); }
+        function addNewTable() { console.log("Add table clicked"); }
+        function deleteTable() { console.log("Delete table clicked"); }
+
+        function moveUpFieldGroup() { console.log("Move up field group clicked"); }
+        function moveDownFieldGroup() { console.log("Move down field group clicked"); }
+        function addNewFieldGroup() { console.log("Add field group clicked"); }
+        function deleteFieldGroup() { console.log("Delete field group clicked"); }
+
+        function moveUpField() { console.log("Move up field clicked"); }
+        function moveDownField() { console.log("Move down field clicked"); }
+        function addNewField() { console.log("Add field clicked"); }
+        function deleteField() { console.log("Delete field clicked"); }
+
         // Attach listeners defined in areaManager.js
         function attachAreaListListeners() {
             document.querySelectorAll("#areaList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
-                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Area clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#areaList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -279,6 +363,7 @@
                     selectedItems.field = null;
                     populateSteps();
                     await loadAreaDetails(areaId);
+                    applyLockState(); // Reapply lock state after loading new content
                 });
             });
         }
@@ -286,7 +371,6 @@
         function attachTableListListeners() {
             document.querySelectorAll("#tableList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
-                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Table clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#tableList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -296,6 +380,7 @@
                     selectedItems.field = null;
                     populateSteps();
                     await loadTableDetails(tableId);
+                    applyLockState(); // Reapply lock state after loading new content
                 });
             });
         }
@@ -303,7 +388,6 @@
         function attachFieldGroupListListeners() {
             document.querySelectorAll("#fieldGroupList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
-                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Field Group clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#fieldGroupList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -312,6 +396,7 @@
                     selectedItems.field = null;
                     populateSteps();
                     await loadFieldGroupDetails(fieldGroupId);
+                    applyLockState(); // Reapply lock state after loading new content
                 });
             });
         }
@@ -319,7 +404,6 @@
         function attachFieldListListeners() {
             document.querySelectorAll("#fieldList .custom-list-item").forEach(item => {
                 item.addEventListener("click", async () => {
-                    if (isLocked) return; // Prevent interaction when locked
                     console.log(`Field clicked: ${item.dataset.id}`);
                     document.querySelectorAll("#fieldList .custom-list-item").forEach(i => i.classList.remove("selected"));
                     item.classList.add("selected");
@@ -327,14 +411,84 @@
                     selectedItems.field = { id: fieldId, name: item.textContent };
                     populateSteps();
                     await loadFieldDetails(fieldId);
+                    applyLockState(); // Reapply lock state after loading new content
                 });
             });
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             console.log("DOM content loaded, initializing steps and icon listeners");
-            document.getElementById("addAreaBtn")?.addEventListener("click", () => {
-                if (!isLocked) addNewArea(); // Assuming addNewArea is defined in areaManager.js
+
+            // Area button listeners
+            document.getElementById("moveUpAreaBtn").addEventListener("click", () => {
+                if (!isLocked) moveUpArea();
+                else console.log("Move up area blocked due to lock");
+            });
+            document.getElementById("moveDownAreaBtn").addEventListener("click", () => {
+                if (!isLocked) moveDownArea();
+                else console.log("Move down area blocked due to lock");
+            });
+            document.getElementById("addAreaBtn").addEventListener("click", () => {
+                if (!isLocked) addNewArea();
+                else console.log("Add area blocked due to lock");
+            });
+            document.getElementById("deleteAreaBtn").addEventListener("click", () => {
+                if (!isLocked) deleteArea();
+                else console.log("Delete area blocked due to lock");
+            });
+
+            // Table button listeners
+            document.getElementById("moveUpTableBtn").addEventListener("click", () => {
+                if (!isLocked) moveUpTable();
+                else console.log("Move up table blocked due to lock");
+            });
+            document.getElementById("moveDownTableBtn").addEventListener("click", () => {
+                if (!isLocked) moveDownTable();
+                else console.log("Move down table blocked due to lock");
+            });
+            document.getElementById("addTableBtn").addEventListener("click", () => {
+                if (!isLocked) addNewTable();
+                else console.log("Add table blocked due to lock");
+            });
+            document.getElementById("deleteTableBtn").addEventListener("click", () => {
+                if (!isLocked) deleteTable();
+                else console.log("Delete table blocked due to lock");
+            });
+
+            // Field Group button listeners
+            document.getElementById("moveUpFieldGroupBtn").addEventListener("click", () => {
+                if (!isLocked) moveUpFieldGroup();
+                else console.log("Move up field group blocked due to lock");
+            });
+            document.getElementById("moveDownFieldGroupBtn").addEventListener("click", () => {
+                if (!isLocked) moveDownFieldGroup();
+                else console.log("Move down field group blocked due to lock");
+            });
+            document.getElementById("addFieldGroupBtn").addEventListener("click", () => {
+                if (!isLocked) addNewFieldGroup();
+                else console.log("Add field group blocked due to lock");
+            });
+            document.getElementById("deleteFieldGroupBtn").addEventListener("click", () => {
+                if (!isLocked) deleteFieldGroup();
+                else console.log("Delete field group blocked due to lock");
+            });
+
+            // Field button listeners
+            document.getElementById("moveUpFieldBtn").addEventListener("click", () => {
+                if (!isLocked) moveUpField();
+                else console.log("Move up field blocked due to lock");
+            });
+            document.getElementById("moveDownFieldBtn").addEventListener("click", () => {
+                if (!isLocked) moveDownField();
+                else console.log("Move down field blocked due to lock");
+            });
+            document.getElementById("addFieldBtn").addEventListener("click", () => {
+                if (!isLocked) addNewField();
+                else console.log("Add field blocked due to lock");
+            });
+            document.getElementById("deleteFieldBtn").addEventListener("click", () => {
+                if (!isLocked) deleteField();
+                else console.log("Delete field blocked due to lock");
             });
 
             // Lock icon listener
@@ -344,11 +498,12 @@
 
             // Undo icon listener
             document.getElementById("undoIcon").addEventListener("click", () => {
-                if (!isLocked) undoNewItems(); // Only allow undo when not locked
+                if (!isLocked) undoNewItems();
+                else console.log("Undo blocked due to lock");
             });
 
             populateSteps();
         });
-    </script>a
+    </script>
 </body>
 </html>

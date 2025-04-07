@@ -568,6 +568,7 @@ async function loadFieldGroupDetails(fieldGroupId, cascade = false) {
     }
 }
 // Load field details
+// Load field details
 async function loadFieldDetails(fieldId) {
     console.log(`Loading field details for ID: ${fieldId}`);
     const divC = document.querySelector(".area-details");
@@ -598,30 +599,36 @@ async function loadFieldDetails(fieldId) {
             <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="display: none;">
-    <label for="visibleCheck" style="display: flex; align-items: center; cursor: pointer; color: #ffffff; font-size: 14px;">
-        <span id="checkboxSquare" style="width: 16px; height: 16px; margin-right: 4px; background-color: ${field.visible ? 'grey' : '#fff'}; border: 1px solid grey; position: relative; display: inline-block; ${field.visible ? 'background-image: linear-gradient(45deg, transparent 40%, white 40%, white 60%, transparent 60%), linear-gradient(135deg, transparent 20%, white 20%, white 40%, transparent 40%); background-size: 8px 8px, 8px 8px; background-position: 4px 6px, 6px 4px; background-repeat: no-repeat;' : ''}"></span>
-        Visible
-    </label>
-</div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="display: none;">
+                    <label for="visibleCheck" style="display: flex; align-items: center; cursor: pointer; color: #ffffff; font-size: 14px;">
+                        <span id="checkboxSquare" style="width: 16px; height: 16px; margin-right: 4px; background-color: ${field.visible ? 'grey' : '#fff'}; border: 1px solid grey; position: relative; display: inline-block; ${field.visible ? 'background-image: linear-gradient(45deg, transparent 40%, white 40%, white 60%, transparent 60%), linear-gradient(135deg, transparent 20%, white 20%, white 40%, transparent 40%); background-size: 8px 8px, 8px 8px; background-position: 4px 6px, 6px 4px; background-repeat: no-repeat;' : ''}"></span>
+                        Visible
+                    </label>
+                </div>
             </div>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
-           <select class="field-data-type"
-    style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-    <option value="string" style="color: black; background-color: white;" ${field.dataType === "string" ? "selected" : ""}>String</option>
-    <option value="number" style="color: black; background-color: white;" ${field.dataType === "number" ? "selected" : ""}>Number</option>
-    <option value="boolean" style="color: black; background-color: white;" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
-    <option value="date" style="color: black; background-color: white;" ${field.dataType === "date" ? "selected" : ""}>Date</option>
-</select>
-
+            <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+                <option value="string" style="color: black; background-color: white;" ${field.dataType === "string" ? "selected" : ""}>String</option>
+                <option value="number" style="color: black; background-color: white;" ${field.dataType === "number" ? "selected" : ""}>Number</option>
+                <option value="boolean" style="color: black; background-color: white;" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
+                <option value="date" style="color: black; background-color: white;" ${field.dataType === "date" ? "selected" : ""}>Date</option>
+            </select>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
-            <input type="text" class="field-data-subtype" value="${field.dataSubType || ''}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <select class="field-data-subtype" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+                <option value="" style="color: black; background-color: white;" ${!field.dataSubType ? "selected" : ""}>None</option>
+                <option value="text" style="color: black; background-color: white;" ${field.dataSubType === "text" ? "selected" : ""}>Text</option>
+                <option value="email" style="color: black; background-color: white;" ${field.dataSubType === "email" ? "selected" : ""}>Email</option>
+                <option value="url" style="color: black; background-color: white;" ${field.dataSubType === "url" ? "selected" : ""}>URL</option>
+                <option value="integer" style="color: black; background-color: white;" ${field.dataSubType === "integer" ? "selected" : ""}>Integer</option>
+                <option value="decimal" style="color: black; background-color: white;" ${field.dataSubType === "decimal" ? "selected" : ""}>Decimal</option>
+                <option value="datetime" style="color: black; background-color: white;" ${field.dataSubType === "datetime" ? "selected" : ""}>DateTime</option>
+            </select>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
-       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-    <img src="/assets/main-icons/home.png" alt="Field Icon" style="width: 12px; height: 12px;">
-    <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
-</div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <img src="/assets/main-icons/home.png" alt="Field Icon" style="width: 12px; height: 12px;">
+                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+            </div>
             <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
                 <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
@@ -702,58 +709,66 @@ async function loadFieldDetails(fieldId) {
         console.log("Field data:", field);
 
         divF.innerHTML = `
-     <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
-     <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
-     <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
-     <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
-     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-             <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 12px; height: 12px; margin-right: 8px; accent-color: #ccc;">
-             <label for="visibleCheck" style="color: #ffffff; font-size: 16px; font-weight: normal;">Visible</label>
-         </div>
-     </div>
-     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
-     <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-         <option value="string" ${field.dataType === "string" ? "selected" : ""}>String</option>
-         <option value="number" ${field.dataType === "number" ? "selected" : ""}>Number</option>
-         <option value="boolean" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
-         <option value="date" ${field.dataType === "date" ? "selected" : ""}>Date</option>
-     </select>
-     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
-     <input type="text" class="field-data-subtype" value="${field.dataSubType || ''}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
-     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-         <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
-         <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
-     </div>
-     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
-     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-             <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-             <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Read only</label>
-         </div>
-         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-             <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-             <label for="reservedCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Reserved</label>
-         </div>
-     </div>
-     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
-     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-             <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-             <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Compulsory</label>
-         </div>
-         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-             <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-             <label for="labelCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Label</label>
-         </div>
-         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-             <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-             <label for="fullTextCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Full text indexed (if text)</label>
-         </div>
-     </div>
-`;
+            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
+            <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
+            <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 12px; height: 12px; margin-right: 8px; accent-color: #ccc;">
+                    <label for="visibleCheck" style="color: #ffffff; font-size: 16px; font-weight: normal;">Visible</label>
+                </div>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
+            <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+                <option value="string" ${field.dataType === "string" ? "selected" : ""}>String</option>
+                <option value="number" ${field.dataType === "number" ? "selected" : ""}>Number</option>
+                <option value="boolean" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
+                <option value="date" ${field.dataType === "date" ? "selected" : ""}>Date</option>
+            </select>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
+            <select class="field-data-subtype" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+                <option value="" ${!field.dataSubType ? "selected" : ""}>None</option>
+                <option value="text" ${field.dataSubType === "text" ? "selected" : ""}>Text</option>
+                <option value="email" ${field.dataSubType === "email" ? "selected" : ""}>Email</option>
+                <option value="url" ${field.dataSubType === "url" ? "selected" : ""}>URL</option>
+                <option value="integer" ${field.dataSubType === "integer" ? "selected" : ""}>Integer</option>
+                <option value="decimal" ${field.dataSubType === "decimal" ? "selected" : ""}>Decimal</option>
+                <option value="datetime" ${field.dataSubType === "datetime" ? "selected" : ""}>DateTime</option>
+            </select>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
+                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Read only</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="reservedCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Reserved</label>
+                </div>
+            </div>
+            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Compulsory</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="labelCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Label</label>
+                </div>
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
+                    <label for="fullTextCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Full text indexed (if text)</label>
+                </div>
+            </div>
+        `;
 
         divG.innerHTML = `
             <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
@@ -2421,7 +2436,7 @@ function handleListItemClicks() {
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", handleListItemClicks);
 function handleDynamicListItemClicks() {
-    // Define container rules (used by both click and observer)
+    // Define container rules for hiding divs
     const containerRules = {
         ".table-manager .list-box-container": [
             ".table-details",
@@ -2464,9 +2479,16 @@ function handleDynamicListItemClicks() {
     document.body.addEventListener("click", (e) => {
         const item = e.target.closest(".custom-list-item");
         if (item) {
+            // Check if the item is within tableRelationsList and ignore it
+            if (item.closest("#tableRelationsList")) {
+                console.log("Click on tableRelationsList item ignored");
+                return; // Exit early, do nothing
+            }
+
             const itemId = item.dataset.id || "Unknown ID";
             const itemName = item.textContent.trim() || "Unnamed Item";
-            //alert(`Item clicked: ${itemName} (ID: ${itemId})`);
+            // Uncomment if you want the alert back for other lists
+            // alert(`Item clicked: ${itemName} (ID: ${itemId})`);
             hideDivsForItem(item);
         }
     });
@@ -2480,7 +2502,7 @@ function handleDynamicListItemClicks() {
                         ? node
                         : node.querySelector?.(".custom-list-item");
 
-                    if (item) {
+                    if (item && !item.closest("#tableRelationsList")) { // Exclude tableRelationsList
                         hideDivsForItem(item);
                     }
                 });
@@ -2488,7 +2510,7 @@ function handleDynamicListItemClicks() {
         });
     });
 
-    // Observe relevant containers
+    // Observe relevant containers, excluding tableRelationsList's parent
     const containers = document.querySelectorAll(
         ".table-manager .list-box-container, .area-details, .table-details"
     );
@@ -2499,6 +2521,9 @@ function handleDynamicListItemClicks() {
         });
     });
 }
+
+// Initialize on DOM load
+document.addEventListener("DOMContentLoaded", handleDynamicListItemClicks);
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", handleDynamicListItemClicks);
@@ -2545,6 +2570,86 @@ document.addEventListener("DOMContentLoaded", () => {
     enforceVisibleCheckboxColor();
 });
 
+function neutralizeTableRelationsListClicksCompletely() {
+    console.log("🔇 Completely neutralizing clicks on tableRelationsList items");
+
+    // Function to neutralize clicks on existing items
+    const neutralizeExistingClicks = (list) => {
+        if (!list) {
+            console.error("tableRelationsList not found in the DOM");
+            return;
+        }
+        // Add a direct listener to each current item
+        const items = list.querySelectorAll(".custom-list-item");
+        items.forEach(item => {
+            item.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log(`Click completely neutralized on: ${item.textContent.trim()} (ID: ${item.dataset.id || "N/A"})`);
+            }, { capture: true }); // Use capture phase to catch it early
+        });
+    };
+
+    // Initial neutralization
+    const initialList = document.getElementById("tableRelationsList");
+    neutralizeExistingClicks(initialList);
+
+    // Set up MutationObserver to handle dynamic changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            // Check if tableRelationsList itself was added/removed
+            if (mutation.type === "childList") {
+                const list = document.getElementById("tableRelationsList");
+                if (list && !list.dataset.neutralized) {
+                    neutralizeExistingClicks(list);
+                    list.dataset.neutralized = "true"; // Mark as neutralized to avoid redundant work
+                    console.log("Re-neutralized tableRelationsList after DOM change");
+                }
+
+                // Check for added nodes (new items)
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        const items = node.classList.contains("custom-list-item")
+                            ? [node]
+                            : node.querySelectorAll?.(".custom-list-item") || [];
+                        items.forEach(item => {
+                            if (item.closest("#tableRelationsList")) {
+                                item.addEventListener("click", (e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    console.log(`Click completely neutralized on dynamically added item: ${item.textContent.trim()} (ID: ${item.dataset.id || "N/A"})`);
+                                }, { capture: true });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    // Observe the entire document to catch any changes to tableRelationsList
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Add a top-level document listener as a failsafe
+    document.addEventListener("click", (e) => {
+        const item = e.target.closest("#tableRelationsList .custom-list-item");
+        if (item) {
+            e.stopPropagation();
+            e.preventDefault();
+            console.log(`Failsafe: Click neutralized on: ${item.textContent.trim()} (ID: ${item.dataset.id || "N/A"})`);
+        }
+    }, { capture: true }); // Capture phase to intercept early
+
+    console.log("✅ tableRelationsList clicks completely neutralized, including dynamic content");
+}
+
+// Initialize on DOM load
+document.addEventListener("DOMContentLoaded", () => {
+    neutralizeTableRelationsListClicksCompletely();
+});
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM content loaded, initializing menu");
