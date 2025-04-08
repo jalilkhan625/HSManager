@@ -244,8 +244,23 @@ main[role="main"] {
     margin-right: 0;
 }
 
+.table-manager {
+    background-color: transparent; /* Fully transparent, no color */
+    color: #ffffff;
+    padding: 10px;
+    border: none; /* No border for a seamless glass look */
+    width: calc((100% - 20px) / 6); /* Maintain original width */
+    min-width: 210px;
+    flex: 1 1 auto;
+    max-width: 20%;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 0;
+    margin-left: 0; /* Explicitly no left margin */
+    padding-left: 10px; /* Keep internal padding */
+}
+
 /* Default panel styles */
-.table-manager,
 .area-details,
 .table-details,
 .field-details,
@@ -277,7 +292,10 @@ main[role="main"] {
     flex: 0 0 300px;
     max-width: none;
 }
-
+/* Move the dynamically injected bottom item up slightly in relevant containers */
+.table-details > *:last-child {
+    margin-bottom: 10px; /* Adjust this value as needed */
+}
 /* Adjust other panels when all divs are open */
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-manager,
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .area-details,

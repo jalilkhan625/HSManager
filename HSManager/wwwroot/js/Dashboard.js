@@ -609,19 +609,17 @@ async function loadFieldDetails(fieldId) {
     // Standardize the HTML with <textarea> for Field Name
     divF.innerHTML = `
     <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
-    <textarea style="width: 100%; height: 35px; padding: 5px; margin-top: -5px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; line-height: 16px; font-size: 14px; resize: vertical;">${field.name || 'Unnamed'}</textarea>
-    <h4 style="color: #ffffff; margin-top: 10px;">Field Description</h4>
-    <textarea style="width: 100%; height: 60px; padding: 5px; margin-top: 0px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical; line-height: 16px; font-size: 14px;">${field.description || ''}</textarea>
-    <h4 style="color: #ffffff; margin-top: 10px;">Status</h4>
-    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-            <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="display: none;">
-            <label for="visibleCheck" style="display: flex; align-items: center; cursor: pointer; color: #ffffff; font-size: 14px;">
-                <span id="checkboxSquare" style="width: 16px; height: 16px; margin-right: 4px; background-color: ${field.visible ? 'grey' : '#fff'}; border: 1px solid grey; position: relative; display: inline-block; ${field.visible ? 'background-image: linear-gradient(45deg, transparent 40%, white 40%, white 60%, transparent 60%), linear-gradient(135deg, transparent 20%, white 20%, white 40%, transparent 40%); background-size: 8px 8px, 8px 8px; background-position: 4px 6px, 6px 4px; background-repeat: no-repeat;' : ''}"></span>
-                Visible
-            </label>
-        </div>
-    </div>
+    <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; height: 35px; padding: 5px; margin-top: -5px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; line-height: 16px; font-size: 16px;">
+    <h4 style="color: #ffffff; margin-top: 15px;">Field Description</h4>
+   <textarea style="width: 100%; height: 60px; padding: 5px; margin-top: 0px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: none; line-height: 16px; font-size: 16px;">${field.description || ''}</textarea>
+    <h4 style="color: #ffffff; margin-top: 15px;">Status</h4>
+<div class="checkbox-group" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+        <input type="checkbox" id="visibleCheck" checked style="width: 12px; height: 12px; margin-right: 8px; accent-color: grey; margin-top: 8px;">
+        <label for="visibleCheck" style="color: #ffffff; font-size: 16px; font-weight: normal;">Visible</label>
+</div>
+</div>
+</div>
     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
     <select class="field-data-type" style="width: 100%; padding: 5px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; height: 26px; line-height: 16px; font-size: 14px;">
         <option value="string" style="color: black; background-color: white;" ${field.dataType === "string" ? "selected" : ""}>String</option>
@@ -645,29 +643,30 @@ async function loadFieldDetails(fieldId) {
         <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
     </div>
     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
-    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-            <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-            <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px;">Read only</label>
-        </div>
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-            <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-            <label for="reservedCheck" style="color: #ffffff; font-size: 14px;">Reserved</label>
-        </div>
+<div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+    <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+        <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+        <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Read only</label>
+    </div>
+    <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+        <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+        <label for="reservedCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Reserved</label>
+    </div>
+</div>
     </div>
     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
             <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-            <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;">Compulsory</label>
+            <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;font-weight: normal;">Compulsory</label>
         </div>
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
             <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-            <label for="labelCheck" style="color: #ffffff; font-size: 14px;">Label</label>
+            <label for="labelCheck" style="color: #ffffff; font-size: 14px;font-weight: normal;">Label</label>
         </div>
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
             <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-            <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
+            <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;font-weight: normal;">Full text indexed (if text)</label>
         </div>
     </div>
 `;
@@ -1348,7 +1347,7 @@ document.addEventListener("change", function (event) {
     // Check if the changed element is a checkbox with id="visibleCheck"
     if (event.target.matches('input[type="checkbox"]#visibleCheck')) {
         const isChecked = event.target.checked;
-        alert(`Visibility toggled to: ${isChecked ? "Visible" : "Hidden"}`);
+        //alert(`Visibility toggled to: ${isChecked ? "Visible" : "Hidden"}`);
         //console.log(`Visibility checkbox changed to: ${isChecked}`);
 
         // Find the closest field-settings container
@@ -2424,48 +2423,7 @@ document.addEventListener("DOMContentLoaded", handleDynamicListItemClicks);
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", handleDynamicListItemClicks);
-function enforceVisibleCheckboxColor() {
-    // Function to apply grey color to checkboxes with "Visible" label
-    const applyGreyColor = (checkbox) => {
-        const label = checkbox.nextElementSibling;
-        if (label && label.tagName === "LABEL" && label.textContent.trim().toLowerCase().includes("visible")) {
-            checkbox.style.accentColor = "grey";
-            console.log(`Set accent-color to grey for checkbox with label: "${label.textContent.trim()}"`);
-        }
-    };
 
-    // Apply to all existing checkboxes
-    document.querySelectorAll('input[type="checkbox"]').forEach(applyGreyColor);
-
-    // Set up MutationObserver for dynamically added checkboxes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.addedNodes.length > 0) {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === Node.ELEMENT_NODE) {
-                        if (node.matches('input[type="checkbox"]')) {
-                            applyGreyColor(node);
-                        }
-                        node.querySelectorAll('input[type="checkbox"]').forEach(applyGreyColor);
-                    }
-                });
-            }
-        });
-    });
-
-    // Observe the entire document for changes
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-
-    console.log("Enforced grey accent-color for 'Visible' checkboxes, including Chrome");
-}
-
-// Initialize on DOM load
-document.addEventListener("DOMContentLoaded", () => {
-    enforceVisibleCheckboxColor();
-});
 
 function neutralizeTableRelationsListClicksCompletely() {
     console.log("🔇 Completely neutralizing clicks on tableRelationsList items");
@@ -2547,37 +2505,7 @@ function neutralizeTableRelationsListClicksCompletely() {
 document.addEventListener("DOMContentLoaded", () => {
     neutralizeTableRelationsListClicksCompletely();
 });
-// Function to check for input
-function findFieldSettingsDiv() {
-    console.log('Starting search for dynamically injected field-settings div...');
 
-    // Check if the div already exists (just in case it's injected before DOM load)
-    const divF = document.getElementById('field-settings');
-    if (divF) {
-        console.log('Div "field-settings" already present.');
-        alert('Div "field-settings" found');
-    } else {
-        console.log('Div "field-settings" not found yet. Starting MutationObserver...');
-        const observer = new MutationObserver((mutations, obs) => {
-            const divF = document.getElementById('field-settings');
-            if (divF) {
-                console.log('Div "field-settings" dynamically injected and detected.');
-                alert('Div "field-settings" found');
-                obs.disconnect(); // Stop observing once found
-                console.log('Observer disconnected.');
-            }
-        });
-        // Start observing document.body for dynamic injection
-        observer.observe(document.body, {
-            childList: true,  // Detect added/removed nodes
-            subtree: true     // Watch all descendants
-        });
-        console.log('MutationObserver is now watching document.body for injection.');
-    }
-}
-
-// Run when DOM is fully loaded to start observing
-document.addEventListener('DOMContentLoaded', findFieldSettingsDiv);
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM content loaded, initializing menu");
