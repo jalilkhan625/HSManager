@@ -1,4 +1,4 @@
-﻿@using System.Security.Claims
+﻿﻿@using System.Security.Claims
 @{
     ViewData["Title"] = "Dashboard";
     Layout = null;
@@ -16,6 +16,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/dashboard.css" rel="stylesheet" />
     <style>
+
+        .sidebar {
+            height: calc(100vh - 45px); /* Reduced height from bottom (adjust -50px as needed) */
+            position: absolute;
+            top: 45px; /* Top remains fixed */
+            z-index: 1001;
+            width: 60px;
+            background-color: #212121;
+        }
+
+      
         .sky-blue-hr {
             border: 0;
             height: 2px;
@@ -23,12 +34,13 @@
             margin: 0;
         }
 
+        /* Option 1: Using margin-left to push it right */
         .steps-container {
             display: flex;
             gap: 15px;
             font-size: 14px;
+            margin-left: 50px; /* Adjust value as needed */
         }
-
         .step-item {
             display: flex;
             align-items: center;
@@ -64,7 +76,7 @@
             <div style="margin-right: 20px;">Table Manager</div>
         </div>
         <hr class="sky-blue-hr" />
-        <div class="d-flex justify-content-between align-items-center navbar-bottom px-3" style="height: 40px;">
+        <div class="d-flex justify-content-between align-items-center navbar-bottom px-3" style="height: 50px;">
             <div id="stepsContainer" class="steps-container text-white" style="flex-grow: 1; display: none; width: 80%; min-width: 600px;"></div>
             <div style="display: flex; align-items: center; margin-right: 20px; margin-left: auto;">
                 <img id="lockIcon" src="/assets/Icons/lock.svg" alt="Lock" style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
@@ -82,7 +94,7 @@
             <!-- Sidebar -->
             <nav class="d-none d-md-block bg-sidebar sidebar">
                 <div class="sidebar-sticky pt-3 text-center" style="height: calc(100% - 30px); display: flex; flex-direction: column;">
-                    <img src="/assets/Loghi Web/favicon - Copia.png" alt="Logo" class="sidebar-logo" />
+                    <img src="/assets/Loghi Web/favicon - Copia.png" alt="Logo" class="sidebar-logo" style="margin-top: -10px;" />
                     <div class="sidebar-spacer"></div>
                     <ul class="nav flex-column" id="menuList" style="margin-bottom: 0;">
                         <li class="nav-item mb-3">
@@ -112,7 +124,8 @@
                     <h1 class="mt-5 text-center">Welcome to HSManager Dashboard</h1>
                     <p class="text-center">You're now logged in.</p>
 
-                    <div id="tableManagerContainer" class="table-manager-container" style="display: none;">
+                    <!-- Option 1: Add margin-top directly -->
+                    <div id="tableManagerContainer" class="table-manager-container" style="display: none; margin-top: 20px;">
                         <div class="table-manager">
                             <h2>Table Manager</h2>
                             <div class="section-title">
