@@ -1,4 +1,4 @@
-﻿/* Reset and base styles */
+﻿\/* Reset and base styles */
 html, body {
     margin: 0;
     padding: 0;
@@ -233,33 +233,19 @@ main[role="main"] {
 /* Table manager container */
 .table-manager-container {
     display: flex;
-    width: calc(100% - 80px); /* 100% minus sidebar (60px) and scrollbar (20px) */
+    width: calc(100% - 20px); /* Adjusted to account only for scrollbar, not sidebar */
     min-height: 100%;
     padding: 0;
     font-family: Arial, sans-serif;
     flex-wrap: nowrap;
     box-sizing: border-box;
     position: relative;
-    margin: 0;
+    margin-left: -20px; /* Pulls container left to align with sidebar */
+    margin-right: 0;
 }
 
-/* Table manager panel */
-.table-manager {
-    background-color: transparent;
-    color: #ffffff;
-    padding: 10px;
-    border: none;
-    width: calc((100% - 80px) / 6); /* Equal width for 6 panels */
-    min-width: 210px;
-    flex: 1 1 auto;
-    max-width: 20%;
-    box-sizing: border-box;
-    height: auto;
-    min-height: 0;
-    margin: 0;
-}
-
-/* Area, table, field, and settings panels */
+/* Default panel styles */
+.table-manager,
 .area-details,
 .table-details,
 .field-details,
@@ -269,7 +255,7 @@ main[role="main"] {
     color: #ffffff;
     padding: 10px;
     border: none;
-    width: calc((100% - 80px) / 6); /* Equal width for 6 panels */
+    width: calc((100% - 20px) / 6); /* Adjusted base width */
     min-width: 210px;
     flex: 1 1 auto;
     max-width: 20%;
@@ -279,41 +265,65 @@ main[role="main"] {
     margin: 0;
 }
 
-    /* Ensure text inside panels is white */
-    .table-manager *,
-    .area-details *,
-    .table-details *,
-    .field-details *,
-    .field-settings *,
-    .field-settings-details * {
-        color: #ffffff;
-    }
+/* Ensure .table-manager is flush with sidebar */
+.table-manager {
+    margin-left: 0; /* Explicitly no left margin */
+    padding-left: 10px; /* Keep internal padding */
+}
 
-    /* List box container (e.g., for "AREAS" and "TABLES") */
-    .table-manager .list-box-container *,
-    .area-details .list-box-container *,
-    .table-details .list-box-container *,
-    .field-details .list-box-container *,
-    .field-settings .list-box-container *,
-    .field-settings-details .list-box-container * {
-        color: black;
-    }
+/* Stretch .table-details when all divs are open */
+.table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-details {
+    width: 300px; /* Fixed width for "Field Groups" and icons */
+    flex: 0 0 300px;
+    max-width: none;
+}
 
-    /* Input fields inside panels */
-    .table-manager input[type="text"],
-    .table-manager textarea,
-    .area-details input[type="text"],
-    .area-details textarea,
-    .table-details input[type="text"],
-    .table-details textarea,
-    .field-details input[type="text"],
-    .field-details textarea,
-    .field-settings input[type="text"],
-    .field-settings textarea,
-    .field-settings-details input[type="text"],
-    .field-settings-details textarea {
-        color: black;
-    }
+/* Adjust other panels when all divs are open */
+.table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-manager,
+.table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .area-details,
+.table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-details,
+.table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings,
+.table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings-details {
+    width: calc((100% - 320px) / 5); /* Adjusted for new container width */
+    flex: 1 1 calc((100% - 320px) / 5);
+    max-width: none;
+}
+
+/* Ensure text inside panels is white */
+.table-manager *,
+.area-details *,
+.table-details *,
+.field-details *,
+.field-settings *,
+.field-settings-details * {
+    color: #ffffff;
+}
+
+/* List box container (e.g., for "AREAS" and "TABLES") */
+.table-manager .list-box-container *,
+.area-details .list-box-container *,
+.table-details .list-box-container *,
+.field-details .list-box-container *,
+.field-settings .list-box-container *,
+.field-settings-details .list-box-container * {
+    color: black;
+}
+
+/* Input fields inside panels */
+.table-manager input[type="text"],
+.table-manager textarea,
+.area-details input[type="text"],
+.area-details textarea,
+.table-details input[type="text"],
+.table-details textarea,
+.field-details input[type="text"],
+.field-details textarea,
+.field-settings input[type="text"],
+.field-settings textarea,
+.field-settings-details input[type="text"],
+.field-settings-details textarea {
+    color: black;
+}
 
 /* Headings inside panels */
 h2, h3, h4 {

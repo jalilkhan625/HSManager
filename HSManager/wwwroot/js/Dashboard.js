@@ -589,245 +589,142 @@ async function loadFieldDetails(fieldId) {
     divC.style.display = "block";
 
     const newFields = JSON.parse(sessionStorage.getItem("newFields") || "{}");
+    let field;
+
     if (newFields[fieldId]) {
-        const field = newFields[fieldId];
+        field = newFields[fieldId];
         console.log("Loading field from sessionStorage:", field);
-        divF.innerHTML = `
-            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
-            <input type="text" value="${field.name}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
-            <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="display: none;">
-                    <label for="visibleCheck" style="display: flex; align-items: center; cursor: pointer; color: #ffffff; font-size: 14px;">
-                        <span id="checkboxSquare" style="width: 16px; height: 16px; margin-right: 4px; background-color: ${field.visible ? 'grey' : '#fff'}; border: 1px solid grey; position: relative; display: inline-block; ${field.visible ? 'background-image: linear-gradient(45deg, transparent 40%, white 40%, white 60%, transparent 60%), linear-gradient(135deg, transparent 20%, white 20%, white 40%, transparent 40%); background-size: 8px 8px, 8px 8px; background-position: 4px 6px, 6px 4px; background-repeat: no-repeat;' : ''}"></span>
-                        Visible
-                    </label>
-                </div>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
-            <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-                <option value="string" style="color: black; background-color: white;" ${field.dataType === "string" ? "selected" : ""}>String</option>
-                <option value="number" style="color: black; background-color: white;" ${field.dataType === "number" ? "selected" : ""}>Number</option>
-                <option value="boolean" style="color: black; background-color: white;" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
-                <option value="date" style="color: black; background-color: white;" ${field.dataType === "date" ? "selected" : ""}>Date</option>
-            </select>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
-            <select class="field-data-subtype" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-                <option value="" style="color: black; background-color: white;" ${!field.dataSubType ? "selected" : ""}>None</option>
-                <option value="text" style="color: black; background-color: white;" ${field.dataSubType === "text" ? "selected" : ""}>Text</option>
-                <option value="email" style="color: black; background-color: white;" ${field.dataSubType === "email" ? "selected" : ""}>Email</option>
-                <option value="url" style="color: black; background-color: white;" ${field.dataSubType === "url" ? "selected" : ""}>URL</option>
-                <option value="integer" style="color: black; background-color: white;" ${field.dataSubType === "integer" ? "selected" : ""}>Integer</option>
-                <option value="decimal" style="color: black; background-color: white;" ${field.dataSubType === "decimal" ? "selected" : ""}>Decimal</option>
-                <option value="datetime" style="color: black; background-color: white;" ${field.dataSubType === "datetime" ? "selected" : ""}>DateTime</option>
-            </select>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <img src="/assets/main-icons/home.png" alt="Field Icon" style="width: 12px; height: 12px;">
-                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-                    <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px;">Read only</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-                    <label for="reservedCheck" style="color: #ffffff; font-size: 14px;">Reserved</label>
-                </div>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-                    <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;">Compulsory</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-                    <label for="labelCheck" style="color: #ffffff; font-size: 14px;">Label</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
-                    <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
-                </div>
-            </div>
-        `;
-        divG.innerHTML = `
-            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Default Value</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Validation Rules</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Style</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="Default" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Data Snip</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Function</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Client Help</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-        `;
-        return;
+    } else {
+        try {
+            field = await fetchTableManagerItem("Field", fieldId);
+            console.log("Field data:", field);
+        } catch (error) {
+            console.error("Error in loadFieldDetails:", error);
+            divF.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field details</h3>';
+            divG.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field settings</h3>';
+            return;
+        }
     }
 
-    try {
-        const field = await fetchTableManagerItem("Field", fieldId);
-        console.log("Field data:", field);
+    // Standardize the HTML with <textarea> for Field Name
+    divF.innerHTML = `
+    <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
+    <textarea style="width: 100%; height: 35px; padding: 5px; margin-top: -5px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; line-height: 16px; font-size: 14px; resize: vertical;">${field.name || 'Unnamed'}</textarea>
+    <h4 style="color: #ffffff; margin-top: 10px;">Field Description</h4>
+    <textarea style="width: 100%; height: 60px; padding: 5px; margin-top: 0px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical; line-height: 16px; font-size: 14px;">${field.description || ''}</textarea>
+    <h4 style="color: #ffffff; margin-top: 10px;">Status</h4>
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="display: none;">
+            <label for="visibleCheck" style="display: flex; align-items: center; cursor: pointer; color: #ffffff; font-size: 14px;">
+                <span id="checkboxSquare" style="width: 16px; height: 16px; margin-right: 4px; background-color: ${field.visible ? 'grey' : '#fff'}; border: 1px solid grey; position: relative; display: inline-block; ${field.visible ? 'background-image: linear-gradient(45deg, transparent 40%, white 40%, white 60%, transparent 60%), linear-gradient(135deg, transparent 20%, white 20%, white 40%, transparent 40%); background-size: 8px 8px, 8px 8px; background-position: 4px 6px, 6px 4px; background-repeat: no-repeat;' : ''}"></span>
+                Visible
+            </label>
+        </div>
+    </div>
+    <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
+    <select class="field-data-type" style="width: 100%; padding: 5px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; height: 26px; line-height: 16px; font-size: 14px;">
+        <option value="string" style="color: black; background-color: white;" ${field.dataType === "string" ? "selected" : ""}>String</option>
+        <option value="number" style="color: black; background-color: white;" ${field.dataType === "number" ? "selected" : ""}>Number</option>
+        <option value="boolean" style="color: black; background-color: white;" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
+        <option value="date" style="color: black; background-color: white;" ${field.dataType === "date" ? "selected" : ""}>Date</option>
+    </select>
+    <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
+    <select class="field-data-subtype" style="width: 100%; padding: 5px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; height: 26px; line-height: 16px; font-size: 14px;">
+        <option value="" style="color: black; background-color: white;" ${!field.dataSubType ? "selected" : ""}>None</option>
+        <option value="text" style="color: black; background-color: white;" ${field.dataSubType === "text" ? "selected" : ""}>Text</option>
+        <option value="email" style="color: black; background-color: white;" ${field.dataSubType === "email" ? "selected" : ""}>Email</option>
+        <option value="url" style="color: black; background-color: white;" ${field.dataSubType === "url" ? "selected" : ""}>URL</option>
+        <option value="integer" style="color: black; background-color: white;" ${field.dataSubType === "integer" ? "selected" : ""}>Integer</option>
+        <option value="decimal" style="color: black; background-color: white;" ${field.dataSubType === "decimal" ? "selected" : ""}>Decimal</option>
+        <option value="datetime" style="color: black; background-color: white;" ${field.dataSubType === "datetime" ? "selected" : ""}>DateTime</option>
+    </select>
+    <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+        <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
+        <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
+    </div>
+    <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px;">Read only</label>
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <label for="reservedCheck" style="color: #ffffff; font-size: 14px;">Reserved</label>
+        </div>
+    </div>
+    <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;">Compulsory</label>
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <label for="labelCheck" style="color: #ffffff; font-size: 14px;">Label</label>
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;">Full text indexed (if text)</label>
+        </div>
+    </div>
+`;
 
-        divF.innerHTML = `
-            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Name</h3>
-            <input type="text" value="${field.name || 'Unnamed'}" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Description</h4>
-            <textarea style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box; resize: vertical;">${field.description || ''}</textarea>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Status</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="visibleCheck" ${field.visible ? 'checked' : ''} style="width: 12px; height: 12px; margin-right: 8px; accent-color: #ccc;">
-                    <label for="visibleCheck" style="color: #ffffff; font-size: 16px; font-weight: normal;">Visible</label>
-                </div>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data Type</h4>
-            <select class="field-data-type" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-                <option value="string" ${field.dataType === "string" ? "selected" : ""}>String</option>
-                <option value="number" ${field.dataType === "number" ? "selected" : ""}>Number</option>
-                <option value="boolean" ${field.dataType === "boolean" ? "selected" : ""}>Boolean</option>
-                <option value="date" ${field.dataType === "date" ? "selected" : ""}>Date</option>
-            </select>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Data SubType</h4>
-            <select class="field-data-subtype" style="width: 100%; padding: 6px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-                <option value="" ${!field.dataSubType ? "selected" : ""}>None</option>
-                <option value="text" ${field.dataSubType === "text" ? "selected" : ""}>Text</option>
-                <option value="email" ${field.dataSubType === "email" ? "selected" : ""}>Email</option>
-                <option value="url" ${field.dataSubType === "url" ? "selected" : ""}>URL</option>
-                <option value="integer" ${field.dataSubType === "integer" ? "selected" : ""}>Integer</option>
-                <option value="decimal" ${field.dataSubType === "decimal" ? "selected" : ""}>Decimal</option>
-                <option value="datetime" ${field.dataSubType === "datetime" ? "selected" : ""}>DateTime</option>
-            </select>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Icon</h4>
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <img src="${field.icon && field.icon.base64 ? field.icon.base64 : '/assets/main-icons/home.png'}" alt="Field Icon" style="width: 24px; height: 24px;">
-                <button style="font-size: 14px; padding: 5px 10px; border-radius: 0; background-color: #555; color: #ffffff; border: none; cursor: pointer;">Upload Icon</button>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Read only</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="reservedCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Reserved</label>
-                </div>
-            </div>
-            <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Compulsory</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="labelCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Label</label>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-                    <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: #ccc;">
-                    <label for="fullTextCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Full text indexed (if text)</label>
-                </div>
-            </div>
-        `;
+    divG.innerHTML = `
+        <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                <span>Default Value</span>
+                <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+            </label>
+            <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                <span>Validation Rules</span>
+                <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+            </label>
+            <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                <span>Style</span>
+                <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+            </label>
+            <input type="text" value="Default" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                <span>Data Snip</span>
+                <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+            </label>
+            <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                <span>Function</span>
+                <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+            </label>
+            <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
+                <span>Client Help</span>
+                <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
+            </label>
+            <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
+        </div>
+    `;
 
-        divG.innerHTML = `
-            <h3 style="color: #ffffff; margin-bottom: 15px;">Field Settings</h3>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Default Value</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Validation Rules</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Style</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="Default" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Data Snip</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Function</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; justify-content: space-between; align-items: center; color: #ffffff;">
-                    <span>Client Help</span>
-                    <img src="/assets/main-icons/settings.png" alt="Settings" style="width: 16px; height: 16px; cursor: pointer;">
-                </label>
-                <input type="text" value="None" readonly style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 0; background-color: #ffffff; color: #000000; box-sizing: border-box;">
-            </div>
-        `;
-
-        divG.querySelectorAll("img[alt='Settings']").forEach(icon => {
-            icon.addEventListener("click", () => {
-                const settingType = icon.parentElement.querySelector("span").textContent;
-                console.log(`Settings icon clicked for: ${settingType}`);
-                openSettings(settingType);
-            });
+    divG.querySelectorAll("img[alt='Settings']").forEach(icon => {
+        icon.addEventListener("click", () => {
+            const settingType = icon.parentElement.querySelector("span").textContent;
+            console.log(`Settings icon clicked for: ${settingType}`);
+            openSettings(settingType);
         });
-    } catch (error) {
-        console.error("Error in loadFieldDetails:", error);
-        divF.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field details</h3>';
-        divG.innerHTML = '<h3 style="color: #ffffff;">Failed to load Field settings</h3>';
-    }
+    });
 }
 
 
@@ -2650,6 +2547,37 @@ function neutralizeTableRelationsListClicksCompletely() {
 document.addEventListener("DOMContentLoaded", () => {
     neutralizeTableRelationsListClicksCompletely();
 });
+// Function to check for input
+function findFieldSettingsDiv() {
+    console.log('Starting search for dynamically injected field-settings div...');
+
+    // Check if the div already exists (just in case it's injected before DOM load)
+    const divF = document.getElementById('field-settings');
+    if (divF) {
+        console.log('Div "field-settings" already present.');
+        alert('Div "field-settings" found');
+    } else {
+        console.log('Div "field-settings" not found yet. Starting MutationObserver...');
+        const observer = new MutationObserver((mutations, obs) => {
+            const divF = document.getElementById('field-settings');
+            if (divF) {
+                console.log('Div "field-settings" dynamically injected and detected.');
+                alert('Div "field-settings" found');
+                obs.disconnect(); // Stop observing once found
+                console.log('Observer disconnected.');
+            }
+        });
+        // Start observing document.body for dynamic injection
+        observer.observe(document.body, {
+            childList: true,  // Detect added/removed nodes
+            subtree: true     // Watch all descendants
+        });
+        console.log('MutationObserver is now watching document.body for injection.');
+    }
+}
+
+// Run when DOM is fully loaded to start observing
+document.addEventListener('DOMContentLoaded', findFieldSettingsDiv);
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM content loaded, initializing menu");
