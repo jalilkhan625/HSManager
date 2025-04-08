@@ -645,11 +645,11 @@ async function loadFieldDetails(fieldId) {
     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Properties</h4>
 <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
     <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-        <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+        <input type="checkbox" id="readOnlyCheck" ${field.properties?.readOnly ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: white;">
         <label for="readOnlyCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Read only</label>
     </div>
     <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-        <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+        <input type="checkbox" id="reservedCheck" ${field.properties?.reserved ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: white;">
         <label for="reservedCheck" style="color: #ffffff; font-size: 14px; font-weight: normal;">Reserved</label>
     </div>
 </div>
@@ -657,15 +657,15 @@ async function loadFieldDetails(fieldId) {
     <h4 style="color: #ffffff; margin-bottom: 10px;">Field Features</h4>
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-            <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <input type="checkbox" id="compulsoryCheck" ${field.features?.compulsory ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: white;">
             <label for="compulsoryCheck" style="color: #ffffff; font-size: 14px;font-weight: normal;">Compulsory</label>
         </div>
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-            <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <input type="checkbox" id="labelCheck" ${field.features?.label ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: white;">
             <label for="labelCheck" style="color: #ffffff; font-size: 14px;font-weight: normal;">Label</label>
         </div>
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
-            <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: grey;">
+            <input type="checkbox" id="fullTextCheck" ${field.features?.fullTextIndexed ? 'checked' : ''} style="width: 16px; height: 16px; margin-right: 4px; accent-color: white;">
             <label for="fullTextCheck" style="color: #ffffff; font-size: 14px;font-weight: normal;">Full text indexed (if text)</label>
         </div>
     </div>
