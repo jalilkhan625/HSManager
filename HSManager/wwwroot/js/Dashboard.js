@@ -83,11 +83,11 @@ async function populateAreasList() {
             console.log("Adding event listeners to area icon bar");
             areaIconBar.children[0].addEventListener("click", async () => {
                 console.log("Sort alphabetically clicked for Areas (up)");
-                
+
             });
             areaIconBar.children[1].addEventListener("click", async () => {
                 console.log("Sort alphabetically clicked for Areas (down)");
-                
+
             });
             areaIconBar.children[2].addEventListener("click", async () => {
                 console.log("Add clicked for Areas");
@@ -984,11 +984,11 @@ function addIconBarListeners(iconBar, type, parentId) {
     console.log(`Adding event listeners to ${type} icon bar`);
     iconBar.children[0].addEventListener("click", async () => {
         console.log(`Sort alphabetically clicked for ${type} (up)`);
-       
+
     });
     iconBar.children[1].addEventListener("click", async () => {
         console.log(`Sort alphabetically clicked for ${type} (down)`);
-        
+
     });
     iconBar.children[2].addEventListener("click", async () => {
         console.log(`Add clicked for ${type}`);

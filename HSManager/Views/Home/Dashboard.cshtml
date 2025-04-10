@@ -1,4 +1,4 @@
-﻿﻿@using System.Security.Claims
+﻿﻿﻿@using System.Security.Claims
 @{
     ViewData["Title"] = "Dashboard";
     Layout = null;
@@ -26,7 +26,7 @@
             background-color: #212121;
         }
 
-      
+
         .sky-blue-hr {
             border: 0;
             height: 2px;
@@ -41,6 +41,7 @@
             font-size: 14px;
             margin-left: 50px; /* Adjust value as needed */
         }
+
         .step-item {
             display: flex;
             align-items: center;
@@ -70,10 +71,10 @@
     <nav id="originalNavbar" class="bg-dark text-white" style="position: fixed; top: 0; width: 100%; z-index: 1000;">
         <div class="d-flex justify-content-between align-items-center navbar-top px-3" style="height: 40px;">
             <div class="d-flex align-items-center">
-                <img src="/assets/_Loghi/DATALABOR_Hyper Application Platform_logo-negativo.png" alt="Hyperspace Logo" style="height:150px;" />
+                <img src="/assets/_Loghi/DATALABOR_Hyper Application Platform_logo-negativo.png" id="navbarlogo"alt="Hyperspace Logo" style="height:150px;" />
                 <div></div>
             </div>
-            <div style="margin-right: 20px;">Table Manager</div>
+            <div id="User-title" style="margin-right: 20px;">Table Manager</div>
         </div>
         <hr class="sky-blue-hr" />
         <div class="d-flex justify-content-between align-items-center navbar-bottom px-3" style="height: 50px;">
@@ -94,7 +95,7 @@
             <!-- Sidebar -->
             <nav class="d-none d-md-block bg-sidebar sidebar">
                 <div class="sidebar-sticky pt-3 text-center" style="height: calc(100% - 30px); display: flex; flex-direction: column;">
-                    <img src="/assets/Loghi Web/favicon - Copia.png" alt="Logo" class="sidebar-logo" style="margin-top: -10px;" />
+                    <img src="/assets/Loghi Web/favicon - Copia.png" alt="Logo" class="sidebar-logo" id="sidebarlogo" style="margin-top: -10px;" />
                     <div class="sidebar-spacer"></div>
                     <ul class="nav flex-column" id="menuList" style="margin-bottom: 0;">
                         <li class="nav-item mb-3">
@@ -517,6 +518,64 @@
 
             populateSteps();
         });
+
+         function hideElementsOnLoad() {
+            document.getElementById("User-title").style.display = "none";
+            document.getElementById("lockIcon").style.display = "none";
+            document.getElementById("undoIcon").style.display = "none";
+            document.getElementById("playIcon").style.display = "none";
+        }
+
+        // Call the function when the DOM is loaded
+        document.addEventListener("DOMContentLoaded", hideElementsOnLoad);
+
+                // Function to reload the page
+        function reloadPage() {
+            location.reload(); // Reloads the current page
+        }
+
+        // Add click event listeners to the images
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the images by their IDs
+            const sidebarLogo = document.getElementById("sidebarlogo");
+            const secondImage = document.getElementById("navbarlogo");
+
+            // Add click event listeners
+            if (sidebarLogo) {
+                sidebarLogo.addEventListener("click", reloadPage);
+            }
+            if (secondImage) {
+                secondImage.addEventListener("click", reloadPage);
+            }
+        });
+
+          // Function to show the elements
+        function showElementsOnClick() {
+            document.getElementById("User-title").style.display = "block";
+            document.getElementById("lockIcon").style.display = "block";
+            document.getElementById("undoIcon").style.display = "block";
+            document.getElementById("playIcon").style.display = "block";
+        }
+
+        // Watch for dynamic additions to the sidebar
+        const sidebar = document.querySelector('.sidebar'); // Adjust selector to your sidebar's class or ID
+        if (sidebar) {
+            const observer = new MutationObserver(function(mutations) {
+                const navLink = document.querySelector('a.nav-link[data-id="1"]');
+                if (navLink) {
+                    const dynamicImage = navLink.querySelector('img');
+                    if (dynamicImage && !dynamicImage.dataset.listenerAdded) { // Prevent duplicate listeners
+                        dynamicImage.addEventListener("click", function(event) {
+                            event.preventDefault();
+                            showElementsOnClick();
+                        });
+                        dynamicImage.dataset.listenerAdded = "true"; // Mark as processed
+                    }
+                }
+            });
+            observer.observe(sidebar, { childList: true, subtree: true });
+        }
+
     </script>
 </body>
 </html>
