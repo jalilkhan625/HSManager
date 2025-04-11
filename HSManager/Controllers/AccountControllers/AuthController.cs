@@ -1,11 +1,11 @@
-﻿using HSManager.Models;
+﻿using HSManager.Models.AccountModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace HSManager.Controllers
+namespace HSManager.Controllers.AccountControllers
 {
     // This controller handles authentication-related API endpoints, like logging in.
     [ApiController]

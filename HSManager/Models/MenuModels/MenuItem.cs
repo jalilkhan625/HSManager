@@ -1,4 +1,4 @@
-﻿namespace HSManager.Models
+﻿namespace HSManager.Models.MenuModels
 {
     public class MenuItem
     {

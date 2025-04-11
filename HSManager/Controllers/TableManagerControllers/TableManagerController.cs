@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace HSManager.Controllers
+namespace HSManager.Controllers.TableManagerControllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\InternalUserManagerControllers\" />
+    <Folder Include="Controllers\ExternalUserManagerControllers\" />
+    <Folder Include="Models\ExternalUserManagerModels\" />
+    <Folder Include="Models\InternalUserManagerModels\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
 

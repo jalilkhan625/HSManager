@@ -18,7 +18,7 @@
     <style>
 
         .sidebar {
-            height: calc(100vh - 45px); /* Reduced height from bottom (adjust -50px as needed) */
+            height: calc(100vh - 40px); /* Reduced height from bottom (adjust -50px as needed) */
             position: absolute;
             top: 45px; /* Top remains fixed */
             z-index: 1001;
@@ -90,7 +90,7 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container-fluid" style="background-color: #1a1a1a; min-height: calc(100vh - 110px); padding: 0;">
+    <div class="container-fluid" style="background-color: #2a2a2a; min-height: calc(100vh - 110px); padding: 0;">
         <div class="row" style="margin: 0;">
             <!-- Sidebar -->
             <nav class="d-none d-md-block bg-sidebar sidebar">
@@ -122,7 +122,7 @@
             <!-- Main Area -->
             <main role="main">
                 <div id="dashboardContent" class="content-area">
-                    <h1 class="mt-5 text-center">Welcome to HSManager Dashboard</h1>
+                    <h1 class="mt-5 text-center" style="font-size: 1.9rem; margin-top: 6rem !important; position: relative;">Welcome to HSManager Dashboard</h1>
                     <p class="text-center">You're now logged in.</p>
 
                     <!-- Option 1: Add margin-top directly -->
@@ -202,7 +202,7 @@
         </div>
 
         <!-- Footer -->
-        <footer class="bg-sidebar text-white py-2" style="position: fixed; bottom: 0; width: 100%; left: 0; height: 30px;">
+        <footer class="bg-sidebar text-white py-2" id="logout-footer"style="position: fixed; bottom: 0; width: 100%; left: 0; height: 30px;">
             <div class="container-fluid d-flex justify-content-end align-items-center" style="padding-right: 15px; position: relative; height: 100%;">
                 <div class="logout-container">
                     <a href="#" class="logout-icon" id="logoutToggle">
@@ -225,9 +225,9 @@
     <input type="hidden" id="token" value="@token" />
     <input type="hidden" id="userId" value="@userId" />
 
-    <script src="/js/dashboard.js"></script>
+    
     <!-- Assuming areaManager.js contains the main logic -->
-    <script src="/js/areaManager.js"></script>
+    <script src="/js/dashboard.js"></script>
 
     <script>
         const selectedItems = {
@@ -519,43 +519,8 @@
             populateSteps();
         });
 
-         function hideElementsOnLoad() {
-            document.getElementById("User-title").style.display = "none";
-            document.getElementById("lockIcon").style.display = "none";
-            document.getElementById("undoIcon").style.display = "none";
-            document.getElementById("playIcon").style.display = "none";
-        }
+ 
 
-        // Call the function when the DOM is loaded
-        document.addEventListener("DOMContentLoaded", hideElementsOnLoad);
-
-                // Function to reload the page
-        function reloadPage() {
-            location.reload(); // Reloads the current page
-        }
-
-        // Add click event listeners to the images
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get the images by their IDs
-            const sidebarLogo = document.getElementById("sidebarlogo");
-            const secondImage = document.getElementById("navbarlogo");
-
-            // Add click event listeners
-            if (sidebarLogo) {
-                sidebarLogo.addEventListener("click", reloadPage);
-            }
-            if (secondImage) {
-                secondImage.addEventListener("click", reloadPage);
-            }
-        });
-
-          // Function to show the elements
-        function showElementsOnClick() {
-            document.getElementById("User-title").style.display = "block";
-            document.getElementById("lockIcon").style.display = "block";
-            document.getElementById("undoIcon").style.display = "block";
-            document.getElementById("playIcon").style.display = "block";
-        }
 
         // Watch for dynamic additions to the sidebar
         const sidebar = document.querySelector('.sidebar'); // Adjust selector to your sidebar's class or ID
@@ -576,6 +541,9 @@
             observer.observe(sidebar, { childList: true, subtree: true });
         }
 
+
+
     </script>
+  
 </body>
 </html>

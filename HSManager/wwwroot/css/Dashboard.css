@@ -1,15 +1,13 @@
-﻿\/* Reset and base styles */
+﻿/* Reset and base styles */
 html, body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    scrollbar-width: thin;
-    scrollbar-color: #666 #1a1a1a;
     background-color: #1a1a1a;
     font-family: Arial, sans-serif;
+    overflow-x: hidden; /* Prevent viewport horizontal scrollbar */
+    overflow-y: hidden; /* Prevent viewport vertical scrollbar */
 }
 
 /* Style checkboxes with label "Visible" to have grey fill */
@@ -27,29 +25,6 @@ input[type="checkbox"] + label:where(:contains("Visible")) {
 .checkbox-group input[type="checkbox"] + label:where(:contains("Visible")) {
     accent-color: grey;
 }
-
-/* Scrollbar styling */
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-    width: 20px;
-}
-
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track {
-    background: #1a1a1a;
-}
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-    background-color: #666;
-    border-radius: 5px;
-    border: 2px solid #1a1a1a;
-}
-
-    html::-webkit-scrollbar-thumb:hover,
-    body::-webkit-scrollbar-thumb:hover {
-        background-color: #888;
-    }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -206,22 +181,24 @@ main[role="main"] {
     height: calc(100vh - 56px);
     padding: 0;
     display: flex;
-    overflow: hidden;
+    overflow: hidden; /* Prevent main from scrolling */
 }
 
 /* Dashboard content */
 #dashboardContent {
     flex: 1;
-    width: calc(100% - 60px);
+    width: 100%; /* Full width within main */
     height: calc(100vh - 56px);
     background-color: #2a2a2a;
     color: #ffffff;
     padding: 20px;
+    margin-top:-28px;
     border-radius: 0;
     margin-bottom: 0;
     position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-y: auto; /* Only scrollbar for #dashboardContent */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    box-sizing: border-box;
 }
 
 /* Config container */
@@ -233,31 +210,31 @@ main[role="main"] {
 /* Table manager container */
 .table-manager-container {
     display: flex;
-    width: calc(100% - 20px); /* Adjusted to account only for scrollbar, not sidebar */
-    min-height: 100%;
+    width: 100%; /* Fit within #dashboardContent */
+    min-height: auto; /* Avoid forcing full height */
     padding: 0;
     font-family: Arial, sans-serif;
     flex-wrap: nowrap;
     box-sizing: border-box;
     position: relative;
-    margin-left: -20px; /* Pulls container left to align with sidebar */
+    margin-left: 0; /* Remove negative margin */
     margin-right: 0;
 }
 
 .table-manager {
-    background-color: transparent; /* Fully transparent, no color */
+    background-color: transparent;
     color: #ffffff;
     padding: 10px;
-    border: none; /* No border for a seamless glass look */
-    width: calc((100% - 20px) / 6); /* Maintain original width */
-    min-width: 210px;
+    border: none;
+    width: calc(100% / 6);
+    min-width: 150px; /* Reduced to avoid overflow */
     flex: 1 1 auto;
-    max-width: 20%;
+    max-width: 18%; /* Tighter constraint */
     box-sizing: border-box;
     height: auto;
     min-height: 0;
-    margin-left: 0; /* Explicitly no left margin */
-    padding-left: 10px; /* Keep internal padding */
+    margin-left: 0;
+    padding-left: 10px;
 }
 
 /* Default panel styles */
@@ -270,10 +247,10 @@ main[role="main"] {
     color: #ffffff;
     padding: 10px;
     border: none;
-    width: calc((100% - 20px) / 6); /* Adjusted base width */
-    min-width: 210px;
+    width: calc(100% / 6);
+    min-width: 150px; /* Reduced to avoid overflow */
     flex: 1 1 auto;
-    max-width: 20%;
+    max-width: 18%; /* Tighter constraint */
     box-sizing: border-box;
     height: auto;
     min-height: 0;
@@ -282,28 +259,25 @@ main[role="main"] {
 
 /* Ensure .table-manager is flush with sidebar */
 .table-manager {
-    margin-left: 0; /* Explicitly no left margin */
-    padding-left: 10px; /* Keep internal padding */
+    margin-left: 0;
+    padding-left: 10px;
 }
 
 /* Stretch .table-details when all divs are open */
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-details {
-    width: 300px; /* Fixed width for "Field Groups" and icons */
+    width: 300px;
     flex: 0 0 300px;
     max-width: none;
 }
-/* Move the dynamically injected bottom item up slightly in relevant containers */
-.table-details > *:last-child {
-    margin-bottom: 10px; /* Adjust this value as needed */
-}
+
 /* Adjust other panels when all divs are open */
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-manager,
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .area-details,
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-details,
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings,
 .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings-details {
-    width: calc((100% - 320px) / 5); /* Adjusted for new container width */
-    flex: 1 1 calc((100% - 320px) / 5);
+    width: calc((100% - 300px) / 5);
+    flex: 1 1 calc((100% - 300px) / 5);
     max-width: none;
 }
 
@@ -417,6 +391,8 @@ h4 {
     margin-top: 5px;
     font-size: 14px;
     height: auto;
+    max-height: 500px; /* Limit height to prevent panel overflow */
+    overflow-y: auto; /* Scroll within panel if needed */
 }
 
 /* Custom list */

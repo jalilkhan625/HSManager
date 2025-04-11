@@ -1020,7 +1020,7 @@ function attachAreaListListeners() {
 
             // Show an alert when an area is clicked
             const areaName = item.textContent.trim() || "Unnamed Area";
-            alert(`Area selected: ${areaName} (ID: ${item.dataset.id})`);
+            //alert(`Area selected: ${areaName} (ID: ${item.dataset.id})`);
 
             // Hide all relevant divs first
             const divsToHide = [
@@ -1148,8 +1148,10 @@ function openSettings(settingType) {
     // Implement settings logic here if needed
 }
 
-// Load the sidebar menu
-// Load the sidebar menu
+
+
+
+
 async function loadMenu() {
     console.log("Loading menu");
     if (!token || !userId) {
@@ -1204,6 +1206,7 @@ async function loadMenu() {
 
                 let labelText;
                 switch (id) {
+                    case -1: labelText = "Home"; break;
                     case 1: labelText = "Table Manager"; break;
                     case 2: labelText = "InternalUserManager"; break;
                     case 3: labelText = "ExternalUserManager"; break;
@@ -1228,7 +1231,7 @@ async function loadMenu() {
 
             // Add click event to load Table Manager divs when ID 1 is clicked
             link.addEventListener("click", async (e) => {
-                e.preventDefault(); // Prevent default anchor behavior
+                e.preventDefault();
                 const id = parseInt(e.currentTarget.dataset.id);
                 console.log(`Menu item clicked: ${id}`);
 
@@ -1240,12 +1243,22 @@ async function loadMenu() {
                     return;
                 }
 
-                if (id === 1) { // Table Manager icon clicked
+                if (id === 1) {
                     console.log("Table Manager icon clicked, loading divs");
                     contentArea.querySelector("h1").style.display = "none";
                     contentArea.querySelector("p").style.display = "none";
                     tableManagerContainer.style.display = "flex";
                     await populateAreasList();
+                }
+                if (id === -1) {
+                    const navbar = document.getElementById("originalNavbar");
+                    if (navbar && navbar.style.display === "none") {
+                        //alert("Navbar is hidden, already at home");
+                        
+                    } else {
+                        //alert("Not at home refresh");
+                        location.reload();
+                    }
                 }
             });
         });
@@ -1263,14 +1276,10 @@ async function loadMenu() {
             }, 200);
         });
 
-        // Remove the floatingLabel click event since it's no longer needed for loading divs
-        // floatingLabel.addEventListener("click", async () => { ... }); // This is now handled by nav-link click
-
     } catch (error) {
         console.error("Error in loadMenu:", error);
     }
 }
-
 
 // Logout popup handling
 const logoutToggle = document.getElementById("logoutToggle");
@@ -1303,6 +1312,344 @@ document.addEventListener("click", (e) => {
     }
 });
 
+
+
+// Centralized visibility state (defined globally or passed as needed)
+const visibilityState = {
+    navbar: false,
+    userTitle: false,
+    lockIcon: false,
+    undoIcon: false,
+    playIcon: false,
+    sidebarLogo: false,
+    navbarLogo: false,
+    hrElements: false,
+    footer: true, // Footer starts visible
+};
+
+// Updated hideElementsOnLoad function
+function hideElementsOnLoad() {
+    console.log("Running hideElementsOnLoad");
+
+    // Prevent horizontal scrollbars
+    document.body.style.overflowX = "hidden";
+    document.documentElement.style.overflowX = "hidden";
+
+    // Apply initial visibility state
+    Object.assign(visibilityState, {
+        navbar: false,
+        userTitle: false,
+        lockIcon: false,
+        undoIcon: false,
+        playIcon: false,
+        sidebarLogo: false,
+        navbarLogo: false,
+        hrElements: false,
+        footer: true,
+    });
+
+    // Helper function to safely manipulate elements
+    const manipulateElement = (selector, action, styles = {}) => {
+        const element = document.querySelector(selector);
+        if (!element) {
+            console.warn(`${selector} not found in DOM`);
+            return null;
+        }
+        if (action === "hide") element.style.display = "none";
+        if (action === "show") element.style.display = "block";
+        if (action === "remove") element.remove();
+        Object.assign(element.style, styles);
+        return element;
+    };
+
+    // Hide specified elements
+    manipulateElement("#User-title", "hide");
+    manipulateElement("#lockIcon", "hide");
+    manipulateElement("#undoIcon", "hide");
+    manipulateElement("#playIcon", "hide");
+
+    // Remove navbar logo
+    manipulateElement("#navbarlogo", "remove");
+
+    // Remove sidebar logo
+    manipulateElement("#sidebarlogo", "remove");
+
+    // Remove all hr elements with class sky-blue-hr
+    const hrElements = document.querySelectorAll("hr.sky-blue-hr");
+    hrElements.forEach(hr => hr.remove());
+    console.log(`Removed ${hrElements.length} hr.sky-blue-hr elements`);
+
+    // Hide navbar and set background colors
+    const navbar = manipulateElement("#originalNavbar", "hide", {
+        backgroundColor: "#2a2a2a",
+    });
+    if (navbar) {
+        document.body.style.backgroundColor = "#2a2a2a";
+        document.documentElement.style.backgroundColor = "#2a2a2a";
+        const navbarParent = navbar.parentElement;
+        if (navbarParent && navbarParent !== document.body) {
+            Object.assign(navbarParent.style, {
+                backgroundColor: "#2a2a2a",
+                overflow: "hidden",
+            });
+            console.log("Navbar parent container background set to #2a2a2a");
+        }
+    }
+
+    // Style the sidebar
+    manipulateElement(".sidebar", null, {
+        height: "100vh",
+        top: "0",
+        position: "fixed",
+        zIndex: "1001",
+        width: "60px",
+        backgroundColor: "#212121",
+        overflow: "visible", // Avoid clipping floatingLabel
+    }) && console.log("Sidebar styles applied");
+
+    // Add copyright image and adjust dashboard content
+    const dashboardContent = manipulateElement("#dashboardContent", null, {
+        position: "relative",
+        zIndex: "1",
+    });
+    if (dashboardContent) {
+        const existingImg = document.querySelector('img[src="/assets/_Loghi/DATALABOR_duplicate.png"]');
+        if (!existingImg) {
+            const img = document.createElement("img");
+            Object.assign(img, {
+                src: "/assets/_Loghi/DATALABOR_duplicate.png",
+                alt: "DATALABOR Copyright Logo",
+            });
+            Object.assign(img.style, {
+                position: "fixed",
+                top: "-100px",
+                right: "-15px",
+                maxWidth: "min(500px, 100vw)",
+                maxHeight: "min(450px, 100vh)",
+                zIndex: "999999",
+                display: "block",
+                objectFit: "contain",
+            });
+            document.body.appendChild(img);
+            console.log("Copyright image placed over document with fixed position");
+        }
+
+        const welcomeHeader = manipulateElement("h1.mt-5.text-center", null, {
+            position: "relative",
+            zIndex: "2",
+        }, dashboardContent) || console.warn("Welcome header not found");
+
+        // Debug navbar interference
+        const navbarDebug = document.querySelector(".navbar, #navbar, [class*='nav'], header, [role='navigation']");
+        if (navbarDebug) {
+            const navStyles = window.getComputedStyle(navbarDebug);
+            console.log(`Navbar z-index: ${navStyles.zIndex}, display: ${navStyles.display}`);
+        } else {
+            console.warn("Navbar not found in debug query");
+        }
+    }
+
+    // Ensure footer remains visible
+    manipulateElement("#logout-footer", "show", {
+        zIndex: "1002",
+        position: "fixed",
+        bottom: "0",
+        width: "100%",
+    }) && console.log("Footer (id='logout-footer') explicitly set to remain visible");
+}
+
+
+function showElementsOnClick() {
+    console.log("Running showElementsOnClick");
+
+    // Ensure no horizontal scrollbars
+    document.body.style.overflowX = "hidden";
+    document.documentElement.style.overflowX = "hidden";
+
+    // Restore visibility of specified elements
+    document.getElementById("User-title").style.display = "block";
+    document.getElementById("lockIcon").style.display = "block";
+    document.getElementById("undoIcon").style.display = "block";
+    document.getElementById("playIcon").style.display = "block";
+
+    // Hide the specific image
+    const duplicateImage = document.querySelector('img[src="/assets/_Loghi/DATALABOR_duplicate.png"]');
+    if (duplicateImage) {
+        duplicateImage.style.display = "none";
+        console.log("Image /assets/_Loghi/DATALABOR_duplicate.png hidden");
+    } else {
+        console.warn("Image /assets/_Loghi/DATALABOR_duplicate.png not found");
+    }
+
+    // Restore navbar logo
+    if (!document.getElementById("navbarlogo")) {
+        const navbarLogo = document.createElement("img");
+        navbarLogo.id = "navbarlogo";
+        navbarLogo.src = "/assets/_Loghi/DATALABOR_Hyper Application Platform_logo-negativo.png";
+        navbarLogo.alt = "Hyperspace Logo";
+        navbarLogo.style.maxHeight = "150px";
+        navbarLogo.style.width = "auto";
+        navbarLogo.style.boxSizing = "border-box";
+
+        const navbarLogoContainer = document.querySelector("#originalNavbar .d-flex.align-items-center");
+        if (navbarLogoContainer) {
+            navbarLogoContainer.insertBefore(navbarLogo, navbarLogoContainer.firstChild);
+            navbarLogoContainer.style.overflow = "hidden";
+        } else {
+            console.warn("Navbar logo container not found");
+        }
+    }
+
+    // Restore sidebar logo
+    if (!document.getElementById("sidebarlogo")) {
+        const sidebarLogo = document.createElement("img");
+        sidebarLogo.id = "sidebarlogo";
+        sidebarLogo.src = "/assets/Loghi Web/favicon - Copia.png";
+        sidebarLogo.alt = "Logo";
+        sidebarLogo.className = "sidebar-logo";
+        sidebarLogo.style.marginTop = "-10px";
+        sidebarLogo.style.maxWidth = "100%";
+
+        const sidebarSticky = document.querySelector(".sidebar-sticky");
+        if (sidebarSticky) {
+            sidebarSticky.insertBefore(sidebarLogo, sidebarSticky.firstChild);
+            sidebarSticky.style.overflow = "hidden";
+        } else {
+            console.warn("Sidebar sticky container not found");
+        }
+    }
+
+    // Restore navbar hr
+    if (!document.querySelector("#originalNavbar hr.sky-blue-hr")) {
+        const navbarHr = document.createElement("hr");
+        navbarHr.className = "sky-blue-hr";
+        navbarHr.style.margin = "0";
+
+        const navbarTop = document.querySelector("#originalNavbar .navbar-top");
+        const navbarBottom = document.querySelector("#originalNavbar .navbar-bottom");
+        if (navbarTop && navbarBottom) {
+            navbarTop.parentNode.insertBefore(navbarHr, navbarBottom);
+        } else {
+            console.warn("Navbar top or bottom not found for hr insertion");
+        }
+    }
+
+    // Restore navbar with original styles
+    const navbar = document.getElementById("originalNavbar");
+    if (navbar) {
+        navbar.style.display = "block";
+        navbar.style.position = "fixed";
+        navbar.style.top = "0";
+        navbar.style.width = "100%";
+        navbar.style.zIndex = "1000";
+        navbar.style.backgroundColor = "";
+        navbar.style.boxSizing = "border-box";
+        navbar.classList.add("bg-dark", "text-white");
+        console.log("Navbar restored with original styles");
+    } else {
+        console.error("Navbar (id='originalNavbar') not found");
+    }
+
+    // Reset sidebar to original height and top, keep tooltip-friendly
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebar) {
+        sidebar.style.height = "calc(100vh - 40px)";
+        sidebar.style.top = "45px";
+        sidebar.style.position = "fixed";
+        sidebar.style.zIndex = "1001";
+        sidebar.style.width = "60px";
+        sidebar.style.backgroundColor = "#212121";
+        sidebar.style.overflow = "visible"; // Prevent clipping floatingLabel
+        console.log("Sidebar styles reset");
+    } else {
+        console.error("Sidebar (class='sidebar') not found");
+    }
+
+    // Reset dashboardContent overflow
+    const dashboardContent = document.getElementById("dashboardContent");
+    if (dashboardContent) {
+        dashboardContent.style.overflow = "";
+    }
+
+    // Forcefully restore the footer with ID 'logout-footer'
+    const footer = document.getElementById("logout-footer");
+    if (footer) {
+        footer.style.display = "block"; // Forcefully show the footer
+        footer.style.position = "fixed";
+        footer.style.bottom = "0";
+        footer.style.width = "100%";
+        footer.style.left = "0";
+        footer.style.height = "30px"; // Match your original inline style
+        footer.style.zIndex = "1000"; // Ensure it’s above other elements
+        footer.classList.add("bg-sidebar", "text-white", "py-2"); // Reapply classes if needed
+        console.log("Footer (id='logout-footer') forcefully restored with original styles");
+
+        // Ensure the inner container is styled correctly
+        const footerContainer = footer.querySelector(".container-fluid");
+        if (footerContainer) {
+            footerContainer.style.paddingRight = "15px";
+            footerContainer.style.position = "relative";
+            footerContainer.style.height = "100%";
+            footerContainer.classList.add("d-flex", "justify-content-end", "align-items-center");
+            console.log("Footer container styles restored");
+        }
+
+        // Ensure logout popup visibility is reset if it was hidden
+        const logoutPopup = footer.querySelector("#logoutPopup");
+        if (logoutPopup && logoutPopup.style.display === "block") {
+            logoutPopup.style.display = "none"; // Reset popup to hidden state
+            console.log("Logout popup reset to hidden");
+        }
+    } else {
+        console.warn("Footer (id='logout-footer') not found. Creating a fallback footer.");
+        // Create a fallback footer matching your structure
+        const fallbackFooter = document.createElement("footer");
+        fallbackFooter.id = "logout-footer";
+        fallbackFooter.className = "bg-sidebar text-white py-2";
+        fallbackFooter.style.position = "fixed";
+        fallbackFooter.style.bottom = "0";
+        fallbackFooter.style.width = "100%";
+        fallbackFooter.style.left = "0";
+        fallbackFooter.style.height = "30px";
+        fallbackFooter.style.zIndex = "1000";
+        fallbackFooter.innerHTML = `
+            <div class="container-fluid d-flex justify-content-end align-items-center" style="padding-right: 15px; position: relative; height: 100%;">
+                <div class="logout-container">
+                    <a href="#" class="logout-icon" id="logoutToggle">
+                        <img src="/assets/Icons/power-off.svg" alt="Logout" width="20" height="20" />
+                    </a>
+                    <div class="logout-popup" id="logoutPopup" style="display: none;">
+                        <p><strong>Esci dall'applicazione Hyperspace</strong></p>
+                        <p>Confermi l'uscita?</p>
+                        <button class="cancel-btn" id="cancelLogout">Annulla</button>
+                        <a href="/logout" class="logout-btn">Esci</a>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(fallbackFooter);
+        console.log("Fallback footer created and appended");
+
+        // Reattach logout event listeners since it’s newly created
+        const logoutToggle = document.getElementById("logoutToggle");
+        const logoutPopup = document.getElementById("logoutPopup");
+        const cancelBtn = document.getElementById("cancelLogout");
+
+        if (logoutToggle) {
+            logoutToggle.addEventListener("click", (e) => {
+                e.preventDefault();
+                logoutPopup.style.display = logoutPopup.style.display === "block" ? "none" : "block";
+                console.log("Logout toggle reattached");
+            });
+        }
+        if (cancelBtn) {
+            cancelBtn.addEventListener("click", () => {
+                logoutPopup.style.display = "none";
+                console.log("Cancel logout reattached");
+            });
+        }
+    }
+}
 function setupUniversalVisibilityToggle() {
     document.addEventListener("change", (e) => {
         const checkbox = e.target;
@@ -2506,9 +2853,12 @@ document.addEventListener("DOMContentLoaded", () => {
     neutralizeTableRelationsListClicksCompletely();
 });
 
+
+
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM content loaded, initializing menu");
     loadMenu();
+    hideElementsOnLoad();
 
 });
