@@ -1244,6 +1244,8 @@ async function loadMenu() {
                 }
 
                 if (id === 1) {
+                    hideElementsOnLoad();
+                    showElementsOnClick();
                     console.log("Table Manager icon clicked, loading divs");
                     contentArea.querySelector("h1").style.display = "none";
                     contentArea.querySelector("p").style.display = "none";
