@@ -577,3 +577,132 @@ label,
     color: #555;
     filter: brightness(0) invert(0.8);
 }
+/* Media query for much larger screens (1920px and above) */
+@media (min-width: 1920px) {
+    /* Table manager container */
+    .table-manager-container {
+        display: flex;
+        width: 100%;
+        height: calc(100vh - 56px); /* Full page height minus header */
+        padding: 0;
+        margin: 0;
+        flex-wrap: nowrap;
+        box-sizing: border-box;
+        position: relative;
+        gap: 0; /* Explicitly remove any flex gap */
+        font-size: 0; /* Remove whitespace gaps from inline content */
+    }
+
+    /* Common styles for all panels */
+    .table-manager,
+    .area-details,
+    .table-details,
+    .field-details,
+    .field-settings,
+    .field-settings-details {
+        color: #ffffff;
+        padding: 10px;
+        border: none; /* Ensure no borders */
+        outline: none; /* Remove any outlines */
+        min-width: 220px; /* Increased min-width for bigger screens */
+        box-sizing: border-box;
+        height: 100%; /* Full height of container */
+        margin: 0; /* No gaps */
+        display: flex;
+        flex-direction: column;
+        font-size: 14px; /* Reset font-size for content */
+        transform: translateZ(0); /* Force hardware acceleration for rendering */
+        margin-right: -1px; /* Slight overlap to counter subpixel gaps */
+    }
+
+    /* Remove margin-right from the last panel to avoid overflow */
+    .field-settings-details {
+        margin-right: 0; /* No overlap on the last panel */
+    }
+
+    /* Specific widths for each panel */
+    .table-manager {
+        width: 280px;
+        flex: 0 0 280px;
+        background-color: transparent;
+        margin-left: 0;
+        padding-left: 10px;
+    }
+
+    .area-details {
+        width: 280px;
+        flex: 0 0 280px;
+        background-color: #4a4848;
+    }
+
+    .table-details {
+        width: 330px;
+        flex: 0 0 330px;
+        background-color: #4a4848;
+    }
+
+    .field-details {
+        width: 280px;
+        flex: 0 0 280px;
+        background-color: #4a4848;
+    }
+
+    .field-settings {
+        width: 280px;
+        flex: 0 0 280px;
+        background-color: #4a4848;
+    }
+
+    .field-settings-details {
+        width: 280px;
+        flex: 0 0 280px;
+        background-color: #4a4848;
+    }
+
+    /* Adjust table-details when all divs are open */
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-details {
+        width: 380px;
+        flex: 0 0 380px;
+        max-width: none;
+        height: 100%; /* Maintain full height */
+    }
+
+    /* Adjust other panels when all divs are open */
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-manager {
+        width: 230px;
+        flex: 0 0 230px;
+    }
+
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .area-details {
+        width: 230px;
+        flex: 0 0 230px;
+    }
+
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-details {
+        width: 230px;
+        flex: 0 0 230px;
+    }
+
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings {
+        width: 230px;
+        flex: 0 0 230px;
+    }
+
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings-details {
+        width: 230px;
+        flex: 0 0 230px;
+    }
+
+    /* List box container (prevent stretching in height and width) */
+    .list-box-container {
+        background-color: white;
+        padding: 10px;
+        margin-top: 5px;
+        font-size: 14px;
+        max-height: 500px; /* Prevent stretching in height */
+        width: auto; /* Prevent stretching in width, take content width */
+        max-width: 100%; /* Ensure it doesn't exceed parent width */
+        overflow-y: auto; /* Scroll within list box if needed */
+        box-sizing: border-box;
+    }
+}
