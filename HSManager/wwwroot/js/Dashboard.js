@@ -1183,16 +1183,34 @@ async function loadMenu() {
             </li>
         `).join("");
 
-        const sidebar = document.querySelector(".sidebar");
         const floatingLabel = document.getElementById("floatingLabel");
-        if (!sidebar || !floatingLabel) {
-            console.error("Sidebar or floating label not found");
+        if (!floatingLabel) {
+            console.error("Floating label not found");
             return;
         }
-        sidebar.appendChild(floatingLabel);
+        // Append floatingLabel to body instead of sidebar
+        document.body.appendChild(floatingLabel);
 
         let activeId = null;
         let hideTooltipTimeout;
+
+        // Function to position the tooltip accurately
+        const positionTooltip = (navItem, labelText) => {
+            // Set content first to ensure correct dimensions
+            floatingLabel.textContent = labelText;
+            floatingLabel.style.display = "block"; // Make visible to get accurate dimensions
+
+            // Use requestAnimationFrame to ensure DOM is stable
+            requestAnimationFrame(() => {
+                const itemRect = navItem.getBoundingClientRect();
+                const floatingLabelRect = floatingLabel.getBoundingClientRect();
+
+                // Center vertically: itemRect.top + half of nav item height - half of tooltip height
+                floatingLabel.style.position = "absolute";
+                floatingLabel.style.top = `${itemRect.top + (itemRect.height / 2) - (floatingLabelRect.height / 2)}px`;
+                floatingLabel.style.left = `${itemRect.right + 5}px`; // Position to the right
+            });
+        };
 
         document.querySelectorAll(".nav-link").forEach(link => {
             link.addEventListener("mouseenter", (e) => {
@@ -1201,8 +1219,6 @@ async function loadMenu() {
                 console.log(`Menu item hover: ${id}`);
 
                 const navItem = e.currentTarget;
-                const sidebarRect = sidebar.getBoundingClientRect();
-                const itemRect = navItem.getBoundingClientRect();
 
                 let labelText;
                 switch (id) {
@@ -1213,10 +1229,8 @@ async function loadMenu() {
                     default: labelText = navItem.getAttribute("title") || "Menu Item";
                 }
 
-                const relativeTop = itemRect.top - sidebarRect.top;
-                floatingLabel.style.top = `${relativeTop}px`;
-                floatingLabel.textContent = labelText;
-                floatingLabel.style.display = "block";
+                // Position tooltip
+                positionTooltip(navItem, labelText);
 
                 clearTimeout(hideTooltipTimeout);
             });
@@ -1229,7 +1243,7 @@ async function loadMenu() {
                 }, 200);
             });
 
-            // Add click event to load Table Manager divs when ID 1 is clicked
+            // Click event handler remains unchanged
             link.addEventListener("click", async (e) => {
                 e.preventDefault();
                 const id = parseInt(e.currentTarget.dataset.id);
@@ -1244,22 +1258,25 @@ async function loadMenu() {
                 }
 
                 if (id === 1) {
-                    hideElementsOnLoad();
-                    showElementsOnClick();
+                    showNavbar();
                     console.log("Table Manager icon clicked, loading divs");
                     contentArea.querySelector("h1").style.display = "none";
                     contentArea.querySelector("p").style.display = "none";
                     tableManagerContainer.style.display = "flex";
+
+
+                    setSidebarStyles(); // Unchanged, applies sidebar styles
                     await populateAreasList();
                 }
                 if (id === -1) {
-                    const navbar = document.getElementById("originalNavbar");
-                    if (navbar && navbar.style.display === "none") {
-                        //alert("Navbar is hidden, already at home");
-                        
+                    const navbar = document.getElementById('originalNavbar');
+                    if (navbar) {
+                        const isHidden = navbar.hidden || window.getComputedStyle(navbar).display === 'none';
+                        if (!isHidden) {
+                            location.reload();
+                        }
                     } else {
-                        //alert("Not at home refresh");
-                        location.reload();
+                        console.log("Navbar with id 'originalNavbar' not found.");
                     }
                 }
             });
@@ -1277,6 +1294,28 @@ async function loadMenu() {
                 activeId = null;
             }, 200);
         });
+
+        // Handle layout shifts (resize/scroll)
+        const repositionOnLayoutChange = () => {
+            if (activeId !== null && floatingLabel.style.display === "block") {
+                const activeLink = document.querySelector(`.nav-link[data-id="${activeId}"]`);
+                if (activeLink) {
+                    let labelText;
+                    switch (activeId) {
+                        case -1: labelText = "Home"; break;
+                        case 1: labelText = "Table Manager"; break;
+                        case 2: labelText = "InternalUserManager"; break;
+                        case 3: labelText = "ExternalUserManager"; break;
+                        default: labelText = activeLink.getAttribute("title") || "Menu Item";
+                    }
+                    positionTooltip(activeLink, labelText);
+                }
+            }
+        };
+
+        // Add event listeners for resize and scroll
+        window.addEventListener("resize", repositionOnLayoutChange);
+        window.addEventListener("scroll", repositionOnLayoutChange);
 
     } catch (error) {
         console.error("Error in loadMenu:", error);
@@ -1329,330 +1368,8 @@ const visibilityState = {
     footer: true, // Footer starts visible
 };
 
-// Updated hideElementsOnLoad function
-function hideElementsOnLoad() {
-    console.log("Running hideElementsOnLoad");
 
-    // Prevent horizontal scrollbars
-    document.body.style.overflowX = "hidden";
-    document.documentElement.style.overflowX = "hidden";
-
-    // Apply initial visibility state
-    Object.assign(visibilityState, {
-        navbar: false,
-        userTitle: false,
-        lockIcon: false,
-        undoIcon: false,
-        playIcon: false,
-        sidebarLogo: false,
-        navbarLogo: false,
-        hrElements: false,
-        footer: true,
-    });
-
-    // Helper function to safely manipulate elements
-    const manipulateElement = (selector, action, styles = {}) => {
-        const element = document.querySelector(selector);
-        if (!element) {
-            console.warn(`${selector} not found in DOM`);
-            return null;
-        }
-        if (action === "hide") element.style.display = "none";
-        if (action === "show") element.style.display = "block";
-        if (action === "remove") element.remove();
-        Object.assign(element.style, styles);
-        return element;
-    };
-
-    // Hide specified elements
-    manipulateElement("#User-title", "hide");
-    manipulateElement("#lockIcon", "hide");
-    manipulateElement("#undoIcon", "hide");
-    manipulateElement("#playIcon", "hide");
-
-    // Remove navbar logo
-    manipulateElement("#navbarlogo", "remove");
-
-    // Remove sidebar logo
-    manipulateElement("#sidebarlogo", "remove");
-
-    // Remove all hr elements with class sky-blue-hr
-    const hrElements = document.querySelectorAll("hr.sky-blue-hr");
-    hrElements.forEach(hr => hr.remove());
-    console.log(`Removed ${hrElements.length} hr.sky-blue-hr elements`);
-
-    // Hide navbar and set background colors
-    const navbar = manipulateElement("#originalNavbar", "hide", {
-        backgroundColor: "#2a2a2a",
-    });
-    if (navbar) {
-        document.body.style.backgroundColor = "#2a2a2a";
-        document.documentElement.style.backgroundColor = "#2a2a2a";
-        const navbarParent = navbar.parentElement;
-        if (navbarParent && navbarParent !== document.body) {
-            Object.assign(navbarParent.style, {
-                backgroundColor: "#2a2a2a",
-                overflow: "hidden",
-            });
-            console.log("Navbar parent container background set to #2a2a2a");
-        }
-    }
-
-    // Style the sidebar
-    manipulateElement(".sidebar", null, {
-        height: "100vh",
-        top: "0",
-        position: "fixed",
-        zIndex: "1001",
-        width: "60px",
-        backgroundColor: "#212121",
-        overflow: "visible", // Avoid clipping floatingLabel
-    }) && console.log("Sidebar styles applied");
-
-    // Add copyright image and adjust dashboard content
-    const dashboardContent = manipulateElement("#dashboardContent", null, {
-        position: "relative",
-        zIndex: "1",
-    });
-    if (dashboardContent) {
-        const existingImg = document.querySelector('img[src="/assets/_Loghi/DATALABOR_duplicate.png"]');
-        if (!existingImg) {
-            const img = document.createElement("img");
-            Object.assign(img, {
-                src: "/assets/_Loghi/DATALABOR_duplicate.png",
-                alt: "DATALABOR Copyright Logo",
-            });
-            Object.assign(img.style, {
-                position: "fixed",
-                top: "-100px",
-                right: "-15px",
-                maxWidth: "min(500px, 100vw)",
-                maxHeight: "min(450px, 100vh)",
-                zIndex: "999999",
-                display: "block",
-                objectFit: "contain",
-            });
-            document.body.appendChild(img);
-            console.log("Copyright image placed over document with fixed position");
-        }
-
-        const welcomeHeader = manipulateElement("h1.mt-5.text-center", null, {
-            position: "relative",
-            zIndex: "2",
-        }, dashboardContent) || console.warn("Welcome header not found");
-
-        // Debug navbar interference
-        const navbarDebug = document.querySelector(".navbar, #navbar, [class*='nav'], header, [role='navigation']");
-        if (navbarDebug) {
-            const navStyles = window.getComputedStyle(navbarDebug);
-            console.log(`Navbar z-index: ${navStyles.zIndex}, display: ${navStyles.display}`);
-        } else {
-            console.warn("Navbar not found in debug query");
-        }
-    }
-
-    // Ensure footer remains visible
-    manipulateElement("#logout-footer", "show", {
-        zIndex: "1002",
-        position: "fixed",
-        bottom: "0",
-        width: "100%",
-    }) && console.log("Footer (id='logout-footer') explicitly set to remain visible");
-}
-
-
-function showElementsOnClick() {
-    console.log("Running showElementsOnClick");
-
-    // Ensure no horizontal scrollbars
-    document.body.style.overflowX = "hidden";
-    document.documentElement.style.overflowX = "hidden";
-
-    // Restore visibility of specified elements
-    document.getElementById("User-title").style.display = "block";
-    document.getElementById("lockIcon").style.display = "block";
-    document.getElementById("undoIcon").style.display = "block";
-    document.getElementById("playIcon").style.display = "block";
-
-    // Hide the specific image
-    const duplicateImage = document.querySelector('img[src="/assets/_Loghi/DATALABOR_duplicate.png"]');
-    if (duplicateImage) {
-        duplicateImage.style.display = "none";
-        console.log("Image /assets/_Loghi/DATALABOR_duplicate.png hidden");
-    } else {
-        console.warn("Image /assets/_Loghi/DATALABOR_duplicate.png not found");
-    }
-
-    // Restore navbar logo
-    if (!document.getElementById("navbarlogo")) {
-        const navbarLogo = document.createElement("img");
-        navbarLogo.id = "navbarlogo";
-        navbarLogo.src = "/assets/_Loghi/DATALABOR_Hyper Application Platform_logo-negativo.png";
-        navbarLogo.alt = "Hyperspace Logo";
-        navbarLogo.style.maxHeight = "150px";
-        navbarLogo.style.width = "auto";
-        navbarLogo.style.boxSizing = "border-box";
-
-        const navbarLogoContainer = document.querySelector("#originalNavbar .d-flex.align-items-center");
-        if (navbarLogoContainer) {
-            navbarLogoContainer.insertBefore(navbarLogo, navbarLogoContainer.firstChild);
-            navbarLogoContainer.style.overflow = "hidden";
-        } else {
-            console.warn("Navbar logo container not found");
-        }
-    }
-
-    // Restore sidebar logo
-    if (!document.getElementById("sidebarlogo")) {
-        const sidebarLogo = document.createElement("img");
-        sidebarLogo.id = "sidebarlogo";
-        sidebarLogo.src = "/assets/Loghi Web/favicon - Copia.png";
-        sidebarLogo.alt = "Logo";
-        sidebarLogo.className = "sidebar-logo";
-        sidebarLogo.style.marginTop = "-10px";
-        sidebarLogo.style.maxWidth = "100%";
-
-        const sidebarSticky = document.querySelector(".sidebar-sticky");
-        if (sidebarSticky) {
-            sidebarSticky.insertBefore(sidebarLogo, sidebarSticky.firstChild);
-            sidebarSticky.style.overflow = "hidden";
-        } else {
-            console.warn("Sidebar sticky container not found");
-        }
-    }
-
-    // Restore navbar hr
-    if (!document.querySelector("#originalNavbar hr.sky-blue-hr")) {
-        const navbarHr = document.createElement("hr");
-        navbarHr.className = "sky-blue-hr";
-        navbarHr.style.margin = "0";
-
-        const navbarTop = document.querySelector("#originalNavbar .navbar-top");
-        const navbarBottom = document.querySelector("#originalNavbar .navbar-bottom");
-        if (navbarTop && navbarBottom) {
-            navbarTop.parentNode.insertBefore(navbarHr, navbarBottom);
-        } else {
-            console.warn("Navbar top or bottom not found for hr insertion");
-        }
-    }
-
-    // Restore navbar with original styles
-    const navbar = document.getElementById("originalNavbar");
-    if (navbar) {
-        navbar.style.display = "block";
-        navbar.style.position = "fixed";
-        navbar.style.top = "0";
-        navbar.style.width = "100%";
-        navbar.style.zIndex = "1000";
-        navbar.style.backgroundColor = "";
-        navbar.style.boxSizing = "border-box";
-        navbar.classList.add("bg-dark", "text-white");
-        console.log("Navbar restored with original styles");
-    } else {
-        console.error("Navbar (id='originalNavbar') not found");
-    }
-
-    // Reset sidebar to original height and top, keep tooltip-friendly
-    const sidebar = document.querySelector(".sidebar");
-    if (sidebar) {
-        sidebar.style.height = "calc(100vh - 40px)";
-        sidebar.style.top = "45px";
-        sidebar.style.position = "fixed";
-        sidebar.style.zIndex = "1001";
-        sidebar.style.width = "60px";
-        sidebar.style.backgroundColor = "#212121";
-        sidebar.style.overflow = "visible"; // Prevent clipping floatingLabel
-        console.log("Sidebar styles reset");
-    } else {
-        console.error("Sidebar (class='sidebar') not found");
-    }
-
-    // Reset dashboardContent overflow
-    const dashboardContent = document.getElementById("dashboardContent");
-    if (dashboardContent) {
-        dashboardContent.style.overflow = "";
-    }
-
-    // Forcefully restore the footer with ID 'logout-footer'
-    const footer = document.getElementById("logout-footer");
-    if (footer) {
-        footer.style.display = "block"; // Forcefully show the footer
-        footer.style.position = "fixed";
-        footer.style.bottom = "0";
-        footer.style.width = "100%";
-        footer.style.left = "0";
-        footer.style.height = "30px"; // Match your original inline style
-        footer.style.zIndex = "1000"; // Ensure it’s above other elements
-        footer.classList.add("bg-sidebar", "text-white", "py-2"); // Reapply classes if needed
-        console.log("Footer (id='logout-footer') forcefully restored with original styles");
-
-        // Ensure the inner container is styled correctly
-        const footerContainer = footer.querySelector(".container-fluid");
-        if (footerContainer) {
-            footerContainer.style.paddingRight = "15px";
-            footerContainer.style.position = "relative";
-            footerContainer.style.height = "100%";
-            footerContainer.classList.add("d-flex", "justify-content-end", "align-items-center");
-            console.log("Footer container styles restored");
-        }
-
-        // Ensure logout popup visibility is reset if it was hidden
-        const logoutPopup = footer.querySelector("#logoutPopup");
-        if (logoutPopup && logoutPopup.style.display === "block") {
-            logoutPopup.style.display = "none"; // Reset popup to hidden state
-            console.log("Logout popup reset to hidden");
-        }
-    } else {
-        console.warn("Footer (id='logout-footer') not found. Creating a fallback footer.");
-        // Create a fallback footer matching your structure
-        const fallbackFooter = document.createElement("footer");
-        fallbackFooter.id = "logout-footer";
-        fallbackFooter.className = "bg-sidebar text-white py-2";
-        fallbackFooter.style.position = "fixed";
-        fallbackFooter.style.bottom = "0";
-        fallbackFooter.style.width = "100%";
-        fallbackFooter.style.left = "0";
-        fallbackFooter.style.height = "30px";
-        fallbackFooter.style.zIndex = "1000";
-        fallbackFooter.innerHTML = `
-            <div class="container-fluid d-flex justify-content-end align-items-center" style="padding-right: 15px; position: relative; height: 100%;">
-                <div class="logout-container">
-                    <a href="#" class="logout-icon" id="logoutToggle">
-                        <img src="/assets/Icons/power-off.svg" alt="Logout" width="20" height="20" />
-                    </a>
-                    <div class="logout-popup" id="logoutPopup" style="display: none;">
-                        <p><strong>Esci dall'applicazione Hyperspace</strong></p>
-                        <p>Confermi l'uscita?</p>
-                        <button class="cancel-btn" id="cancelLogout">Annulla</button>
-                        <a href="/logout" class="logout-btn">Esci</a>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(fallbackFooter);
-        console.log("Fallback footer created and appended");
-
-        // Reattach logout event listeners since it’s newly created
-        const logoutToggle = document.getElementById("logoutToggle");
-        const logoutPopup = document.getElementById("logoutPopup");
-        const cancelBtn = document.getElementById("cancelLogout");
-
-        if (logoutToggle) {
-            logoutToggle.addEventListener("click", (e) => {
-                e.preventDefault();
-                logoutPopup.style.display = logoutPopup.style.display === "block" ? "none" : "block";
-                console.log("Logout toggle reattached");
-            });
-        }
-        if (cancelBtn) {
-            cancelBtn.addEventListener("click", () => {
-                logoutPopup.style.display = "none";
-                console.log("Cancel logout reattached");
-            });
-        }
-    }
-}
-function setupUniversalVisibilityToggle() {
+function setupUniversalVisiSbilityToggle() {
     document.addEventListener("change", (e) => {
         const checkbox = e.target;
 
@@ -2855,12 +2572,258 @@ document.addEventListener("DOMContentLoaded", () => {
     neutralizeTableRelationsListClicksCompletely();
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM content loaded, initializing sidebar styles');
 
+    // Select the sidebar and sidebarlogo elements
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarLogo = document.getElementById('sidebarlogo'); // Use ID selector for consistency
+
+    // Hide sidebar logo
+    if (sidebarLogo) {
+        sidebarLogo.style.display = 'none';
+    } else {
+        console.warn('Element with ID "sidebarlogo" not found');
+    }
+
+    // Apply sidebar styles if sidebar exists
+    if (sidebar) {
+        sidebar.style.height = 'calc(100vh - 20px)';
+        sidebar.style.position = 'absolute';
+        sidebar.style.top = '0px';
+        sidebar.style.zIndex = '1001';
+        sidebar.style.width = '60px';
+        sidebar.style.backgroundColor = '#212121';
+    } else {
+        console.warn('Sidebar element with class .sidebar not found');
+    }
+});
+
+function setSidebarStyles() {
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarLogo = document.getElementById('sidebarlogo'); // Use ID selector for consistency
+
+    // Apply sidebar styles if sidebar exists
+    if (sidebar) {
+        sidebar.style.height = 'calc(100vh - 100px)';
+        sidebar.style.position = 'absolute';
+        sidebar.style.top = '80px';
+        sidebar.style.zIndex = '1001';
+        sidebar.style.width = '60px';
+        sidebar.style.backgroundColor = '#212121';
+    } else {
+        console.warn('Sidebar element with class .sidebar not found');
+    }
+
+    // Show sidebar logo if it exists
+    if (sidebarLogo) {
+        sidebarLogo.style.display = 'inline-block'; // Matches <img> default display
+    } else {
+        console.warn('Element with ID "sidebarlogo" not found');
+    }
+}
+
+//hide navbar on page load initially
+
+
+function showSidebarLogo() {
+    const sidebarLogo = document.getElementById('sidebarlogo');
+    if (sidebarLogo) {
+        sidebarLogo.style.display = 'block'; // or 'inline-block' depending on desired layout
+    } else {
+        console.warn('Element with ID "sidebarlogo" not found');
+    }
+}
+
+//hide navbar 
+document.addEventListener('DOMContentLoaded', function () {
+    const navbar = document.getElementById('originalNavbar');
+    if (navbar) {
+        navbar.style.display = 'none';
+    }
+});
+
+//show navbar
+function showNavbar() {
+    const navbar = document.getElementById('originalNavbar');
+    if (navbar) {
+        navbar.style.display = 'block'; // or 'flex', depending on your navbar's CSS
+    } else {
+        console.log("Navbar with id 'originalNavbar' not found.");
+    }
+}
+
+
+// Dynamic function to toggle elements based on input controls
+function toggleElementsDynamically(config = {}) {
+    // Default configuration
+    const defaultConfig = {
+        containerSelector: '.dynamic-container', // Parent container(s) to search within
+        inputSelector: 'input[type="checkbox"]', // Default input type
+        targetAttribute: 'data-listbox-id', // Attribute linking input to target element
+        eventType: 'change', // Default event to listen for
+        displayStyle: 'block', // Display style when visible
+        observeMutations: true, // Watch for dynamically added elements
+        mutationOptions: { childList: true, subtree: true } // MutationObserver options
+    };
+
+    const settings = { ...defaultConfig, ...config };
+
+    // Helper to toggle target element visibility
+    const toggleTargetElement = (inputElement) => {
+        const targetId = inputElement.getAttribute(settings.targetAttribute);
+        const targetElement = targetId ? document.getElementById(targetId) : null;
+
+        if (targetElement) {
+            targetElement.style.display = inputElement.checked ? settings.displayStyle : 'none';
+        } else {
+            console.warn(`Target element with ID ${targetId} not found for input ${inputElement.id}`);
+        }
+    };
+
+    // Process inputs within a container
+    const processInputs = (container) => {
+        const inputs = container.querySelectorAll(settings.inputSelector);
+        inputs.forEach(input => {
+            // Initial toggle based on current state
+            toggleTargetElement(input);
+
+            // Remove existing listener to prevent duplicates
+            input.removeEventListener(settings.eventType, toggleTargetElement);
+
+            // Add new event listener
+            input.addEventListener(settings.eventType, () => toggleTargetElement(input));
+        });
+
+        return inputs;
+    };
+
+    // Process all containers
+    const containers = document.querySelectorAll(settings.containerSelector);
+    if (!containers.length) {
+        console.warn(`No containers found for selector: ${settings.containerSelector}`);
+        return [];
+    }
+
+    const allInputs = [];
+    containers.forEach(container => {
+        allInputs.push(...processInputs(container));
+    });
+
+    // Optional: Observe DOM changes for dynamically added elements
+    if (settings.observeMutations) {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach(mutation => {
+                if (mutation.addedNodes.length) {
+                    containers.forEach(container => {
+                        if (container.contains(mutation.target)) {
+                            processInputs(container);
+                        }
+                    });
+                }
+            });
+        });
+
+        containers.forEach(container => {
+            observer.observe(container, settings.mutationOptions);
+        });
+
+        // Cleanup observer on page unload
+        window.addEventListener('unload', () => observer.disconnect());
+    }
+
+    return allInputs; // Return processed inputs for further use
+}
+
+function setupDynamicCheckboxAlert() {
+    // List of target div classes
+    const targetClasses = [
+        '.table-manager',
+        '.area-details',
+        '.table-details',
+        '.field-details',
+        '.field-settings',
+        '.field-settings-details'
+    ];
+
+    // Process each target div
+    targetClasses.forEach((classSelector) => {
+        const targetDiv = document.querySelector(classSelector);
+        if (!targetDiv) {
+            console.warn(`No div with class ${classSelector} found`);
+            return;
+        }
+
+        // Function to setup click event on a checkbox
+        const setupCheckbox = (checkbox) => {
+            // Check if checkbox is associated with label "visible"
+            const isVisibleCheckbox = isCheckboxLabeledVisible(checkbox);
+            if (!isVisibleCheckbox) return;
+
+            checkbox.addEventListener('click', () => {
+                const listBoxContainer = targetDiv.querySelector('.list-box-container');
+                if (listBoxContainer) {
+                    listBoxContainer.style.display = checkbox.checked ? 'block' : 'none';
+                } else {
+                    console.warn(`No .list-box-container found in ${classSelector}`);
+                }
+            });
+        };
+
+        // Check if checkbox is associated with label "visible"
+        const isCheckboxLabeledVisible = (checkbox) => {
+            // Check if checkbox has an ID and a corresponding <label for="id">
+            const id = checkbox.id;
+            if (id) {
+                const label = document.querySelector(`label[for="${id}"]`);
+                if (label && label.textContent.trim().toLowerCase().includes('visible')) {
+                    return true;
+                }
+            }
+            // Check parent or sibling <label> elements
+            const parentLabel = checkbox.closest('label');
+            if (parentLabel && parentLabel.textContent.trim().toLowerCase().includes('visible')) {
+                return true;
+            }
+            return false;
+        };
+
+        // Process existing checkboxes
+        const existingCheckboxes = targetDiv.querySelectorAll('input[type="checkbox"]');
+        existingCheckboxes.forEach(setupCheckbox);
+
+        // Set up MutationObserver for dynamically added checkboxes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            // Check if node is a checkbox or contains checkboxes
+                            const checkboxes = node.matches('input[type="checkbox"]')
+                                ? [node]
+                                : node.querySelectorAll('input[type="checkbox"]');
+                            checkboxes.forEach(setupCheckbox);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Observe changes in target div (optimized to watch for elements)
+        observer.observe(targetDiv, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
+// Execute when DOM is loaded
+document.addEventListener('DOMContentLoaded', setupDynamicCheckboxAlert);
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM content loaded, initializing menu");
     loadMenu();
-    hideElementsOnLoad();
+    //hideElementsOnLoad();
 
 });

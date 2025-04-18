@@ -1,4 +1,4 @@
-﻿/* Reset and base styles */
+﻿﻿ /* Reset and base styles */
 html, body {
     margin: 0;
     padding: 0;
@@ -192,7 +192,7 @@ main[role="main"] {
     background-color: #2a2a2a;
     color: #ffffff;
     padding: 20px;
-    margin-top:-28px;
+    margin-top: -28px;
     border-radius: 0;
     margin-bottom: 0;
     position: relative;
@@ -579,6 +579,15 @@ label,
 }
 /* Media query for much larger screens (1920px and above) */
 @media (min-width: 1920px) {
+
+    /* Logo */
+    #aboveNavbar {
+        width: 100%; /* Use viewport width to ensure full page width */
+        left: 0; /* Align to the left edge of the viewport */
+        margin: 0; /* Remove any margins that might offset the navbar */
+        justify-content: flex-end;
+    }
+
     /* Table manager container */
     .table-manager-container {
         display: flex;
