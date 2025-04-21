@@ -1,4 +1,4 @@
-﻿﻿ /* Reset and base styles */
+﻿﻿﻿ /* Reset and base styles */
 html, body {
     margin: 0;
     padding: 0;
@@ -582,12 +582,24 @@ label,
 
     /* Logo */
     #aboveNavbar {
-        width: 100%; /* Use viewport width to ensure full page width */
-        left: 0; /* Align to the left edge of the viewport */
-        margin: 0; /* Remove any margins that might offset the navbar */
-        justify-content: flex-end;
+        width: 100%; /* Full viewport width */
+        left: 0; /* Align to left edge */
+        margin: 0; /* No margins */
+        display: flex; /* Ensure flex display */
+        justify-content: flex-end; /* Align children to the right */
+        position: relative; /* Ensure proper positioning context */
+        overflow: visible; /* Prevent clipping of children */
     }
 
+    #User-title {
+        margin-right: -40px; /* Reduce margin to prevent pushing off-screen */
+        display: block; /* Ensure visibility */
+        visibility: visible; /* Explicitly set visibility */
+        color: #ffffff; /* Ensure text is visible (adjust as needed) */
+        font-size: 16px; /* Ensure readable font size */
+        position: relative; /* Keep within flow */
+        z-index: 1002; /* Ensure it’s above other elements */
+    }
     /* Table manager container */
     .table-manager-container {
         display: flex;
@@ -600,6 +612,9 @@ label,
         position: relative;
         gap: 0; /* Explicitly remove any flex gap */
         font-size: 0; /* Remove whitespace gaps from inline content */
+    }
+    #aboveNavbar img {
+        margin-right: -50px; /* Adjust this value to move the image further right */
     }
 
     /* Common styles for all panels */
@@ -715,3 +730,35 @@ label,
         box-sizing: border-box;
     }
 }
+/* For tablet screens (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #aboveNavbar img {
+        margin-left: auto; /* Pushes image to the right */
+        margin-right: -50px; /* Padding from right edge */
+    }
+}
+
+/* For budget laptops (e.g., 1366x768) */
+@media (min-width: 1025px) and (max-width: 1366px) {
+    #aboveNavbar img {
+        margin-left: auto; /* Pushes image to the right */
+        margin-right: -50px; /* Padding from right edge */
+    }
+}
+
+/* For mid-range laptops (e.g., 1440x900) */
+@media (min-width: 1367px) and (max-width: 1440px) {
+    #aboveNavbar img {
+        margin-left: auto; /* Pushes image to the right */
+        margin-right: -50px; /* Padding from right edge */
+    }
+}
+
+/* For high-end laptops and desktops (e.g., 1920x1080 and above) */
+@media (min-width: 1441px) {
+    #aboveNavbar img {
+        margin-left: auto; /* Pushes image to the right */
+        margin-right: -50px; /* Padding from right edge */
+    }
+}
+ 

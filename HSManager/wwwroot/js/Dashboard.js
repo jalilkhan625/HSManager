@@ -1,4 +1,4 @@
-﻿const token = document.getElementById("token").value;
+﻿﻿const token = document.getElementById("token").value;
 const userId = document.getElementById("userId").value;
 
 console.log("Initializing - Token:", token)
