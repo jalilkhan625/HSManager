@@ -17,9 +17,9 @@
     <link href="/css/dashboard.css" rel="stylesheet" />
     <style>
         .sidebar {
-            height: calc(100vh - 100px); /* Reduced subtraction to increase height slightly */
+            height: calc(100vh - 10px); /* Adjusted from 100px to 80px to compensate for top change */
             position: absolute;
-            top: 80px;
+            top: 0px; /* Moved up from 80px to 60px */
             z-index: 1001;
             width: 60px;
             background-color: #212121;
@@ -109,7 +109,7 @@
                     <p class="text-center">You're now logged in.</p>
 
                     <!-- Option 1: Add margin-top directly -->
-                    <div id="tableManagerContainer" class="table-manager-container" style="display: none; margin-left:-20px; padding-top: 100px;width: calc(100% + 20px);">
+                    <div id="tableManagerContainer" class="table-manager-container" style="display: none; margin-left:-20px; margin-top:5px;padding-top: 100px;width: calc(100% + 20px);">
                         <nav id="originalNavbar" class="bg-dark text-white" style="position: fixed; top: 80px; width: 100%; z-index: 1000; margin-left:-20px;">
                             <div class="d-flex justify-content-between align-items-center navbar-top px-3" style="height: 40px;">
                                 <div class="d-flex align-items-center">

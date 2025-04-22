@@ -1265,7 +1265,7 @@ async function loadMenu() {
                     tableManagerContainer.style.display = "flex";
 
 
-                    setSidebarStyles(); // Unchanged, applies sidebar styles
+                    //setSidebarStyles(); // Unchanged, applies sidebar styles
                     await populateAreasList();
                 }
                 if (id === -1) {
@@ -2572,68 +2572,6 @@ document.addEventListener("DOMContentLoaded", () => {
     neutralizeTableRelationsListClicksCompletely();
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM content loaded, initializing sidebar styles');
-
-    // Select the sidebar and sidebarlogo elements
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarLogo = document.getElementById('sidebarlogo'); // Use ID selector for consistency
-
-    // Hide sidebar logo
-    if (sidebarLogo) {
-        sidebarLogo.style.display = 'none';
-    } else {
-        console.warn('Element with ID "sidebarlogo" not found');
-    }
-
-    // Apply sidebar styles if sidebar exists
-    if (sidebar) {
-        sidebar.style.height = 'calc(100vh - 20px)';
-        sidebar.style.position = 'absolute';
-        sidebar.style.top = '0px';
-        sidebar.style.zIndex = '1001';
-        sidebar.style.width = '60px';
-        sidebar.style.backgroundColor = '#212121';
-    } else {
-        console.warn('Sidebar element with class .sidebar not found');
-    }
-});
-
-function setSidebarStyles() {
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarLogo = document.getElementById('sidebarlogo'); // Use ID selector for consistency
-
-    // Apply sidebar styles if sidebar exists
-    if (sidebar) {
-        sidebar.style.height = 'calc(100vh - 100px)';
-        sidebar.style.position = 'absolute';
-        sidebar.style.top = '80px';
-        sidebar.style.zIndex = '1001';
-        sidebar.style.width = '60px';
-        sidebar.style.backgroundColor = '#212121';
-    } else {
-        console.warn('Sidebar element with class .sidebar not found');
-    }
-
-    // Show sidebar logo if it exists
-    if (sidebarLogo) {
-        sidebarLogo.style.display = 'inline-block'; // Matches <img> default display
-    } else {
-        console.warn('Element with ID "sidebarlogo" not found');
-    }
-}
-
-//hide navbar on page load initially
-
-
-function showSidebarLogo() {
-    const sidebarLogo = document.getElementById('sidebarlogo');
-    if (sidebarLogo) {
-        sidebarLogo.style.display = 'block'; // or 'inline-block' depending on desired layout
-    } else {
-        console.warn('Element with ID "sidebarlogo" not found');
-    }
-}
 
 //hide navbar 
 document.addEventListener('DOMContentLoaded', function () {
