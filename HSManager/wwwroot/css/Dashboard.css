@@ -1,4 +1,4 @@
-﻿﻿﻿ /* Reset and base styles */
+﻿/* Reset and base styles */
 html, body {
     margin: 0;
     padding: 0;
@@ -178,26 +178,25 @@ main[role="main"] {
     top: 56px;
     left: 60px;
     width: calc(100% - 60px);
-    height: calc(100vh - 56px);
+    height: calc(100vh - 56px - 40px); /* Subtract navbar and footer height */
     padding: 0;
     display: flex;
-    overflow: hidden; /* Prevent main from scrolling */
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 /* Dashboard content */
 #dashboardContent {
     flex: 1;
-    width: 100%; /* Full width within main */
-    height: calc(100vh - 56px);
+    width: 100%;
+    height: calc(100vh - 56px - 40px); /* Subtract navbar and footer height */
     background-color: #2a2a2a;
     color: #ffffff;
     padding: 20px;
-    margin-top: -28px;
+    margin: 0; /* No margins */
     border-radius: 0;
-    margin-bottom: 0;
     position: relative;
-    overflow-y: auto; /* Only scrollbar for #dashboardContent */
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow: hidden; /* Prevent outer scrollbar */
     box-sizing: border-box;
 }
 
@@ -210,55 +209,44 @@ main[role="main"] {
 /* Table manager container */
 .table-manager-container {
     display: flex;
-    width: 100%; /* Fit within #dashboardContent */
-    min-height: auto; /* Avoid forcing full height */
+    width: 100%;
+    height: calc(100vh - 56px - 40px); /* Match #dashboardContent height */
     padding: 0;
     font-family: Arial, sans-serif;
     flex-wrap: nowrap;
     box-sizing: border-box;
     position: relative;
-    margin-left: 0; /* Remove negative margin */
-    margin-right: 0;
-}
-
-.table-manager {
-    background-color: transparent;
-    color: #ffffff;
-    padding: 10px;
-    border: none;
-    width: calc(100% / 6);
-    min-width: 150px; /* Reduced to avoid overflow */
-    flex: 1 1 auto;
-    max-width: 18%; /* Tighter constraint */
-    box-sizing: border-box;
-    height: auto;
-    min-height: 0;
     margin-left: 0;
-    padding-left: 10px;
+    margin-right: 0;
+    margin-top: -20px; /* Move upward by 20px */
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
-/* Default panel styles */
+/* Panel styles */
+.table-manager,
 .area-details,
 .table-details,
 .field-details,
 .field-settings,
 .field-settings-details {
-    background-color: #4a4848;
+    background-color: #4a4848; /* Consistent background */
     color: #ffffff;
     padding: 10px;
     border: none;
     width: calc(100% / 6);
-    min-width: 150px; /* Reduced to avoid overflow */
+    min-width: 150px;
     flex: 1 1 auto;
-    max-width: 18%; /* Tighter constraint */
+    max-width: 18%;
     box-sizing: border-box;
-    height: auto;
-    min-height: 0;
+    height: 100%; /* Full container height */
+    overflow-y: auto; /* Internal scrollbar */
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
     margin: 0;
 }
 
-/* Ensure .table-manager is flush with sidebar */
+/* Table manager specific */
 .table-manager {
+    background-color: transparent;
     margin-left: 0;
     padding-left: 10px;
 }
@@ -578,225 +566,193 @@ label,
     filter: brightness(0) invert(0.8);
 }
 
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 60px;
+    width: calc(100% - 60px);
+    height: 40px;
+    background-color: #212121;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    margin: 0; /* Ensure no margin */
+    padding: 0; /* Ensure no padding */
+}
+
+/* Media queries */
+
 /* For tablet screens (768px to 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
     #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
+        margin-left: auto;
+        margin-right: -50px;
     }
 
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
+    .table-manager-container {
+        height: calc(100vh - 56px - 40px); /* Match updated height */
+    }
+
+    .table-manager,
+    .area-details,
+    .table-details,
+    .field-details,
+    .field-settings,
+    .field-settings-details {
+        height: 100%;
+        overflow-y: auto;
     }
 }
 
 /* For budget laptops (e.g., 1366x768) */
 @media (min-width: 1025px) and (max-width: 1366px) {
     #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
+        margin-left: auto;
+        margin-right: -50px;
     }
 
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
+    .table-manager-container {
+        height: calc(100vh - 56px - 40px); /* Match updated height */
+    }
+
+    .table-manager,
+    .area-details,
+    .table-details,
+    .field-details,
+    .field-settings,
+    .field-settings-details {
+        height: 100%;
+        overflow-y: auto;
     }
 }
 
 /* For mid-range laptops (e.g., 1440x900) */
 @media (min-width: 1367px) and (max-width: 1440px) {
     #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
+        margin-left: auto;
+        margin-right: -50px;
     }
 
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
+    .table-manager-container {
+        height: calc(100vh - 56px - 40px); /* Match updated height */
+    }
+
+    .table-manager,
+    .area-details,
+    .table-details,
+    .field-details,
+    .field-settings,
+    .field-settings-details {
+        height: 100%;
+        overflow-y: auto;
     }
 }
 
 /* For high-end laptops and desktops (e.g., 1920x1080 and above) */
-@media (min-width: 1441px) {
+@media (min-width: 1441px) and (max-width: 1899px) {
     #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
+        margin-left: auto;
+        margin-right: -50px;
     }
 
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
-    }
-}
-/* For ultra-wide or high-resolution desktops (1900px and above) */
-/* For tablet screens (768px to 1024px) */
-@media (min-width: 768px) and (max-width: 1024px) {
-    #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
+    .table-manager-container {
+        height: calc(100vh - 56px - 40px); /* Match updated height */
     }
 
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
-        display: flex; /* Ensures flex context for children */
-    }
-}
-
-/* For budget laptops (e.g., 1366x768) */
-@media (min-width: 1025px) and (max-width: 1366px) {
-    #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
-    }
-
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
-        display: flex; /* Ensures flex context for children */
-    }
-}
-
-/* For mid-range laptops (e.g., 1440x900) */
-@media (min-width: 1367px) and (max-width: 1440px) {
-    #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
-    }
-
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
-        display: flex; /* Ensures flex context for children */
-    }
-}
-
-/* For high-end laptops and desktops (e.g., 1920x1080 and above) */
-@media (min-width: 1441px) {
-    #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
-    }
-
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
-        display: flex; /* Ensures flex context for children */
+    .table-manager,
+    .area-details,
+    .table-details,
+    .field-details,
+    .field-settings,
+    .field-settings-details {
+        height: 100%;
+        overflow-y: auto;
     }
 }
 
 /* For ultra-wide or high-resolution desktops (1900px and above) */
 @media (min-width: 1900px) {
     #aboveNavbar img {
-        margin-left: auto; /* Pushes image to the right */
-        margin-right: -50px; /* Padding from right edge */
+        margin-left: auto;
+        margin-right: -50px;
     }
 
-    #tableManagerContainer {
-        min-height: 100%; /* Takes at least full parent height */
-        height: auto; /* Grows dynamically with content */
-        box-sizing: border-box; /* Ensures padding/borders don't affect height */
-        display: flex; /* Ensures flex context for children */
+    .table-manager-container {
+        height: calc(100vh - 56px - 40px); /* Match updated height */
     }
-    /* Remove margin-right from the last panel to avoid overflow */
-    .field-settings-details {
-        margin-right: 0; /* No overlap on the last panel */
-    }
-    /* Specific widths for each panel */
+
     .table-manager {
         width: 280px;
         flex: 0 0 280px;
         background-color: transparent;
         margin-left: 0;
         padding-left: 10px;
-        min-height: 100%; /* Ensure full height */
+        height: 100%;
+        overflow-y: auto;
     }
 
     .area-details {
         width: 280px;
         flex: 0 0 280px;
         background-color: #4a4848;
-        min-height: 100%; /* Ensure full height */
+        height: 100%;
+        overflow-y: auto;
     }
 
     .table-details {
         width: 330px;
         flex: 0 0 330px;
         background-color: #4a4848;
-        min-height: 100%; /* Ensure full height */
+        height: 100%;
+        overflow-y: auto;
     }
 
     .field-details {
         width: 280px;
         flex: 0 0 280px;
         background-color: #4a4848;
-        min-height: 100%; /* Ensure full height */
+        height: 100%;
+        overflow-y: auto;
     }
 
     .field-settings {
         width: 280px;
         flex: 0 0 280px;
         background-color: #4a4848;
-        min-height: 100%; /* Ensure full height */
+        height: 100%;
+        overflow-y: auto;
     }
 
     .field-settings-details {
         width: 280px;
         flex: 0 0 280px;
         background-color: #4a4848;
-        min-height: 100%; /* Ensure full height */
+        height: 100%;
+        overflow-y: auto;
+        margin-right: 0;
     }
+
     /* Adjust table-details when all divs are open */
     .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-details {
         width: 380px;
         flex: 0 0 380px;
         max-width: none;
-        min-height: 100%; /* Ensure full height of parent */
-        height: auto; /* Allow growth with content */
+        height: 100%;
+        overflow-y: auto;
     }
+
     /* Adjust other panels when all divs are open */
-    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-manager {
-        width: 230px;
-        flex: 0 0 230px;
-        min-height: 100%; /* Ensure full height */
-        height: auto;
-    }
-
-    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .area-details {
-        width: 230px;
-        flex: 0 0 230px;
-        min-height: 100%; /* Ensure full height */
-        height: auto;
-    }
-
-    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-details {
-        width: 230px;
-        flex: 0 0 230px;
-        min-height: 100%; /* Ensure full height */
-        height: auto;
-    }
-
-    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings {
-        width: 230px;
-        flex: 0 0 230px;
-        min-height: 100%; /* Ensure full height */
-        height: auto;
-    }
-
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .table-manager,
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .area-details,
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-details,
+    .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings,
     .table-manager-container:has(> .table-manager:not([style*="display: none"])):has(> .area-details:not([style*="display: none"])):has(> .table-details:not([style*="display: none"])):has(> .field-details:not([style*="display: none"])):has(> .field-settings:not([style*="display: none"])):has(> .field-settings-details:not([style*="display: none"])) .field-settings-details {
         width: 230px;
         flex: 0 0 230px;
-        min-height: 100%; /* Ensure full height */
-        height: auto;
+        height: 100%;
+        overflow-y: auto;
     }
 }
- 
