@@ -105,48 +105,27 @@
             <!-- Main Area -->
             <main role="main">
                 <div id="dashboardContent" class="content-area">
-                    <h1 class="mt-5 text-center" style="font-size: 1.9rem; margin-top: 6rem !important; position: relative;">Welcome to HSManager Dashboard</h1>
-                    <p class="text-center">You're now logged in.</p>
+                    <h1>Welcome to HSManager Dashboard</h1>
+                    <p>You're now logged in.</p>
 
-                    <!-- Option 1: Add margin-top directly -->
-                    <div id="tableManagerContainer" class="table-manager-container" style="display: none; margin-left:-20px; margin-top:-25px;padding-top: 100px;width: calc(100% + 20px);">
-                        <nav id="originalNavbar" class="bg-dark text-white" style="position: fixed; top: 80px; width: 100%; z-index: 1000; margin-left:-20px;">
-                            <div class="d-flex justify-content-between align-items-center navbar-top px-3" style="height: 40px;">
-                                <div class="d-flex align-items-center">
-                                </div>
-                                <div id="User-title" style="margin-right: 60px;">Table Manager</div>
+                    <div id="tableManagerContainer" class="table-manager-container" style="display: none;">
+                        <nav id="originalNavbar">
+                            <div class="navbar-top">
+                                <div class="d-flex align-items-center"></div>
+                                <div id="User-title">Table Manager</div>
                             </div>
                             <hr class="sky-blue-hr" />
-                            <div class="d-flex justify-content-between align-items-center navbar-bottom px-3" style="height: 50px;margin-right: 50px">
-                                <div id="stepsContainer" class="steps-container text-white" style="flex-grow: 1; display: none; width: 80%; min-width: 600px;"></div>
-                                <div style="display: flex; align-items: center; margin-right: 20px; margin-left: auto;">
-                                    <img id="lockIcon"
-                                         src="/assets/Icons/lock.svg"
-                                         alt="Lock"
-                                         style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;"
-                                         onmouseover="this.style.transform='scale(1.2)'; this.style.transition='transform 0.2s ease';"
-                                         onmouseout="this.style.transform='scale(1)';" />
-                                    <img id="undoIcon"
-                                         src="/assets/Icons/undo.svg"
-                                         alt="Refresh"
-                                         style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;"
-                                         onmouseover="this.style.transform='scale(1.2)'; this.style.transition='transform 0.2s ease';"
-                                         onmouseout="this.style.transform='scale(1)';" />
-                                    <a href="#"
-                                       id="playIcon"
-                                       style="display: inline-block;"
-                                       onmouseover="this.style.transform='scale(1.2)'; this.style.transition='transform 0.2s ease';"
-                                       onmouseout="this.style.transform='scale(1)';" />
-                                    <img src="/assets/Icons/play.svg"
-                                         alt="Logout"
-                                         style="cursor: pointer; filter: brightness(0) invert(1); margin: 0 5px; width: 16px; height: 16px;" />
+                            <div class="navbar-bottom">
+                                <div id="stepsContainer" class="steps-container"></div>
+                                <div class="navbar-icons">
+                                    <img id="lockIcon" src="/assets/Icons/lock.svg" alt="Lock" />
+                                    <img id="undoIcon" src="/assets/Icons/undo.svg" alt="Refresh" />
+                                    <a href="#" id="playIcon">
+                                        <img src="/assets/Icons/play.svg" alt="Logout" />
                                     </a>
                                 </div>
-
-
                             </div>
                         </nav>
-
 
                         <div class="table-manager">
                             <h2>Table Manager</h2>
@@ -218,12 +197,12 @@
                         </div>
                     </div>
                 </div>
-                <div id="configContainer" style="flex: 0;"></div>
+                <div id="configContainer"></div>
             </main>
         </div>
 
         <!-- Footer -->
-        <footer class="bg-sidebar text-white py-2" id="logout-footer" style="position: fixed; bottom: 0; width: 100%; left: 0; height: 30px;">
+        <footer class="bg-sidebar text-white py-2" id="logout-footer" style="position: fixed; bottom: 0; width: 100%; left: 0; height: 30px; background-color:#212121;">
             <div class="container-fluid d-flex justify-content-end align-items-center" style="padding-right: 15px; position: relative; height: 100%;">
                 <div class="logout-container">
                     <a href="#" class="logout-icon" id="logoutToggle">
