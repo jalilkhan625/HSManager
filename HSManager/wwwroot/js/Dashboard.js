@@ -1369,45 +1369,6 @@ const visibilityState = {
 };
 
 
-function setupUniversalVisiSbilityToggle() {
-    document.addEventListener("change", (e) => {
-        const checkbox = e.target;
-
-        if (!checkbox.matches('input[type="checkbox"]')) return;
-
-        const label = checkbox.closest("label");
-        if (!label || !label.textContent.toLowerCase().includes("visible")) return;
-
-        const section = checkbox.closest(".field-settings, .area-details, .table-details, .field-details");
-        if (!section) {
-            console.warn("[⚠️ Visibility Toggle] No section found for visibility toggle.");
-            return;
-        }
-
-        const listBox = section.querySelector(".list-box-container");
-        const dataTypeRow = section.querySelector(".field-data-type")?.closest("div");
-        const dataSubTypeRow = section.querySelector(".field-data-subtype")?.closest("div");
-
-        const show = checkbox.checked;
-
-        if (listBox) listBox.style.display = show ? "block" : "none";
-        if (dataTypeRow) dataTypeRow.style.display = show ? "flex" : "none";
-        if (dataSubTypeRow) dataSubTypeRow.style.display = show ? "flex" : "none";
-
-        console.log(`[✅ Visibility Toggle] Toggled visibility: ${show}`);
-    });
-}
-
-
-
-
-
-// Run on DOM ready
-document.addEventListener("DOMContentLoaded", () => {
-    setupUniversalVisibilityToggle();
-});
-
-
 // Universal visibility checkbox handler
 document.addEventListener("change", function (event) {
     // Check if the changed element is a checkbox with id="visibleCheck"

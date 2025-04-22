@@ -38,7 +38,7 @@
             display: flex;
             gap: 15px;
             font-size: 14px;
-            margin-left: 50px; /* Adjust value as needed */
+            margin-left: 10px; /* Adjust value as needed */
         }
 
         .step-item {
@@ -259,7 +259,7 @@
         };
         let isLocked = false;
 
-        function populateSteps() {
+               function populateSteps() {
             console.log("Populating steps based on selected items:", selectedItems);
             const stepsContainer = document.getElementById("stepsContainer");
             if (!stepsContainer) {
@@ -267,7 +267,7 @@
                 return;
             }
 
-            const hasSelection = selectedItems.area || selectedItems.table || selectedItems.fieldGroup || selectedItems.field;
+            const hasSelection = selectedItems.area;
             if (!hasSelection) {
                 stepsContainer.style.display = "none";
                 return;
@@ -277,9 +277,9 @@
 
             const steps = [
                 selectedItems.area ? `Area: ${selectedItems.area.name}` : "Select an Area",
-                selectedItems.table ? `Table: ${selectedItems.table.name}` : (selectedItems.area ? "Select a Table" : "—"),
-                selectedItems.fieldGroup ? `Field Group: ${selectedItems.fieldGroup.name}` : (selectedItems.table ? "Select a Field Group" : "—"),
-                selectedItems.field ? `Field: ${selectedItems.field.name}` : (selectedItems.fieldGroup ? "Select a Field" : "—")
+                selectedItems.table ? `Table: ${selectedItems.table.name}` : "Select a Table",
+                selectedItems.fieldGroup ? `Field Group: ${selectedItems.fieldGroup.name}` : "Select a Field Group",
+                selectedItems.field ? `Field: ${selectedItems.field.name}` : "Select a Field"
             ];
 
             stepsContainer.innerHTML = steps.map((step, index) => `
@@ -553,7 +553,7 @@
                     if (dynamicImage && !dynamicImage.dataset.listenerAdded) { // Prevent duplicate listeners
                         dynamicImage.addEventListener("click", function(event) {
                             event.preventDefault();
-                            showElementsOnClick();
+                            //showElementsOnClick();
                         });
                         dynamicImage.dataset.listenerAdded = "true"; // Mark as processed
                     }
