@@ -1263,7 +1263,7 @@ async function loadMenu() {
                     contentArea.querySelector("h1").style.display = "none";
                     contentArea.querySelector("p").style.display = "none";
                     tableManagerContainer.style.display = "flex";
-
+                    //applyLayoutStyles();
 
                     //setSidebarStyles(); // Unchanged, applies sidebar styles
                     await populateAreasList();
@@ -2718,6 +2718,10 @@ function setupDynamicCheckboxAlert() {
 
 // Execute when DOM is loaded
 document.addEventListener('DOMContentLoaded', setupDynamicCheckboxAlert);
+
+//div styling 
+
+
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {

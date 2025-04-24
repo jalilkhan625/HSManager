@@ -182,11 +182,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Main content */
 main[role="main"] {
-    position: relative;
-    top: 3.5rem; /* 56px */
-    left: 3.75rem; /* 60px */
-    width: calc(100% - 3.75rem); /* 60px */
-    height: calc(100vh - 3.5rem - 2.5rem); /* 56px 40px */
+    position: fixed; /* Changed to fixed to cover the entire viewport */
+    top: 0; /* Start from the top, ignoring navbar height */
+    left: 3.75rem; /* 60px, to account for sidebar width */
+    width: calc(100% - 3.75rem); /* Full width minus sidebar */
+    height: 100vh; /* Full viewport height */
     padding: 0;
     display: flex;
 }
@@ -195,7 +195,7 @@ main[role="main"] {
 #dashboardContent {
     flex: 1;
     width: 100%;
-    height: calc(100vh - 3.5rem - 2.5rem); /* 56px 40px */
+    height: 100vh; /* Full viewport height */
     background-color: #2a2a2a;
     color: #ffffff;
     padding: 1.25rem; /* 20px */
@@ -233,8 +233,8 @@ main[role="main"] {
     font-family: Arial, sans-serif;
     flex-wrap: nowrap;
     position: relative;
-    margin-top: -1.85rem; /* -30px */
-    margin-left: -1.45rem;
+    margin-top: 4rem; /* -30px */
+    margin-left: -1rem;
     overflow-x: hidden;
 }
 
