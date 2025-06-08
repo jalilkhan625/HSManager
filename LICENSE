@@ -1,0 +1,19 @@
+HS2025 Settings Manager
+Copyright (c) 2025 DataLabor.com
+
+Permission is hereby granted to the authorized users to use, copy, modify, and distribute this software and its documentation solely for internal development and configuration of the Hyperspace Application Platform.
+
+Restrictions:
+- Unauthorized redistribution, sublicensing, or commercial sale of this software is strictly prohibited.
+- This software is provided “as is” without any warranty, either expressed or implied.
+- Use of this software is limited to environments approved by DataLabor.com.
+
+All rights reserved.
+
+Contact: info@datalabor.com
+
+Author: Jalil
+Initial Release: 01/03/2025
+System Credentials:
+  - Username: admin
+  - Password: password
